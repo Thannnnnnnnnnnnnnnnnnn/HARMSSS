@@ -1,0 +1,113 @@
+.div-button {
+    display: flex;
+    justify-content: center; /* Aligns items to the right */
+    gap: 10px; /* Adds spacing between buttons */
+    margin-top: 10px; /* Adjust margin as needed */
+}
+
+.manage-button{
+    background-color: blue;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+}
+.manage-button:hover{
+    background-color: darkblue;
+    text-decoration: none;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+    transition: 0.3s;
+}
+
+.combined-button{
+    background-color: blue;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+}
+.combined-button:hover{
+    background-color: darkblue;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+    transition: 0.3s;
+}
+
+
+.delete-btn{
+    background-color: red;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+}
+.delete-btn:hover{
+    background-color: darkred;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+    transition: 0.3s;
+
+}
+
+.btn-add-vehicle{
+    background-color: #F7E6CA;
+    color: #4E3B2A;
+    padding: 8px;
+    border-radius: 8px;
+    width: 150px;
+    height: 50px;
+    box-shadow: rgba(0, 0, 0, 0.20) 0px 5px 10px;
+
+}
+.btn-add-vehicle:hover{
+    background-color: #EBD8B6;
+    color: #4E3B2A;
+    padding: 8px;
+    border-radius: 8px;
+    width: 150px;
+    height: 50px;
+    transition: 0.3s;
+}
+.dispatch-button{
+    background-color: darkblue;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 60px;
+    height: 40px;
+    transition: 0.3s;
+}
+.decline-button{
+    background-color: darkred;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 60px;
+    height: 40px;
+    transition: 0.3s;
+}
+
+.dispatch-button:hover{
+    background-color: blue;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+    transition: 0.3s;
+}
+
+.decline-button:hover{
+    background-color: red;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+    transition: 0.3s;
+}

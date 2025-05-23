@@ -1,0 +1,99 @@
+/* Sidebar Collapsed */
+.sidebar-collapsed {
+    width: 85px;
+    font-family: 'Aptos', 'Segoe UI', 'Arial', sans-serif;
+    transition: width 0.2s ease-in-out;
+    overflow-x: hidden;  /* Hide horizontal scroll */
+    overflow-y: auto;     /* Enable vertical scroll */
+    height: 20vh;        /* Full height of viewport */
+}
+
+/* Sidebar Expanded */
+.sidebar-expanded {
+    width: 320px;
+    font-family: 'Aptos', 'Segoe UI', 'Arial', sans-serif;
+    transition: width 0.2s ease-in-out;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 20vh;
+}
+
+/* Hide text and dropdowns in collapsed mode, but keep icons visible */
+.sidebar-collapsed .menu-name span,
+.sidebar-collapsed .menu-name .arrow {
+    display: none;
+}
+
+.sidebar-collapsed .menu-name i {
+    display: inline-block;
+    font-size: 18px;
+    margin-right: 0;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+/* Hide dropdown menus in collapsed mode */
+.sidebar-collapsed .menu-drop {
+    display: none;
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: none;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* Close Sidebar Button */
+.close-sidebar-btn {
+    display: none;
+}
+
+/* Mobile Sidebar */
+@media (max-width: 968px) {
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        transition: left 0.3s ease-in-out;
+    }
+
+    .sidebar.mobile-active {
+        left: 0;
+    }
+
+    .main {
+        margin-left: 0 !important;
+    }
+
+    .close-sidebar-btn {
+        display: block;
+    }
+}
+
+/* Menu Hover Effect */
+.menu-name {
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-name::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0;
+    background-color: #4E3B2A;
+    transition: width 0.2s ease;
+}
+
+.menu-name:hover::after {
+    width: 100%;
+}

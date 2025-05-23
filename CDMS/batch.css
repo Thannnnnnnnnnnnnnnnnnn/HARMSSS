@@ -1,0 +1,82 @@
+/* Main Dropdown Menu */
+.dropdown_menu {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 10;
+}
+
+/* Dropdown Items */
+.dropdown_item {
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+}
+
+.dropdown_item:hover {
+    background-color: #f4f4f4;
+}
+
+/* Sub Dropdown Menu */
+.sub-dropdown_menu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 20;
+}
+
+/* Sub Dropdown Items */
+.sub-dropdown_item {
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    display: block;
+}
+
+.sub-dropdown_item:hover {
+    background-color: #f4f4f4;
+}
+
+/* Nested Dropdown Menu */
+.nested-dropdown_menu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 30;
+}
+
+/* Nested Dropdown Items */
+.nested-dropdown_item {
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    display: block;
+}
+
+.nested-dropdown_item:hover {
+    background-color: #f4f4f4;
+}
+
+/* Show Submenus on Click */
+.sub-dropdown.active > .sub-dropdown_menu {
+    display: block;
+}
+
+.nested-dropdown.active > .nested-dropdown_menu {
+    display: block;
+}

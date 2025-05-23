@@ -1,0 +1,51 @@
+.view-button{
+    background-color: blue;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+}
+.view-button:hover{
+    background-color: darkblue;
+    text-decoration: none;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+    transition: 0.3s;
+}
+
+.edit-button{
+    background-color: green;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+}
+.edit-button:hover{
+    background-color: darkgreen;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+    transition: 0.3s;
+
+}
+
+.delete-btn{
+    background-color: red;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+}
+.delete-btn:hover{
+    background-color: darkred;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    width: 70px;
+    transition: 0.3s;
+
+}
+

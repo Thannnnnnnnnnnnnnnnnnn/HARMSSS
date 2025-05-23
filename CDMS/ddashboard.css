@@ -1,0 +1,94 @@
+/* Sidebar Styles */
+.sidebar-collapsed {
+    width: 85px;
+}
+
+.sidebar-expanded {
+    width: 450px;
+}
+
+.sidebar-transition {
+    transition: width 0.3s ease;
+}
+
+/* Sidebar Menu Styles */
+.sidebar-collapsed .menu-name span,
+.sidebar-collapsed .menu-name .arrow {
+    display: none;
+}
+
+.sidebar-collapsed .menu-name i {
+    margin-right: 0;
+}
+
+.sidebar-collapsed .menu-drop {
+    transition: width 0.3s ease-out;
+}
+
+/* Rotation Effect */
+.rotate {
+    transform: rotate(90deg);
+    transition: transform 0.3s ease;
+}
+
+/* Hover Effect */
+.space-y-1:hover {
+    color: brown;
+}
+
+.styled-table {
+    width: 100%;
+    margin: auto;
+    border-collapse: collapse;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: whitesmoke;
+    box-shadow: rgba(0, 0, 0, 0.20) 0px 5px 10px;  
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+
+.styled-table thead {
+    background-color: #EBD8B6;
+    height: 60px;
+    color: #4E3B2A;
+    border-bottom: #4E3B2A 1px solid;
+
+}
+
+.styled-table th, 
+.styled-table td {
+    padding: 5px;
+    text-align: center;
+    border-bottom: #EBD8B6 0.5px solid;
+    
+}
+
+.styled-table tbody tr:hover {
+    background-color: #EBD8B6;
+    color: #4E3B2A;
+    transition: background-color 0.3s ease-in-out;
+    
+}
+
+@media screen and (max-width: 480px) {
+    .container {
+        width: 80%;
+        height: 90%;
+        padding: 15px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,26 @@
+Query: DELETE FROM orderitems WHERE MenuItemID = ?
+Params: ["13"]
+Query: DELETE FROM orderitems WHERE MenuItemID = ?
+Params: ["13"]
+Query: DELETE FROM menuitems WHERE MenuItemID = ?
+Params: ["13"]
+Query: DELETE FROM orderitems WHERE MenuItemID = ?
+Params: ["12"]
+Query: DELETE FROM orderitems WHERE MenuItemID = ?
+Params: ["12"]
+Query: DELETE FROM menuitems WHERE MenuItemID = ?
+Params: ["12"]
+Query: DELETE FROM orderitems WHERE MenuItemID = ?
+Params: ["11"]
+Query: DELETE FROM orderitems WHERE MenuItemID = ?
+Params: ["11"]
+Query: DELETE FROM menuitems WHERE MenuItemID = ?
+Params: ["11"]
+Query: INSERT INTO menuitems (MenuName, Category, Price, Qty, ImagePath) VALUES (?, ?, ?, ?, ?)
+Params: ["Hotdog","Food","50","100","..\/..\/images\/hotdog.jpg"]
+Query: DELETE FROM orderitems WHERE MenuItemID = ?
+Params: ["0"]
+Query: DELETE FROM orderitems WHERE MenuItemID = ?
+Params: ["0"]
+Query: DELETE FROM menuitems WHERE MenuItemID = ?
+Params: ["0"]

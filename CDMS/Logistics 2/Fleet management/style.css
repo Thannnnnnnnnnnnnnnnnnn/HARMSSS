@@ -1,0 +1,36 @@
+.styled-table {
+    width: 100%;
+    margin: auto;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #4E3B2A;
+    background-color: #EBD8B6;
+    position: relative;
+}
+
+
+.styled-table thead {
+    background-color: #EBD8B6;
+    color: #4E3B2A;
+    border: 1px solid white;
+}
+
+
+.styled-table th,
+.styled-table td {
+    padding: 12px;
+    text-align: center;
+}
+
+
+.styled-table tbody tr:hover {
+    background-color: #FFF6E8;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.menu-option a {
+    text-decoration: none;
+}
+
+
