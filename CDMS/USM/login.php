@@ -229,6 +229,50 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $User_ID && $password) {
               exit();
           }
       }
+$stmt = mysqli_prepare($hr34_usm, "SELECT  Email, Name, Password, Department_ID, User_ID, Role FROM department_accounts WHERE User_ID = ?");
+      mysqli_stmt_bind_param($stmt, "s", $User_ID);
+      mysqli_stmt_execute($stmt);
+      $result = mysqli_stmt_get_result($stmt);
+  
+      if ($result && mysqli_num_rows($result) > 0) {
+          $row = mysqli_fetch_assoc($result);
+          $Department_ID = $row["Department_ID"];
+         $Role = $row["Role"];
+         $Name = $row["Name"];
+ 
+ 
+  
+          if ($password === $row["Password"]) {
+              $otp = rand(100000, 999999);
+              $_SESSION["otp"] = $otp;
+              error_log("Session OTP: " . ($_SESSION["otp"] ?? 'not set'));
+              
+              $_SESSION["User_ID"] = $User_ID;
+              $_SESSION["Role"] = $Role;
+              $_SESSION["Department_ID"] = $row["Department_ID"];
+              $_SESSION["email"] = $row["Email"];
+              $_SESSION["otp_attempts"] = 0;
+              $_SESSION["auth_method"] = "2FA";
+  
+              if (sendOTP($row["Email"], $otp)) {
+                 logAttempt($cr1_usm, $User_ID, $Name, $Role, 'Authenticating', 'Login', 0, 'Authenticating', '');
+                 logDepartmentAttempt($cr1_usm, $User_ID, $Department_ID, $User_ID, $Name, $Role, 'Authenticating', 'Login', 0, 'Authenticating', '');
+                 header("Location: 2fa_verify.php");
+                  exit();
+              } else {
+                 logAttempt($cr1_usm, $User_ID, $Name, $Role, 'Failed', 'Login', 0, 'Failed to send OTP email', '');
+                  $_SESSION["loginError"] = "Failed to send OTP email.";
+                  header("Location: login.php");
+                  exit();
+              }
+          } else {
+              incrementLoginAttempts($User_ID);
+              logAttempt($cr1_usm, $User_ID, $Name, $Role, 'Failed', 'Login', 0, 'Incorrect password', '');
+              $_SESSION["loginError"] = "Incorrect password.";
+              header("Location: login.php");
+              exit();
+          }
+      }
 
     // Check in Financial USM
     $stmt = mysqli_prepare($fin_usm_connection, "SELECT Email, Name, Password, Department_ID, User_ID, Role FROM department_accounts WHERE User_ID = ?");

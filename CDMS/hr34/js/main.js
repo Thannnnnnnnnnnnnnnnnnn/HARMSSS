@@ -1,6 +1,7 @@
 /**
  * HR Management System - Main JavaScript Entry Point
- * Version: 1.22 (Restored Analytics to sidebar, reverted dashboard to simpler version)
+ * Version: 1.23 (Handles role-based landing pages)
+ * MODIFIED TO BYPASS LOGIN AND 2FA - FOR DEVELOPMENT/TESTING ONLY
  */
 
 // --- Import display functions from module files ---
@@ -41,7 +42,7 @@ import {
     displaySalaryAdjustmentsSection,
     displayIncentivesSection
  } from './compensation/compensation.js';
-// MODIFICATION: Import Analytics functions
+// Analytics functions
 import {
     displayAnalyticsDashboardsSection,
     displayAnalyticsReportsSection,
@@ -60,17 +61,11 @@ window.currentUser = null;
 
 // --- Wait for the DOM to be fully loaded ---
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded and parsed. Initializing HR System JS...");
+    console.log("DOM fully loaded and parsed. Initializing HR System JS (LOGIN BYPASSED - Role Based)...");
 
     // --- DOM Elements ---
-    const loginContainer = document.getElementById('login-container');
+    // const loginContainer = document.getElementById('login-container'); // No longer a critical element for this flow
     const appContainer = document.getElementById('app-container');
-    const loginForm = document.getElementById('login-form');
-    const loginStatus = document.getElementById('login-status');
-    const twoFaForm = document.getElementById('2fa-form');
-    const twoFaStatus = document.getElementById('2fa-status');
-    const twoFaMessage = document.getElementById('2fa-message');
-    const twoFaUserIdInput = document.getElementById('2fa-user-id');
     const mainContentArea = document.getElementById('main-content-area');
     const pageTitleElement = document.getElementById('page-title');
     const timesheetModal = document.getElementById('timesheet-detail-modal');
@@ -79,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const userDisplayName = document.getElementById('user-display-name');
     const userDisplayRole = document.getElementById('user-display-role');
 
-    // --- Navbar Profile & Notification Elements ---
     const userProfileButton = document.getElementById('user-profile-button');
     const userProfileDropdown = document.getElementById('user-profile-dropdown');
     const userProfileArrow = document.getElementById('user-profile-arrow');
@@ -90,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const notificationDot = document.getElementById('notification-dot');
     const notificationListElement = document.getElementById('notification-list');
 
-    // --- Sidebar Links & Dropdown Triggers ---
     const sidebarItems = {
         dashboard: document.getElementById('dashboard-link')?.closest('.menu-option'),
         coreHr: document.querySelector('[onclick*="core-hr-dropdown"]')?.closest('.menu-option'),
@@ -121,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
         compPlans: document.getElementById('comp-plans-link')?.closest('li'),
         salaryAdjust: document.getElementById('salary-adjust-link')?.closest('li'),
         incentives: document.getElementById('incentives-link')?.closest('li'),
-        // MODIFICATION: Restored Analytics items
         analytics: document.querySelector('[onclick*="analytics-dropdown"]')?.closest('.menu-option'),
         analyticsDashboards: document.getElementById('analytics-dashboards-link')?.closest('li'),
         analyticsReports: document.getElementById('analytics-reports-link')?.closest('li'),
@@ -131,13 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Error Handling for Missing Core Elements ---
-     if (!mainContentArea || !pageTitleElement || !loginContainer || !appContainer) {
-        console.error("CRITICAL: Essential App/Login DOM elements not found!");
-        document.body.innerHTML = '<p style="color: red; padding: 20px;">Application Error: Core UI elements are missing.</p>';
-        return;
-    }
-    if (!loginForm || !loginStatus || !twoFaForm || !twoFaStatus || !twoFaMessage || !twoFaUserIdInput) {
-        console.error("CRITICAL: Login/2FA form elements missing!");
+     if (!mainContentArea || !pageTitleElement || !appContainer) { // Removed loginContainer from this check
+        console.error("CRITICAL: Essential App DOM elements (app-container, main-content-area, page-title) not found!");
+        document.body.innerHTML = '<p style="color: red; padding: 20px;">Application Error: Core UI elements are missing. Ensure app-container, main-content-area, and page-title IDs exist in your HTML.</p>';
         return;
     }
     if (!userProfileButton || !userProfileDropdown || !viewProfileLink || !logoutLinkNav || !userProfileArrow) {
@@ -152,20 +140,29 @@ document.addEventListener('DOMContentLoaded', () => {
          if (typeof closeTimesheetModal === 'function') {
              modalCloseBtnTs.addEventListener('click', closeTimesheetModal);
              modalOverlayTs.addEventListener('click', closeTimesheetModal);
+             const footerCloseBtn = document.getElementById('modal-close-btn-ts-footer');
+             if (footerCloseBtn) footerCloseBtn.addEventListener('click', closeTimesheetModal);
          } else {
              console.warn("closeTimesheetModal function not found/imported from timesheets.js.");
              modalCloseBtnTs.addEventListener('click', () => timesheetModal.classList.add('hidden'));
              modalOverlayTs.addEventListener('click', () => timesheetModal.classList.add('hidden'));
+             const footerCloseBtn = document.getElementById('modal-close-btn-ts-footer');
+             if (footerCloseBtn) footerCloseBtn.addEventListener('click', () => timesheetModal.classList.add('hidden'));
          }
-    } else {
-        console.warn("Timesheet modal elements (modal, overlay, or close button) not found in HTML.");
     }
+    const employeeDetailModal = document.getElementById('employee-detail-modal');
+    const employeeModalOverlay = document.getElementById('modal-overlay-employee');
+    const employeeModalCloseBtnHeader = document.getElementById('modal-close-btn-employee');
+    const employeeModalCloseBtnFooter = document.getElementById('modal-close-btn-employee-footer');
 
-    // --- Event Listener for Login Form ---
-    loginForm.addEventListener('submit', handleLogin);
-
-    // --- Event Listener for 2FA Form ---
-    twoFaForm.addEventListener('submit', handleVerify2FA);
+    function closeEmployeeDetailModal() {
+        if (employeeDetailModal) employeeDetailModal.classList.add('hidden');
+    }
+    if(employeeDetailModal && employeeModalOverlay && employeeModalCloseBtnHeader && employeeModalCloseBtnFooter) {
+        employeeModalOverlay.addEventListener('click', closeEmployeeDetailModal);
+        employeeModalCloseBtnHeader.addEventListener('click', closeEmployeeDetailModal);
+        employeeModalCloseBtnFooter.addEventListener('click', closeEmployeeDetailModal);
+    }
 
     // --- Event Listeners for Navbar Profile Dropdown ---
     if (userProfileButton && userProfileDropdown && userProfileArrow) {
@@ -186,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             if (typeof displayUserProfileSection === 'function') {
                 displayUserProfileSection();
+                updateActiveSidebarLink(null); 
             } else {
                 console.error("displayUserProfileSection function is not defined or imported.");
                  if(mainContentArea) mainContentArea.innerHTML = '<p class="text-red-500 p-4">Error: Profile display function not available.</p>';
@@ -196,6 +194,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 userProfileArrow.classList.add('bx-chevron-down');
             }
         });
+    }
+    
+    // --- Logout Handler ---
+    async function handleLogout(event) {
+        event.preventDefault();
+        console.log("Logout initiated (BYPASS MODE)...");
+        window.currentUser = null;
+        // stopNotificationFetching(); // Not strictly needed if notifications aren't fully working
+        
+        // Redirect to a neutral page or clear the UI
+        // Since login is bypassed, "logging out" means resetting the UI to a non-user state.
+        // A simple way is to redirect to the base path, which might be one of the landing pages.
+        // Or, display a "logged out" message.
+        if(appContainer) appContainer.style.display = 'none'; // Hide the main app
+        document.body.innerHTML = '<div class="flex items-center justify-center min-h-screen"><p class="text-xl">You have been logged out. Please navigate to a landing page to re-enter (e.g., admin_landing.php or employee_landing.php).</p></div>';
+        // Alternatively, if you have a generic index.php that redirects or shows a choice:
+        // window.location.href = 'index.php'; 
     }
 
     if (logoutLinkNav) {
@@ -214,16 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     userProfileArrow.classList.add('bx-chevron-down');
                 }
             }
-
-            if (!isNowHidden) { 
-                onNotificationDropdownOpen(); 
-            } else { 
-                onNotificationDropdownClose(); 
-            }
+            if (!isNowHidden) { onNotificationDropdownOpen(); } else { onNotificationDropdownClose(); }
         });
     }
 
-    // Global click listener to close dropdowns when clicking outside
+    // Global click listener to close dropdowns
     document.addEventListener('click', (event) => {
         if (userProfileDropdown && userProfileButton && !userProfileButton.contains(event.target) && !userProfileDropdown.contains(event.target)) {
             if (!userProfileDropdown.classList.contains('hidden')) {
@@ -244,12 +254,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Sidebar Listener Setup ---
     const addClickListenerOnce = (element, handler) => {
-        const targetElement = element?.querySelector('a');
+        const targetElement = element?.querySelector('a'); // Assumes the clickable part is an <a> tag within the <li> or the menu-option itself if it's an <a>
         if (targetElement && !targetElement.hasAttribute('data-listener-added')) {
             targetElement.addEventListener('click', (e) => {
                 e.preventDefault();
                 const sidebar = document.querySelector('.sidebar');
-                if(sidebar && sidebar.classList.contains('mobile-active')) { closeSidebar(); }
+                if(sidebar && sidebar.classList.contains('mobile-active')) { closeSidebar(); } // Assuming closeSidebar is defined globally or in this scope
                 if (typeof handler === 'function') {
                     try { handler(); } catch (error) {
                          console.error(`Error executing handler for ${targetElement.id || 'sidebar link'}:`, error);
@@ -260,260 +270,111 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             targetElement.setAttribute('data-listener-added', 'true');
         } else if (!targetElement && handler && typeof handler === 'function') {
-             console.warn(`Sidebar link element (<a>) not found within provided element for handler: ${handler.name}. Check ID/structure.`);
+             // If the element itself is the <a> tag and was passed directly
+             if(element && element.tagName === 'A' && !element.hasAttribute('data-listener-added')) {
+                element.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sidebar = document.querySelector('.sidebar');
+                    if(sidebar && sidebar.classList.contains('mobile-active')) { closeSidebar(); }
+                    if (typeof handler === 'function') { try { handler(); } catch (error) { console.error(`Error executing handler:`, error); } }
+                    updateActiveSidebarLink(element);
+                });
+                element.setAttribute('data-listener-added', 'true');
+             } else {
+                console.warn(`Sidebar link element (<a>) not found within provided element for handler: ${handler.name}. Check ID/structure.`);
+             }
         }
     };
 
     function attachSidebarListeners() {
         console.log("Attaching sidebar listeners...");
         if (sidebarItems.dashboard && !sidebarItems.dashboard.classList.contains('hidden')) {
-            addClickListenerOnce(sidebarItems.dashboard, displayDashboardSection);
+            addClickListenerOnce(sidebarItems.dashboard.querySelector('a'), displayDashboardSection);
         }
         if (sidebarItems.employees && !sidebarItems.employees.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.employees, displayEmployeeSection);
+             addClickListenerOnce(sidebarItems.employees.querySelector('a'), displayEmployeeSection);
         }
         if (sidebarItems.documents && !sidebarItems.documents.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.documents, displayDocumentsSection);
+             addClickListenerOnce(sidebarItems.documents.querySelector('a'), displayDocumentsSection);
         }
         if (sidebarItems.orgStructure && !sidebarItems.orgStructure.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.orgStructure, displayOrgStructureSection);
+             addClickListenerOnce(sidebarItems.orgStructure.querySelector('a'), displayOrgStructureSection);
         }
         if (sidebarItems.attendance && !sidebarItems.attendance.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.attendance, displayAttendanceSection);
+             addClickListenerOnce(sidebarItems.attendance.querySelector('a'), displayAttendanceSection);
         }
         if (sidebarItems.timesheets && !sidebarItems.timesheets.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.timesheets, displayTimesheetsSection);
+             addClickListenerOnce(sidebarItems.timesheets.querySelector('a'), displayTimesheetsSection);
         }
         if (sidebarItems.schedules && !sidebarItems.schedules.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.schedules, displaySchedulesSection);
+             addClickListenerOnce(sidebarItems.schedules.querySelector('a'), displaySchedulesSection);
         }
          if (sidebarItems.shifts && !sidebarItems.shifts.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.shifts, displayShiftsSection);
+             addClickListenerOnce(sidebarItems.shifts.querySelector('a'), displayShiftsSection);
         }
         if (sidebarItems.payrollRuns && !sidebarItems.payrollRuns.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.payrollRuns, displayPayrollRunsSection);
+             addClickListenerOnce(sidebarItems.payrollRuns.querySelector('a'), displayPayrollRunsSection);
         }
         if (sidebarItems.salaries && !sidebarItems.salaries.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.salaries, displaySalariesSection);
+             addClickListenerOnce(sidebarItems.salaries.querySelector('a'), displaySalariesSection);
         }
         if (sidebarItems.bonuses && !sidebarItems.bonuses.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.bonuses, displayBonusesSection);
+             addClickListenerOnce(sidebarItems.bonuses.querySelector('a'), displayBonusesSection);
         }
         if (sidebarItems.deductions && !sidebarItems.deductions.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.deductions, displayDeductionsSection);
+             addClickListenerOnce(sidebarItems.deductions.querySelector('a'), displayDeductionsSection);
         }
         if (sidebarItems.payslips && !sidebarItems.payslips.classList.contains('hidden')) {
-            addClickListenerOnce(sidebarItems.payslips, displayPayslipsSection);
+            addClickListenerOnce(sidebarItems.payslips.querySelector('a'), displayPayslipsSection);
         }
         if (sidebarItems.submitClaim && !sidebarItems.submitClaim.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.submitClaim, displaySubmitClaimSection);
+             addClickListenerOnce(sidebarItems.submitClaim.querySelector('a'), displaySubmitClaimSection);
         }
         if (sidebarItems.myClaims && !sidebarItems.myClaims.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.myClaims, displayMyClaimsSection);
+             addClickListenerOnce(sidebarItems.myClaims.querySelector('a'), displayMyClaimsSection);
         }
         if (sidebarItems.claimsApproval && !sidebarItems.claimsApproval.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.claimsApproval, displayClaimsApprovalSection);
+             addClickListenerOnce(sidebarItems.claimsApproval.querySelector('a'), displayClaimsApprovalSection);
         }
         if (sidebarItems.claimTypesAdmin && !sidebarItems.claimTypesAdmin.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.claimTypesAdmin, displayClaimTypesAdminSection);
+             addClickListenerOnce(sidebarItems.claimTypesAdmin.querySelector('a'), displayClaimTypesAdminSection);
         }
         if (sidebarItems.leaveRequests && !sidebarItems.leaveRequests.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.leaveRequests, displayLeaveRequestsSection);
+             addClickListenerOnce(sidebarItems.leaveRequests.querySelector('a'), displayLeaveRequestsSection);
         }
         if (sidebarItems.leaveBalances && !sidebarItems.leaveBalances.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.leaveBalances, displayLeaveBalancesSection);
+             addClickListenerOnce(sidebarItems.leaveBalances.querySelector('a'), displayLeaveBalancesSection);
         }
         if (sidebarItems.leaveTypes && !sidebarItems.leaveTypes.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.leaveTypes, displayLeaveTypesAdminSection);
+             addClickListenerOnce(sidebarItems.leaveTypes.querySelector('a'), displayLeaveTypesAdminSection);
         }
         if (sidebarItems.compPlans && !sidebarItems.compPlans.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.compPlans, displayCompensationPlansSection);
+             addClickListenerOnce(sidebarItems.compPlans.querySelector('a'), displayCompensationPlansSection);
         }
         if (sidebarItems.salaryAdjust && !sidebarItems.salaryAdjust.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.salaryAdjust, displaySalaryAdjustmentsSection);
+             addClickListenerOnce(sidebarItems.salaryAdjust.querySelector('a'), displaySalaryAdjustmentsSection);
         }
         if (sidebarItems.incentives && !sidebarItems.incentives.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.incentives, displayIncentivesSection);
+             addClickListenerOnce(sidebarItems.incentives.querySelector('a'), displayIncentivesSection);
         }
-        // MODIFICATION: Restored Analytics listeners
         if (sidebarItems.analyticsDashboards && !sidebarItems.analyticsDashboards.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.analyticsDashboards, displayAnalyticsDashboardsSection);
+             addClickListenerOnce(sidebarItems.analyticsDashboards.querySelector('a'), displayAnalyticsDashboardsSection);
         }
         if (sidebarItems.analyticsReports && !sidebarItems.analyticsReports.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.analyticsReports, displayAnalyticsReportsSection);
+             addClickListenerOnce(sidebarItems.analyticsReports.querySelector('a'), displayAnalyticsReportsSection);
         }
         if (sidebarItems.analyticsMetrics && !sidebarItems.analyticsMetrics.classList.contains('hidden')) {
-             addClickListenerOnce(sidebarItems.analyticsMetrics, displayAnalyticsMetricsSection);
+             addClickListenerOnce(sidebarItems.analyticsMetrics.querySelector('a'), displayAnalyticsMetricsSection);
         }
         if (sidebarItems.userManagement && !sidebarItems.userManagement.classList.contains('hidden')) {
-            addClickListenerOnce(sidebarItems.userManagement, displayUserManagementSection);
+            addClickListenerOnce(sidebarItems.userManagement.querySelector('a'), displayUserManagementSection);
         }
         console.log("Sidebar listeners attached/reattached.");
     }
-
-    // --- Login Handler ---
-    async function handleLogin(event) {
-        event.preventDefault();
-        loginStatus.textContent = 'Logging in...';
-        loginStatus.className = 'text-center text-sm text-blue-600 h-4';
-        twoFaStatus.textContent = '';
-        twoFaMessage.textContent = '';
-        const loginButton = loginForm.querySelector('button[type="submit"]');
-        if(loginButton) loginButton.disabled = true;
-
-        const username = loginForm.elements['username'].value;
-        const password = loginForm.elements['password'].value;
-
-        try {
-            const response = await fetch(`${API_BASE_URL}login.php`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
-                body: JSON.stringify({ username, password }),
-                credentials: 'include'
-            });
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.error || `Login failed (Status: ${response.status})`);
-
-            if (result.two_factor_required) {
-                loginStatus.textContent = '';
-                twoFaMessage.textContent = result.message || 'Check your email for the authentication code.';
-                twoFaUserIdInput.value = result.user_id_temp;
-                loginForm.classList.add('hidden');
-                twoFaForm.classList.remove('hidden');
-                document.getElementById('2fa-code').focus();
-            } else if (result.user) {
-                loginStatus.textContent = '';
-                window.currentUser = result.user;
-                showAppUI();
-                updateUserDisplay(window.currentUser);
-                updateSidebarAccess(window.currentUser.role_name);
-                attachSidebarListeners();
-                displayDashboardSection(); 
-                updateActiveSidebarLink(sidebarItems.dashboard.querySelector('a')); 
-                initializeNotificationSystem();
-                twoFaForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-            } else {
-                throw new Error('Login failed. Unexpected response from server.');
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            loginStatus.textContent = error.message || 'An error occurred during login.';
-            loginStatus.className = 'text-center text-sm text-red-600 h-4';
-            window.currentUser = null;
-            loginForm.classList.remove('hidden');
-            twoFaForm.classList.add('hidden');
-        } finally {
-             if(loginButton) loginButton.disabled = false;
-        }
-    }
-
-    // --- 2FA Verification Handler ---
-    async function handleVerify2FA(event) {
-        event.preventDefault();
-        twoFaStatus.textContent = 'Verifying code...';
-        twoFaStatus.className = 'text-center text-sm text-blue-600 h-4';
-        const verifyButton = twoFaForm.querySelector('button[type="submit"]');
-        if(verifyButton) verifyButton.disabled = true;
-
-        const userId = twoFaUserIdInput.value;
-        const code = twoFaForm.elements['code'].value;
-
-        if (!userId || !code) {
-            twoFaStatus.textContent = 'User ID or Code missing.';
-            twoFaStatus.className = 'text-center text-sm text-red-600 h-4';
-            if(verifyButton) verifyButton.disabled = false;
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_BASE_URL}verify_2fa.php`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
-                body: JSON.stringify({ user_id: parseInt(userId), code: code }),
-                credentials: 'include'
-            });
-            const result = await response.json();
-            if (response.ok && result.user) {
-                twoFaStatus.textContent = '';
-                window.currentUser = result.user;
-                showAppUI();
-                updateUserDisplay(window.currentUser);
-                updateSidebarAccess(window.currentUser.role_name);
-                attachSidebarListeners();
-                displayDashboardSection(); 
-                updateActiveSidebarLink(sidebarItems.dashboard.querySelector('a')); 
-                initializeNotificationSystem();
-                twoFaForm.reset();
-                loginForm.reset();
-                twoFaForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-                twoFaMessage.textContent = '';
-            } else {
-                throw new Error(result.error || 'Verification failed.');
-            }
-        } catch (error) {
-            console.error('2FA Verification error:', error);
-            twoFaStatus.textContent = error.message || 'An error occurred during verification.';
-            twoFaStatus.className = 'text-center text-sm text-red-600 h-4';
-        } finally {
-            if(verifyButton) verifyButton.disabled = false;
-        }
-    }
-
-    // --- Logout Handler ---
-    async function handleLogout(event) {
-        event.preventDefault();
-        console.log("Logout initiated...");
-        stopNotificationFetching();
-        try {
-            await fetch(`${API_BASE_URL}logout.php`, {
-                 method: 'POST',
-                 credentials: 'include'
-            });
-        } catch (error) {
-            console.error('Error during logout API call:', error);
-        } finally {
-            window.currentUser = null;
-            showLoginUI();
-            updateSidebarAccess(null);
-            if(userProfileDropdown) userProfileDropdown.classList.add('hidden');
-            if(userProfileArrow) {
-                userProfileArrow.classList.remove('bx-chevron-up');
-                userProfileArrow.classList.add('bx-chevron-down');
-            }
-            if(notificationDropdown) notificationDropdown.classList.add('hidden');
-            if(notificationListElement) notificationListElement.innerHTML = '<p class="p-4 text-sm text-gray-500 text-center">Please log in to see notifications.</p>';
-            if(notificationDot) notificationDot.classList.add('hidden');
-        }
-    }
-
+    
     // --- UI Visibility Functions ---
-    function showLoginUI() {
-        if(loginContainer) loginContainer.style.display = 'flex';
-        if(appContainer) appContainer.style.display = 'none';
-        if(userDisplayName) userDisplayName.textContent = 'Guest';
-        if(userDisplayRole) userDisplayRole.textContent = '';
-        if(mainContentArea) mainContentArea.innerHTML = '';
-        if(loginForm) {
-             loginForm.reset();
-             loginForm.classList.remove('hidden');
-        }
-        if(loginStatus) loginStatus.textContent = '';
-        if(twoFaForm) {
-             twoFaForm.reset();
-             twoFaForm.classList.add('hidden');
-        }
-        if(twoFaStatus) twoFaStatus.textContent = '';
-        if(twoFaMessage) twoFaMessage.textContent = '';
-        document.querySelectorAll('.menu-drop').forEach(d => d.classList.add('hidden'));
-        document.querySelectorAll('.arrow-icon').forEach(i => {
-            i.classList.remove('bx-chevron-down');
-            i.classList.add('bx-chevron-right');
-        });
-    }
     function showAppUI() {
-        if(loginContainer) loginContainer.style.display = 'none';
+        // loginContainer is assumed to be removed from HTML or hidden by default in landing pages
         if(appContainer) appContainer.style.display = 'flex';
     }
 
@@ -534,13 +395,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const allMenuItems = document.querySelectorAll('.sidebar .menu-option');
         const allSubMenuItems = document.querySelectorAll('.sidebar .menu-drop li');
 
-        allMenuItems.forEach(item => item?.classList.add('hidden'));
-        allSubMenuItems.forEach(item => item?.classList.add('hidden'));
+        allMenuItems.forEach(item => item?.classList.add('hidden')); // Hide all main categories first
+        allSubMenuItems.forEach(item => item?.classList.add('hidden')); // Hide all sub-items first
 
         const show = (element, elementName = 'Unknown') => {
             if (element) {
                 element.classList.remove('hidden');
-                element.style.display = ''; 
+                element.style.display = ''; // Explicitly set display if it was 'none'
+                // If it's a sub-item (li), ensure its parent menu-option (category) is also shown
                 const parentMenuOption = element.closest('.menu-option');
                 if(parentMenuOption) {
                     parentMenuOption.classList.remove('hidden');
@@ -553,14 +415,17 @@ document.addEventListener('DOMContentLoaded', () => {
          const hide = (element, elementName = 'Unknown') => {
              if (element) {
                 element.classList.add('hidden');
+                // Note: Hiding a sub-item doesn't automatically hide its parent category
+                // if other sub-items in that category are visible.
              }
         };
 
+        // Always show dashboard
         show(sidebarItems.dashboard, 'Dashboard');
 
         switch (roleName) {
             case 'System Admin':
-            case 'HR Admin': // HR Admin gets Analytics too
+            case 'HR Admin': 
                 console.log(`Executing ${roleName} access rules.`);
                 show(sidebarItems.coreHr, 'Core HR');
                 show(sidebarItems.employees, 'Employees');
@@ -576,56 +441,57 @@ document.addEventListener('DOMContentLoaded', () => {
                 show(sidebarItems.salaries, 'Salaries');
                 show(sidebarItems.bonuses, 'Bonuses');
                 show(sidebarItems.deductions, 'Deductions');
-                show(sidebarItems.payslips, 'Payslips');
+                show(sidebarItems.payslips, 'Payslips'); // Admins might need to view all
                 show(sidebarItems.claims, 'Claims');
+                // hide(sidebarItems.submitClaim, 'Submit Claim (Admin)'); // Admins typically don't submit their own via general UI
+                // hide(sidebarItems.myClaims, 'My Claims (Admin)');
                 show(sidebarItems.claimsApproval, 'Claims Approval');
                 show(sidebarItems.claimTypesAdmin, 'Claim Types Admin');
                 show(sidebarItems.leave, 'Leave');
-                show(sidebarItems.leaveRequests, 'Leave Requests');
-                show(sidebarItems.leaveBalances, 'Leave Balances');
+                show(sidebarItems.leaveRequests, 'Leave Requests'); // Includes approvals
+                show(sidebarItems.leaveBalances, 'Leave Balances'); // View all
                 show(sidebarItems.leaveTypes, 'Leave Types');
                 show(sidebarItems.compensation, 'Compensation');
                 show(sidebarItems.compPlans, 'Comp Plans');
                 show(sidebarItems.salaryAdjust, 'Salary Adjust');
                 show(sidebarItems.incentives, 'Incentives');
-                show(sidebarItems.analytics, 'Analytics'); // MODIFICATION: Show Analytics
+                show(sidebarItems.analytics, 'Analytics'); 
                 show(sidebarItems.analyticsDashboards, 'Analytics Dashboards');
                 show(sidebarItems.analyticsReports, 'Analytics Reports');
                 show(sidebarItems.analyticsMetrics, 'Analytics Metrics');
                 if (roleName === 'System Admin') {
                     show(sidebarItems.admin, 'Admin');
                     show(sidebarItems.userManagement, 'User Management');
-                } else { // HR Admin doesn't see User Management by default
+                } else { 
                     hide(sidebarItems.admin, 'Admin');
                 }
-                hide(sidebarItems.submitClaim, 'Submit Claim (Hiding)');
-                hide(sidebarItems.myClaims, 'My Claims (Hiding)');
                 break;
             case 'Manager':
                 console.log("Executing Manager access rules.");
                 show(sidebarItems.claims, 'Claims');
-                show(sidebarItems.submitClaim, 'Submit Claim');
-                show(sidebarItems.myClaims, 'My Claims');
-                show(sidebarItems.claimsApproval, 'Claims Approval');
+                show(sidebarItems.submitClaim, 'Submit Claim'); 
+                show(sidebarItems.myClaims, 'My Claims'); 
+                show(sidebarItems.claimsApproval, 'Claims Approval'); 
                 show(sidebarItems.leave, 'Leave');
-                show(sidebarItems.leaveRequests, 'Leave Requests');
-                show(sidebarItems.leaveBalances, 'Leave Balances');
+                show(sidebarItems.leaveRequests, 'Leave Requests'); 
+                show(sidebarItems.leaveBalances, 'Leave Balances'); 
                 show(sidebarItems.timeAttendance, 'Time & Attendance');
-                show(sidebarItems.attendance, 'Attendance');
-                show(sidebarItems.timesheets, 'Timesheets');
+                show(sidebarItems.attendance, 'Attendance'); 
+                show(sidebarItems.timesheets, 'Timesheets'); 
                 show(sidebarItems.payroll, 'Payroll');
-                show(sidebarItems.payslips, 'Payslips');
-                hide(sidebarItems.coreHr, 'Core HR');
-                hide(sidebarItems.payrollRuns, 'Payroll Runs');
-                hide(sidebarItems.salaries, 'Salaries');
-                hide(sidebarItems.bonuses, 'Bonuses');
-                hide(sidebarItems.deductions, 'Deductions');
-                hide(sidebarItems.claimTypesAdmin, 'Claim Types Admin');
-                hide(sidebarItems.leaveTypes, 'Leave Types');
-                hide(sidebarItems.compensation, 'Compensation');
-                hide(sidebarItems.analytics, 'Analytics'); // Managers don't see Analytics by default
-                hide(sidebarItems.admin, 'Admin');
-                hide(sidebarItems.userManagement, 'User Management');
+                show(sidebarItems.payslips, 'Payslips'); 
+                
+                // Explicitly hide sections not for Managers
+                hide(sidebarItems.coreHr, 'Core HR (Manager)');
+                hide(sidebarItems.payrollRuns, 'Payroll Runs (Manager)');
+                hide(sidebarItems.salaries, 'Salaries (Manager)');
+                hide(sidebarItems.bonuses, 'Bonuses (Manager)');
+                hide(sidebarItems.deductions, 'Deductions (Manager)');
+                hide(sidebarItems.claimTypesAdmin, 'Claim Types Admin (Manager)');
+                hide(sidebarItems.leaveTypes, 'Leave Types (Manager)');
+                hide(sidebarItems.compensation, 'Compensation (Manager)');
+                hide(sidebarItems.analytics, 'Analytics (Manager)'); 
+                hide(sidebarItems.admin, 'Admin (Manager)');
                 break;
             case 'Employee':
                 console.log("Executing Employee access rules.");
@@ -637,67 +503,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 show(sidebarItems.leaveBalances, 'Leave Balances');
                 show(sidebarItems.payroll, 'Payroll');
                 show(sidebarItems.payslips, 'Payslips');
-                hide(sidebarItems.coreHr, 'Core HR');
-                hide(sidebarItems.timeAttendance, 'Time & Attendance');
-                hide(sidebarItems.payrollRuns, 'Payroll Runs');
-                hide(sidebarItems.salaries, 'Salaries');
-                hide(sidebarItems.bonuses, 'Bonuses');
-                hide(sidebarItems.deductions, 'Deductions');
-                hide(sidebarItems.claimsApproval, 'Claims Approval');
-                hide(sidebarItems.claimTypesAdmin, 'Claim Types Admin');
-                hide(sidebarItems.leaveTypes, 'Leave Types');
-                hide(sidebarItems.compensation, 'Compensation');
-                hide(sidebarItems.analytics, 'Analytics');
-                hide(sidebarItems.admin, 'Admin');
-                hide(sidebarItems.userManagement, 'User Management');
+
+                // Explicitly hide sections not for Employees
+                hide(sidebarItems.coreHr, 'Core HR (Employee)');
+                hide(sidebarItems.timeAttendance, 'Time & Attendance (Employee)'); 
+                hide(sidebarItems.payrollRuns, 'Payroll Runs (Employee)');
+                hide(sidebarItems.salaries, 'Salaries (Employee)');
+                hide(sidebarItems.bonuses, 'Bonuses (Employee)');
+                hide(sidebarItems.deductions, 'Deductions (Employee)');
+                hide(sidebarItems.claimsApproval, 'Claims Approval (Employee)');
+                hide(sidebarItems.claimTypesAdmin, 'Claim Types Admin (Employee)');
+                hide(sidebarItems.leaveTypes, 'Leave Types (Employee)');
+                hide(sidebarItems.compensation, 'Compensation (Employee)');
+                hide(sidebarItems.analytics, 'Analytics (Employee)');
+                hide(sidebarItems.admin, 'Admin (Employee)');
                 break;
-            default:
-                console.log("Executing Default access rules (logged out or unknown role).");
-                hide(sidebarItems.coreHr, 'Core HR');
-                hide(sidebarItems.timeAttendance, 'Time & Attendance');
-                hide(sidebarItems.payroll, 'Payroll');
-                hide(sidebarItems.claims, 'Claims');
-                hide(sidebarItems.leave, 'Leave');
-                hide(sidebarItems.compensation, 'Compensation');
-                hide(sidebarItems.analytics, 'Analytics');
-                hide(sidebarItems.admin, 'Admin');
+            default: 
+                console.log("Executing Default access rules (no specific role identified).");
+                Object.values(sidebarItems).forEach(item => {
+                    if (item && item !== sidebarItems.dashboard) hide(item);
+                });
+                document.querySelectorAll('.menu-drop').forEach(d => d.classList.add('hidden'));
                 break;
         }
         console.log("Sidebar access update complete.");
-    }
-
-    // --- Initial Check for Existing Session ---
-    async function checkLoginStatus() {
-        console.log("Checking initial login status...");
-        try {
-             const response = await fetch(`${API_BASE_URL}check_session.php`, {
-                 method: 'GET',
-                 credentials: 'include'
-             });
-
-             if (response.ok) {
-                 const result = await response.json();
-                 if (result.logged_in && result.user) {
-                     console.log("User already logged in:", result.user);
-                     window.currentUser = result.user;
-                     showAppUI();
-                     updateUserDisplay(window.currentUser);
-                     updateSidebarAccess(window.currentUser.role_name);
-                     attachSidebarListeners();
-                     displayDashboardSection(); 
-                     updateActiveSidebarLink(sidebarItems.dashboard.querySelector('a')); 
-                     initializeNotificationSystem();
-                     return;
-                 }
-             }
-             console.log("No active session found or session check failed.");
-
-        } catch (error) {
-            console.error("Error checking session status:", error);
-        }
-        showLoginUI();
-        updateSidebarAccess(null);
-        stopNotificationFetching();
     }
 
     // --- Navigation Logic for Notifications & Direct Section Access ---
@@ -725,7 +554,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'comp-plans': displayCompensationPlansSection,
         'salary-adjust': displaySalaryAdjustmentsSection,
         'incentives': displayIncentivesSection,
-        // MODIFICATION: Restored Analytics section mappings
         'analytics-dashboards': displayAnalyticsDashboardsSection,
         'analytics-reports': displayAnalyticsReportsSection,
         'analytics-metrics': displayAnalyticsMetricsSection,
@@ -740,19 +568,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (typeof displayFunction === 'function') {
             try {
-                displayFunction();
+                displayFunction(); // Call the function to render the section
+                // Try to find the corresponding sidebar link to highlight it
                 const sidebarLink = document.getElementById(`${sectionId}-link`);
                 if (sidebarLink) {
                     updateActiveSidebarLink(sidebarLink);
                 } else {
-                     const directSidebarItem = document.querySelector(`.sidebar a[href="#${sectionId}"]`);
+                     // Fallback for links that might not follow the id convention (e.g., dashboard-link)
+                     const directSidebarItem = document.querySelector(`.sidebar a[id="${sectionId}-link"]`) || document.querySelector(`.sidebar a[href="#${sectionId}"]`);
                      if (directSidebarItem) {
                          updateActiveSidebarLink(directSidebarItem);
                      } else {
                         console.warn(`[Main Navigation] Sidebar link for sectionId '${sectionId}' not found for highlighting.`);
+                        updateActiveSidebarLink(null); // Clear active link if none found
                      }
                 }
-
             } catch (error) {
                 console.error(`Error navigating to section '${sectionId}':`, error);
                 if (mainContentArea) {
@@ -769,43 +599,119 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Function to update active sidebar link styling ---
     function updateActiveSidebarLink(clickedLinkElement) {
-        if (!clickedLinkElement) return;
-
+        // Clear previous active styles
         document.querySelectorAll('.sidebar .menu-name').forEach(el => {
-            el.classList.remove('bg-[#EADDCB]', 'text-[#4E3B2A]', 'font-semibold');
-            el.classList.remove('active-link-style'); 
+            el.classList.remove('bg-[#EADDCB]', 'text-[#4E3B2A]', 'font-semibold', 'active-link-style');
         });
         document.querySelectorAll('.sidebar .menu-drop a').forEach(el => {
-            el.classList.remove('bg-white', 'text-[#4E3B2A]', 'font-semibold');
-            el.classList.remove('active-link-style');
+            el.classList.remove('bg-white', 'text-[#4E3B2A]', 'font-semibold', 'active-link-style');
         });
 
-        let elementToStyle = clickedLinkElement.closest('.menu-name');
-        if (!elementToStyle && clickedLinkElement.classList.contains('menu-name')) {
-            elementToStyle = clickedLinkElement; 
-        } else if (!elementToStyle) { 
-             elementToStyle = clickedLinkElement;
-        }
+        if (!clickedLinkElement) return; // If null, just clear active styles
 
-        if (elementToStyle) {
-            if (elementToStyle.closest('.menu-drop')) { 
-                 elementToStyle.classList.add('bg-white', 'text-[#4E3B2A]', 'font-semibold');
-                 elementToStyle.classList.add('active-link-style');
-                 const parentDropdownTrigger = elementToStyle.closest('.menu-drop').previousElementSibling;
-                 if (parentDropdownTrigger && parentDropdownTrigger.classList.contains('menu-name')) {
-                     parentDropdownTrigger.classList.add('bg-[#EADDCB]', 'text-[#4E3B2A]', 'font-semibold');
-                     parentDropdownTrigger.classList.add('active-link-style');
-                 }
-            } else { 
-                elementToStyle.classList.add('bg-[#EADDCB]', 'text-[#4E3B2A]', 'font-semibold');
-                elementToStyle.classList.add('active-link-style');
+        let elementToStyle = clickedLinkElement;
+        // Determine if it's a main menu item (menu-name) or a sub-menu item (inside menu-drop)
+        const parentMenuDrop = clickedLinkElement.closest('.menu-drop');
+
+        if (parentMenuDrop) { // It's a sub-menu item
+            clickedLinkElement.classList.add('bg-white', 'text-[#4E3B2A]', 'font-semibold', 'active-link-style');
+            // Also highlight its parent dropdown trigger
+            const parentDropdownTrigger = parentMenuDrop.previousElementSibling;
+            if (parentDropdownTrigger && parentDropdownTrigger.classList.contains('menu-name')) {
+                parentDropdownTrigger.classList.add('bg-[#EADDCB]', 'text-[#4E3B2A]', 'font-semibold', 'active-link-style');
+            }
+        } else if (clickedLinkElement.classList.contains('menu-name') || clickedLinkElement.closest('.menu-name')) { // It's a main menu item or its child
+            const mainMenuItem = clickedLinkElement.classList.contains('menu-name') ? clickedLinkElement : clickedLinkElement.closest('.menu-name');
+            if(mainMenuItem) {
+                mainMenuItem.classList.add('bg-[#EADDCB]', 'text-[#4E3B2A]', 'font-semibold', 'active-link-style');
             }
         }
     }
 
-    // --- Initial Load ---
-    checkLoginStatus(); 
+    // --- ROLE-BASED LANDING LOGIC ---
+    // This section now reads window.DESIGNATED_ROLE set by the PHP landing page
+    if (typeof window.DESIGNATED_ROLE !== 'undefined') {
+        console.log(`Designated role found: ${window.DESIGNATED_ROLE}. Setting up mock user.`);
+        let mockUser = {};
+        let defaultSection = 'dashboard'; // A safe fallback
 
-    console.log("HR System JS Initialized.");
+        // Define mock user details based on the role
+        // IMPORTANT: Replace these with actual UserIDs and EmployeeIDs from your database
+        // that correspond to these roles if you intend to test backend API calls
+        // that require specific user/employee data.
+        if (window.DESIGNATED_ROLE === 'System Admin') {
+            mockUser = {
+                user_id: 1, // Example: UserID for a System Admin
+                employee_id: 1, // Example: EmployeeID for that Admin
+                username: 'sysadmin_landed',
+                full_name: 'System Admin (Landed)',
+                role_id: 1, // RoleID for System Admin from your DB
+                role_name: 'System Admin'
+            };
+            defaultSection = window.DESIGNATED_DEFAULT_SECTION || 'userManagement';
+        } else if (window.DESIGNATED_ROLE === 'HR Admin') { // Added HR Admin as a distinct case
+             mockUser = {
+                user_id: 2, // Example: UserID for an HR Admin
+                employee_id: 2, // Example: EmployeeID for that HR Admin
+                username: 'hradmin_landed',
+                full_name: 'HR Admin (Landed)',
+                role_id: 2, // RoleID for HR Admin from your DB
+                role_name: 'HR Admin'
+            };
+            defaultSection = window.DESIGNATED_DEFAULT_SECTION || 'dashboard';
+        } else if (window.DESIGNATED_ROLE === 'Manager') { // Added Manager
+             mockUser = {
+                user_id: 4, // Example: UserID for a Manager
+                employee_id: 4, // Example: EmployeeID for that Manager
+                username: 'manager_landed',
+                full_name: 'Manager (Landed)',
+                role_id: 4, // RoleID for Manager from your DB
+                role_name: 'Manager'
+            };
+            defaultSection = window.DESIGNATED_DEFAULT_SECTION || 'dashboard'; // Or 'claimsApproval'
+        } else if (window.DESIGNATED_ROLE === 'Employee') {
+            mockUser = {
+                user_id: 3, // Example: UserID for an Employee
+                employee_id: 3, // Example: EmployeeID for that Employee
+                username: 'employee_landed',
+                full_name: 'Employee (Landed)',
+                role_id: 3, // RoleID for Employee from your DB
+                role_name: 'Employee'
+            };
+            defaultSection = window.DESIGNATED_DEFAULT_SECTION || 'dashboard';
+        } else {
+            console.warn(`Unknown DESIGNATED_ROLE: ${window.DESIGNATED_ROLE}. Defaulting to basic view.`);
+            mockUser = { role_name: 'Guest', full_name: 'Guest User' }; 
+            defaultSection = 'dashboard'; 
+        }
+        
+        window.currentUser = mockUser;
+        showAppUI(); // Ensure app container is visible
+        updateUserDisplay(window.currentUser);
+        updateSidebarAccess(window.currentUser.role_name); // This will show/hide sidebar items
+        attachSidebarListeners(); // Attach listeners to the now visible items
+        
+        // Navigate to the default section for the role
+        if (typeof sectionDisplayFunctions[defaultSection] === 'function') {
+            navigateToSectionById(defaultSection);
+        } else {
+            console.error(`Default section function for '${defaultSection}' not found. Loading dashboard.`);
+            navigateToSectionById('dashboard');
+        }
+        // initializeNotificationSystem(); // Optional: if you want notifications for mock users
+
+    } else {
+        // This case should ideally not be reached if users always go via a landing page.
+        // If index.php (or a similar generic entry point without DESIGNATED_ROLE) is accessed.
+        console.warn("No DESIGNATED_ROLE found. Application may not load correctly. Consider redirecting from index.php or providing a default role setup for it.");
+        window.currentUser = { role_name: 'Guest', full_name: 'Guest User (Default)' };
+        showAppUI();
+        updateUserDisplay(window.currentUser);
+        updateSidebarAccess('Guest'); 
+        attachSidebarListeners();
+        navigateToSectionById('dashboard');
+    }
+
+    console.log("HR System JS Initialized (Role-Based Landing).");
 
 }); // End DOMContentLoaded

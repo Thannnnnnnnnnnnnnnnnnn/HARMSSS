@@ -3,7 +3,7 @@ class Database {
     private $host = "127.0.0.1";
     private $user = "3206_CENTRALIZED_DATABASE";
     private $pass = "4562526";
-    private $conn;
+    private $connections = [];
 
     private $databases = [
         "costing" => "cr1_food_and_beverage_costing",

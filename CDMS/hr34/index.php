@@ -93,9 +93,14 @@
             transition: transform 0.25s ease;
         }
     </style>
+    <script>
+    window.DESIGNATED_ROLE = 'Employee';
+    window.DESIGNATED_DEFAULT_SECTION = 'dashboard'; 
+</script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
     <script src="js/main.js" type="module" defer></script>
+    
 </head>
 <body class="bg-[#FFF6E8]">
 

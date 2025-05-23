@@ -147,6 +147,8 @@ if ($result = $connOrders->query("SELECT * FROM pos")) {
                   class="w-40 h-40 object-cover rounded-md mb-3 mx-auto"
                   onerror="this.src='/images/placeholder.jpg'"
                 >
+
+  
               </div>
               <div class="flex flex-col items-center justify-start flex-grow w-full">
                 <h3 class="font-bold text-lg mb-1 min-h-[48px]"><?= htmlspecialchars($item['ItemName']) ?></h3>

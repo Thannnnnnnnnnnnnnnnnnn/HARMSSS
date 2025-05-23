@@ -4,7 +4,14 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// $basePath = 'HARMS/CDMS/Core transaction 1/CoreTrans1/Dashboard.php'; // Define basePath for includes
+$basePath = '../../Core transaction 1/CoreTrans1/'; // Define basePath for includes
+
+// Authentication check
+if (!isset($_SESSION['User_ID'])) { // Or use $_SESSION['user_name']
+    header('Location: ' . rtrim($basePath, '/') . '/Dashboard.php'); // Redirect to login
+    exit();
+}
+
 
 require_once 'includes/Database.php';
 include('includes/head.php');
@@ -67,24 +74,7 @@ $pref_query = "SELECT COUNT(DISTINCT PreferenceDetails) as count FROM customerpr
 $pref_result = $connAnalytics->query($pref_query);
 $pref_count = $pref_result ? $pref_result->fetch_assoc()['count'] : 0;
 
-// Fetch data for Charts
-// Line Chart: Monthly TotalSales
-$line_query = "SELECT DATE_FORMAT(ReportDate, '%M') as month, SUM(TotalSales) as sales 
-               FROM salesreports 
-               GROUP BY YEAR(ReportDate), MONTH(ReportDate) 
-               ORDER BY ReportDate ASC LIMIT 6";
-$line_result = $connAnalytics->query($line_query);
-$line_labels = [];
-$line_sales = [];
-if ($line_result && $line_result->num_rows > 0) {
-    while ($row = $line_result->fetch_assoc()) {
-        $line_labels[] = $row['month'];
-        $line_sales[] = (int)$row['sales'];
-    }
-} else {
-    $line_labels = ['January', 'February', 'March', 'April', 'May', 'June'];
-    $line_sales = [65, 59, 80, 81, 56, 55];
-}
+
 
 // Bar Chart: Sales for Today, Last Month, Last Year
 $bar_data = [0, 0, 0];

@@ -208,7 +208,7 @@ if ($Department_ID == 'L220305') {
 } elseif ($Department_ID == 'HR120302 ') {
     switch ($User_ID) {
         case 'S225206660204':  // John Mark Balacy
-            header("Location:   ../HR part 1 - 2/recruitment_and_applicant_management/views/admin/index.view.php");
+            header("Location:   ../HR part 1 - 2/recruitment_and_applicant_management/controllers/admin/index.php");
             exit();
 
         case 's254223290904':  // Audit Management
@@ -236,32 +236,14 @@ if ($Department_ID == 'L220305') {
             exit();
     }
 
-    //hr 1- 2 1
+    //hr 34
 }elseif ($Department_ID == 'HR220303') {
     switch ($User_ID) {
-        case 'SA22501830':  // John Mark Balacy
-            header("Location: ../hr34/index.php");
+        case 'SA22501830301':  // John Mark Balacy
+             header("Location:   ../hr34/admin_landing.php");
             exit();
 
-        case 's254223290904':  // Audit Management
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254124910904':  // Fleet Management
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254191860904':  // Vendor Portal
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254105470904':  // Document Tracking System
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254166290904':  // Document Tracking System
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-                exit();
+        
 
         default:
             header("Location: login.php");

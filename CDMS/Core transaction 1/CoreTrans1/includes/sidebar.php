@@ -1,6 +1,6 @@
 <?php
 $currentPage = basename($_SERVER['PHP_SELF']);
-$basePath = '/cr1/';
+$basePath = '../../Core transaction 1/CoreTrans1/';
 ?>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 <div class="sidebar sidebar-expanded fixed z-50 overflow-hidden h-screen bg-white border-r border-[#F7E6CA] flex flex-col">
