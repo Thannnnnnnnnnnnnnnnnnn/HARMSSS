@@ -6,10 +6,10 @@ $config = require 'config.php';
 $db = new Database($config['database']);
 $usm = new Database($config['usm']);
 
-$client = new Google\Client();
-$client->setClientId($config['google']['client_id']);
-$client->setClientSecret($config['google']['client_secret']);
-$client->setRedirectUri($config['google']['redirect_uri']);
+// $client = new Google\Client();
+// $client->setClientId($config['google']['client_id']);
+// $client->setClientSecret($config['google']['client_secret']);
+// $client->setRedirectUri($config['google']['redirect_uri']);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($_POST['login'] ?? '' == true) {
 
@@ -104,17 +104,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errors['database'] = 'An unexpected error occurred. Please try again later.';
         }
     }
-    if ($_POST['google'] ?? '' == true) {
-        $client = new Google\Client();
-        $client->setClientId($config['google']['client_id']);
-        $client->setClientSecret($config['google']['client_secret']);
-        $client->setRedirectUri($config['google']['redirect_uri']);
-        $client->addScope("email");
-        $client->addScope("profile");
-        $authUrl = $client->createAuthUrl();
-        header('Location: ' . $authUrl);
-        exit();
-    }
+    // if ($_POST['google'] ?? '' == true) {
+    //     $client = new Google\Client();
+    //     $client->setClientId($config['google']['client_id']);
+    //     $client->setClientSecret($config['google']['client_secret']);
+    //     $client->setRedirectUri($config['google']['redirect_uri']);
+    //     $client->addScope("email");
+    //     $client->addScope("profile");
+    //     $authUrl = $client->createAuthUrl();
+    //     header('Location: ' . $authUrl);
+    //     exit();
+    // }
 }
 
 require 'views/index.view.php';
