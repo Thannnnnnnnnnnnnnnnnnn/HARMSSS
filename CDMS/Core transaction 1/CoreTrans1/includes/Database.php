@@ -1,9 +1,9 @@
 <?php
 class Database {
-    private $host = "localhost:3307";
-    private $user = "root";
-    private $pass = "";
-    private $connections = [];
+    private $host = "127.0.0.1";
+    private $user = "3206_CENTRALIZED_DATABASE";
+    private $pass = "4562526";
+    private $conn;
 
     private $databases = [
         "costing" => "cr1_food_and_beverage_costing",

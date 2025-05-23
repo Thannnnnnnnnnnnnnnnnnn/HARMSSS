@@ -7,6 +7,7 @@ $fin_usm_connection = $connections["fin_usm"];
 $logs2_usm = $connections["logs2_usm"];
 $cr1_usm = $connections["cr1_usm"];
 $hr1_2_usm = $connections["hr_1&2_usm"];
+$hr34_usm = $connections["hr34_usm"];
 
 
 $User_ID = trim($_POST["User_ID"] ?? '');

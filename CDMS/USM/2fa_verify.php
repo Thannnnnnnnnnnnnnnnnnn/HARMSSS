@@ -7,6 +7,8 @@ $fin_usm_connection = $connections["fin_usm"];
 $logs2_usm = $connections["logs2_usm"];
 $cr1_usm = $connections["cr1_usm"];
 $hr1_2_usm = $connections["hr_1&2_usm"];
+$hr3_4_usm = $connections["hr34_usm"] ?? '';
+
 
 $User_ID = $_SESSION["User_ID"];
 $otpInput = trim($_POST["otp"] ?? '');
@@ -87,6 +89,16 @@ if (!$Name) {
 // If still not found, try Department USM
 if (!$Name) {
     $stmt = mysqli_prepare($usm_connection, "SELECT Name FROM department_accounts WHERE User_ID = ?");
+    mysqli_stmt_bind_param($stmt, "s", $User_ID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($result)) {
+        $Name = $row["Name"];
+    }
+}
+// If still not found, try Department USM
+if (!$Name) {
+    $stmt = mysqli_prepare($hr3_4_usm, "SELECT Name FROM department_accounts WHERE User_ID = ?");
     mysqli_stmt_bind_param($stmt, "s", $User_ID);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -192,11 +204,11 @@ if ($Department_ID == 'L220305') {
             exit();
     }
 
-    //Core 1
-} elseif ($Department_ID == 'HR120302') {
+    //hr 1- 2 1
+} elseif ($Department_ID == 'HR120302 ') {
     switch ($User_ID) {
         case 'S225206660204':  // John Mark Balacy
-            header("Location: ../HR part 1 - 2/");
+            header("Location:   ../HR part 1 - 2/recruitment_and_applicant_management/views/admin/index.view.php");
             exit();
 
         case 's254223290904':  // Audit Management
@@ -224,31 +236,64 @@ if ($Department_ID == 'L220305') {
             exit();
     }
 
-    //Core 1
-}elseif ($Department_ID == 'C120306') {
+    //hr 1- 2 1
+}elseif ($Department_ID == 'HR220303') {
     switch ($User_ID) {
-        case 'A2254224220302':  // bert
-            header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
+        case 'SA22501830':  // John Mark Balacy
+            header("Location: ../hr34/index.php");
             exit();
 
-        case 'S2254190810302':  // thei
-            header("");
+        case 's254223290904':  // Audit Management
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
             exit();
 
-        case '#':  //
-            header("Location: #.php");
+        case 's254124910904':  // Fleet Management
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
             exit();
 
-        case '#2':  // 
-            header("Location: #.php");
+        case 's254191860904':  // Vendor Portal
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
             exit();
 
-        case '#1':  // 
-            header("Location: #.php");
+        case 's254105470904':  // Document Tracking System
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
             exit();
+
+        case 's254166290904':  // Document Tracking System
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                exit();
 
         default:
             header("Location: login.php");
+            exit();
+    }
+    
+
+    //Core 1
+}elseif ($Department_ID == 'C120306') {
+    switch ($User_ID) {
+        case 'A225224220602':  // bert
+            header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
+            exit();
+
+        case 'M2250190810603':  // thei
+            header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
+            exit();
+
+        case '#':  //
+            header("Location: #");
+            exit();
+
+        case '#2':  // 
+            header("Location: #");
+            exit();
+
+        case '#1':  // 
+            header("Location: #");
+            exit();
+
+        default:
+            header("Location: #");
             exit();
     }
 } else {

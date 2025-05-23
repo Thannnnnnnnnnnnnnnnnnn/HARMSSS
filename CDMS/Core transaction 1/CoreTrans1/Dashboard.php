@@ -4,13 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$basePath = '/cr1/'; // Define basePath for includes
+// $basePath = 'HARMS/CDMS/Core transaction 1/CoreTrans1/Dashboard.php'; // Define basePath for includes
 
-// Authentication check
-if (!isset($_SESSION['user_id'])) { // Or use $_SESSION['user_name']
-    header('Location: ' . rtrim($basePath, '/') . '/login.php'); // Redirect to login
-    exit();
-}
 require_once 'includes/Database.php';
 include('includes/head.php');
 

@@ -11,6 +11,9 @@ $databases = [
     "hr_1&2_competency_management",
     "hr_1&2_learning_management_and_training_management",
     "hr_1&2_usm",
+    "hr34_usm",
+    "hr_integrated_db",
+
 
     // Logistics 2
     "logs2_document_tracking_system",
@@ -26,10 +29,10 @@ $databases = [
     "cr1_usm",
 
     // Core Transaction 2
-    "cr2_front_office",
-    "cr2_housekeeping/laundry_management",
-    "cr2_room_facilities",
-    "cr2_supplier_management",
+    // "cr2_front_office",
+    // "cr2_housekeeping/laundry_management",
+    // "cr2_room_facilities",
+    // "cr2_supplier_management",
 
     // Financial Transactions
     "fin_accounts_payable",
