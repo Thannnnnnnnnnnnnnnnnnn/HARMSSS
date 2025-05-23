@@ -1,0 +1,234 @@
+body{
+    font-family: "cinzel",Georgia;   
+   }
+.check-out-btn:hover {
+   font-size: xx-large;
+
+}
+
+/* CONTAINER TABLE */
+.container-table {
+    width: 80%;
+    margin-top: 5%;
+    margin-left: 20%;
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* TABLE */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 14px;
+}
+
+.styled-table thead {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    color: #6d5329;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 14px 12px;
+    text-align: center;
+    border-bottom: 1px solid #f0e4d3;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #fff6e8;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.styled-table tbody tr:last-child td {
+    border-bottom: none;
+}
+/* LONG TEXT */
+.long-text {
+    display: block;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+/* ANALYTICS SECTION */
+.analytics {
+    margin-top: 7%;
+    margin-left: 20%;
+    border: 2px solid black;
+    height: 100px;
+    width: 70%;
+
+    display: grid; /* Enables grid */
+            grid-template-columns: repeat(3, 1fr); /* Creates 3 equal columns */
+            gap: 10px; /* Adds spacing between grid items */
+            padding-left: 20px; 
+            padding-right: 20px;
+   
+}
+
+.analytics a{
+    border-radius: 15px;
+    border: 1px solid white;
+    background-color: #f3f0eb;
+    border: 1px solid #4E3B2A;
+    height: auto;
+    width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    
+}
+
+.analytics a i{
+    font-size: 50px;
+}
+
+/* RESPONSIVE DESIGN */
+@media screen and (max-width: 1024px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+        height: auto;
+        padding: 10px;
+    }
+
+    .header input {
+        width: 100%;
+        max-width: 300px;
+        margin-bottom: 5px;
+        background-color: #FFF;
+    }
+
+    .header button {
+        width: 100%;
+        max-width: 100px;
+    }
+
+    .container-table {
+        width: 95%;
+        max-height: 300px;
+    }
+
+    .analytics {
+        width: 95%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .header input {
+        width: 90%;
+        max-width: 250px;
+    }
+
+    .header button {
+        width: 90%;
+        max-width: 100px;
+    }
+
+    .styled-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .container-table {
+        width: 100%;
+        margin-top: 90px;
+        overflow-x: auto;
+    }
+
+    .analytics {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+        padding: 8px;
+    }
+
+    .header input {
+        width: 100%;
+    }
+
+    .header button {
+        width: 100%;
+    }
+
+    .container-table {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .styled-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+}
+
+.feedback {
+    width: 75%;
+    margin-left: 20%;
+    margin-bottom: 3%;
+    height: 50px;
+}
+
+.register-container {
+
+    border-radius: 15px;
+    border: 2px solid black;
+    background-color: #FFF6E8;
+    height: 50%;
+    width: 85%;
+
+}
+
+.checkin-container {
+    display: grid;
+  grid-template-columns: 2fr; /* default: 1 column */
+  gap: 1.5rem; /* equivalent to gap-6 in Tailwind (24px) */
+  width: 85%;
+  max-width: 72rem; /* equivalent to max-w-6xl in Tailwind (1152px) */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.register-container {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr)); /* Default 1 column */
+  gap: 1.5rem; /* 24px gap */
+  width: 100%;
+  margin-left: 50%; 
+  margin-top: 6%;
+  margin-bottom: 3%;
+  background: none;
+  border: none;
+
+  /* Responsive for large screens (lg breakpoint: 1024px) */
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* Change to 3 columns */
+  }
+}
+
