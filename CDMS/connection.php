@@ -10,20 +10,7 @@ $databases = [
     "hr_1&2_succession_planning",
     "hr_1&2_competency_management",
     "hr_1&2_learning_management_and_training_management",
-
-    // HR Part 3-4
-    "hr_3&4_claims_and_reimbursement",
-    "hr_3&4_compensation_planning_and_administration",
-    "hr_3&4_core_human_capital_management",
-    "hr_3&4_hr_analytics",
-    "hr_3&4_leave_management",
-    "hr_3&4_payroll",
-    "hr_3&4_time_and_attendance",
-
-    // Logistics 1
-    "logs1_procurement",
-    "logs1_project_management",
-    "logs1_warehousing",
+    "hr_1&2_usm",
 
     // Logistics 2
     "logs2_document_tracking_system",
@@ -32,26 +19,17 @@ $databases = [
     "logs2_vendor_portal",
 
     // Core Transaction 1
-    "cr1_food_and_beverage_costing",
     "cr1_inventory_management",
-    "cr1_kitchen/bar_module",
+    "cr1_kitchen_bar_module",
     "cr1_order_management_with_pos",
     "cr1_restaurant_analytics",
     "cr1_usm",
 
     // Core Transaction 2
-    "cr2_billing",
     "cr2_front_office",
     "cr2_housekeeping/laundry_management",
     "cr2_room_facilities",
     "cr2_supplier_management",
-
-    // Core Transaction 3
-    "cr3_booking",
-    "cr3_customer/guest_management",
-    "cr3_customer_relationship_management",
-    "cr3_facilities_management",
-    "cr3_reservation",
 
     // Financial Transactions
     "fin_accounts_payable",

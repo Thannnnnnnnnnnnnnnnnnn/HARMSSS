@@ -6,6 +6,7 @@ $usm_connection = $connections["user_management"];
 $fin_usm_connection = $connections["fin_usm"];
 $logs2_usm = $connections["logs2_usm"];
 $cr1_usm = $connections["cr1_usm"];
+$hr1_2_usm = $connections["hr_1&2_usm"];
 
 $User_ID = $_SESSION["User_ID"];
 $otpInput = trim($_POST["otp"] ?? '');
@@ -43,6 +44,16 @@ $Name = null; // default
 
 // Try logistic 2 first
 $stmt = mysqli_prepare($logs2_usm, "SELECT Name FROM department_accounts WHERE User_ID = ?");
+mysqli_stmt_bind_param($stmt, "s", $User_ID);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+if ($row = mysqli_fetch_assoc($result)) {
+    $Name = $row["Name"];
+}
+
+
+// Try logistic 2 first
+$stmt = mysqli_prepare($hr1_2_usm, "SELECT Name FROM department_accounts WHERE User_ID = ?");
 mysqli_stmt_bind_param($stmt, "s", $User_ID);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
@@ -182,14 +193,46 @@ if ($Department_ID == 'L220305') {
     }
 
     //Core 1
-} elseif ($Department_ID == 'C120306') {
+} elseif ($Department_ID == 'HR120302') {
+    switch ($User_ID) {
+        case 'S225206660204':  // John Mark Balacy
+            header("Location: ../HR part 1 - 2/");
+            exit();
+
+        case 's254223290904':  // Audit Management
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+            exit();
+
+        case 's254124910904':  // Fleet Management
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+            exit();
+
+        case 's254191860904':  // Vendor Portal
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+            exit();
+
+        case 's254105470904':  // Document Tracking System
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+            exit();
+
+        case 's254166290904':  // Document Tracking System
+            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                exit();
+
+        default:
+            header("Location: login.php");
+            exit();
+    }
+
+    //Core 1
+}elseif ($Department_ID == 'C120306') {
     switch ($User_ID) {
         case 'A2254224220302':  // bert
-            header("Location: ../Core transaction 1/Inventory management/inventory.php");
+            header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
             exit();
 
         case 'S2254190810302':  // thei
-            header("Location: ../Core transaction 1/Inventory management/inventory.php");
+            header("");
             exit();
 
         case '#':  //

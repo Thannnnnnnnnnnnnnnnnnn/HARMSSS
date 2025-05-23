@@ -20,10 +20,10 @@ ini_set('log_errors', 1);
 // --- Database Configuration from Environment Variables ---
 // Provide default values ONLY for local development if necessary,
 // but ideally, these should always be set in the environment.
-$db_host = getenv('DB_HOST') ?: 'localhost';      // Default to 'localhost' if env var not set
-$db_name = getenv('DB_NAME') ?: 'hr_integrated_db'; // Default to 'hr_integrated_db' if env var not set
+$db_host = getenv('DB_HOST') ?: 'l27.0.0.1';      // Default to 'localhost' if env var not set
+$db_name = getenv('DB_NAME') ?: '3206_CENTRALIZED_DATABASE'; // Default to 'hr_integrated_db' if env var not set
 $db_user = getenv('DB_USER') ?: 'root';           // Default to 'root' if env var not set
-$db_pass = getenv('DB_PASS') ?: '';               // Default to empty password if env var not set
+$db_pass = getenv('DB_PASS') ?: '4562526';               // Default to empty password if env var not set
 $charset = 'utf8mb4';
 
 // --- Validate that essential variables were loaded ---
