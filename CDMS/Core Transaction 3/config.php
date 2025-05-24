@@ -2,7 +2,7 @@
 return [
     'database' => [
         'host' => 'localhost',
-        'port' => 3307,
+        'port' => 3206,
         'dbname' => 'cr3_re',
         'username' => 'root',
         'password' => ''
@@ -10,11 +10,11 @@ return [
 
     'cr3_re_usm' => [
         'host' => 'localhost',
-        'port' => 3307,
+        'port' => 3206,
         'dbname' => 'cr3_re_usm',
         'username' => 'root',
         'password' => ''
     ],
 
-   
+
 ];
