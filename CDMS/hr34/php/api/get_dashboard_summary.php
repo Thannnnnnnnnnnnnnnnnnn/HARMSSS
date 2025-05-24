@@ -7,12 +7,17 @@ ini_set('log_errors', 1);
 
 session_start();
 
-header('Content-Type: application/json');
+// --- TEMPORARY FOR DEVELOPMENT/TESTING ONLY ---
+ $_SESSION['user_id'] = 10; // Example user ID
+ $_SESSION['role_name'] = 'System Admin'; // Example role
+ $_SESSION['employee_id'] = 17; // Example employee_id if needed by the role
+// --- END TEMPORARY BLOCK ---
 
-require_once '../db_connect.php'; // Adjust path as needed
+header('Content-Type: application/json');
+require_once '../db_connect.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role_name'])) {
-    http_response_code(401); // Unauthorized
+    http_response_code(401);
     echo json_encode(['error' => 'Authentication required. User not logged in.']);
     exit;
 }
