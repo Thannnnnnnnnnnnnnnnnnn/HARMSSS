@@ -58,4 +58,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-require 'views/admin/interview_schedules-create.view.php';
+require '../../views/admin/interview_schedules-create.view.php';

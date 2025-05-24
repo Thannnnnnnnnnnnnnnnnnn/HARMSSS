@@ -64,4 +64,4 @@ INNER JOIN user_accounts i on i.user_id = s.interviewer_id
 ORDER BY created_at DESC
 ")->fetchAll();
 
-require 'views/admin/interview_schedules.view.php';
+require '../../views/admin/interview_schedules.view.php';

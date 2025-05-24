@@ -103,4 +103,4 @@ INNER JOIN prerequisites p on p.posting_id = j.posting_id
 WHERE j.posting_id = :posting_id', [
     ':posting_id' => $_GET['id'],
 ])->fetch();
-require 'views/admin/job.view.php';
+require '../../views/admin/job.view.php';

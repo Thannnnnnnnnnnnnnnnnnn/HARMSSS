@@ -60,4 +60,4 @@ $applicant = $db->query("SELECT applicant_id, first_name, last_name, contact_num
     ':applicant_id' => $_GET['id']
 ])->fetch();
 
-require 'views/admin/applicant-update.view.php';
+require '../../views/admin/applicant-update.view.php';

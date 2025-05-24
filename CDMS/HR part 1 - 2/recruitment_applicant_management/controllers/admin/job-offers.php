@@ -19,4 +19,4 @@ WHERE user_decision = :user_decision', [
     ':user_decision' => 'accepted'
 ])->fetchAll();
 
-require 'views/admin/job-offers.view.php';
+require '../../views/admin/job-offers.view.php';
