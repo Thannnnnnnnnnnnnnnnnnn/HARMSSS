@@ -9,6 +9,7 @@ $db = new Database($config['database']);
 $nhoes = new Database($config['nhoes']);
 // dd($nhoes);
 // $usm = new Database($config['usm']);
+// dd($_SESSION);
 $errors = [];
 $success = false;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -29,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ':salary' => $_POST['salary'],
                 ':company' => $_POST['company'],
                 ':department_id' => $_POST['department'],
-                ':posted_by' => $_POST['posted_by'],
+                ':posted_by' => $_SESSION['User_ID'],
             ]);
             $job_id = $db->pdo->lastInsertId();
             $db->query("INSERT INTO prerequisites (posting_id,description,requirements) VALUES (:posting_id,:description,:requirements)", [

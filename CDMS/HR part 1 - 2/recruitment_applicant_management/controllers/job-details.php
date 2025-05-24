@@ -3,9 +3,11 @@
 session_start();
 
 $heading = 'Job';
-$config = require 'config.php';
+require '../functions.php';
+$config = require '../config.php';
+require '../Database.php';
 $db = new Database($config['database']);
-$usm = new Database($config['usm']);
+$nhoes = new Database($config['nhoes']);
 
 $job = $db->query('SELECT
 j.*,
@@ -16,18 +18,18 @@ WHERE j.posting_id = :posting_id', [
 ])->fetch();
 
 // dd($job);
-$dept = $usm->query("SELECT * FROM departments WHERE department_id = :department_id", [
-    ':department_id' => $job['department_id'],
+$dept = $nhoes->query("SELECT * FROM departments WHERE dept_id = :dept_id", [
+    ':dept_id' => $job['department_id'],
 ])->fetch();
 // dd($dept);
 
 $postings = $db->query('SELECT * FROM jobpostings ORDER BY created_at desc')->fetchAll();
-$applications = $db->query('SELECT * from applicants where user_id = :user_id', [
-    'user_id' => $_SESSION['user_id']
-])->fetchAll();
+// $applications = $db->query('SELECT * from applicants where user_id = :user_id', [
+//     'user_id' => $_SESSION['user_id']
+// ])->fetchAll();
 
 $applications = $db->query("SELECT * FROM applicants")->fetchAll();
 
 // dd($applications);
 
-require 'views/job-details.view.php';
+require '../views/job-details.view.php';

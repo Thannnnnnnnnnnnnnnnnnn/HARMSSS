@@ -1,14 +1,11 @@
 <?php
 $notifications = [];
 $notifications = $db->query('SELECT
-    notifications.*,
-    applicants.user_id
+    notifications.*
     FROM notifications
     INNER JOIN applicants ON applicants.applicant_id = notifications.applicant_id
-    WHERE applicants.user_id = :user_id
     AND notifications.for = :for
     ORDER BY notifications.created_at DESC', [
-    ':user_id' => $_SESSION['user_id'],
     ':for' => 'applicant',
 ])->fetchAll();
 ?>
@@ -26,16 +23,16 @@ $notifications = $db->query('SELECT
 
         <nav class="w-full sm:w-auto">
             <ul id="menu" class="flex flex-col sm:flex-row space-x-0 sm:space-x-4 items-center mt-2 sm:mt-0 sm:items-center sm:justify-end hidden sm:flex">
-                <li><a href="/home" class="text-[#594423] font-semibold block py-2 px-2 sm:py-0 sm:px-0 hover:text-[#3D2F1F] transition-colors">Home</a></li>
-                <li><a href="/application" class="text-[#594423] font-semibold block py-2 px-2 sm:py-0 sm:px-0 hover:text-[#3D2F1F] transition-colors">My Applications</a></li>
+                <li><a href="home.php" class="text-[#594423] font-semibold block py-2 px-2 sm:py-0 sm:px-0 hover:text-[#3D2F1F] transition-colors">Home</a></li>
+                <li><a href="application.php" class="text-[#594423] font-semibold block py-2 px-2 sm:py-0 sm:px-0 hover:text-[#3D2F1F] transition-colors">My Applications</a></li>
                 <li>
                     <div class="dropdown dropdown-end">
                         <div tabindex="0" role="button" class="px-3 py-2 rounded-lg border border-[#594423] hover:bg-[#594423] hover:text-white transition"><i class="fa-solid fa-user"></i></div>
                         <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                            <li class="border border-[#594423] rounded-lg mb-3">
+                            <!-- <li class="border border-[#594423] rounded-lg mb-3">
                                 <h3><?= $_SESSION['username'] ?></h3>
                             </li>
-                            <li><a href="/profile" class="text-[#594423] font-semibold"><i class="fa-solid fa-gear"></i>User Settings</a></li>
+                            <li><a href="/profile" class="text-[#594423] font-semibold"><i class="fa-solid fa-gear"></i>User Settings</a></li> -->
                             <li><a href="/logout" class="text-[#594423] font-semibold"><i class="fa-solid fa-right-to-bracket"></i>logOut</a></li>
                         </ul>
                     </div>
@@ -45,10 +42,9 @@ $notifications = $db->query('SELECT
     </div>
 
     <div class="flex flex-col md:flex-row justify-between items-center px-2 py-2 md:py-0">
-        <div class="text-base md:text-lg font-semibold text-[#594423] flex items-center gap-2 mb-2 md:mb-0">
+        <!-- <div class="text-base md:text-lg font-semibold text-[#594423] flex items-center gap-2 mb-2 md:mb-0">
             <i class="fa-solid fa-user"></i>
-            <p><?= $_SESSION['role'] == 2 ? 'HR' : 'User'; ?> <?= strtoupper($_SESSION['username']) ?></p>
-        </div>
+        </div> -->
 
         <h1 class="text-xl md:text-2xl font-semibold text-[#594423] mb-2 md:mb-0 text-center"><?= $heading ?></h1>
 

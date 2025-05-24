@@ -158,7 +158,7 @@
                 </div>
 
                 <div class="mt-6">
-                    <a href="/admin/jobs" class="text-black font-medium hover:text-blue-600 hover:underline flex items-center">
+                    <a href="jobs.php" class="text-black font-medium hover:text-blue-600 hover:underline flex items-center">
                         <i class="fas fa-arrow-left mr-2"></i> Back to Job Listings
                     </a>
                 </div>

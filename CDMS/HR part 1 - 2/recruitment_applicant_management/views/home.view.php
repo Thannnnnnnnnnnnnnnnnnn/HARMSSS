@@ -1,5 +1,5 @@
-<?php require 'partials/head.php' ?>
-<?php require 'partials/navbar.php' ?>
+<?php require '../partials/head.php' ?>
+<?php require '../partials/navbar.php' ?>
 
 <main class="max-w-6xl mx-auto mt-6 p-4 flex-grow">
     <div class="max-w-5xl mx-auto p-4 flex-grow">
@@ -18,7 +18,7 @@
                         <?= htmlspecialchars($posting['employment_type']) ?>
                     </span>
                     <div class="mt-auto pt-2 md:pt-4">
-                        <a href="/job-details?id=<?= htmlspecialchars($posting['posting_id']) ?>" class="block text-center bg-[#3D2F1F] text-white px-3 md:px-4 py-1 md:py-2 rounded-lg text-sm font-semibold hover:bg-[#594423] transition">
+                        <a href="job-details.php?id=<?= htmlspecialchars($posting['posting_id']) ?>" class="block text-center bg-[#3D2F1F] text-white px-3 md:px-4 py-1 md:py-2 rounded-lg text-sm font-semibold hover:bg-[#594423] transition">
                             See Details
                         </a>
                     </div>
@@ -28,4 +28,4 @@
     </div>
 </main>
 
-<?php require 'partials/footer.php' ?>
+<?php require '../partials/footer.php' ?>
