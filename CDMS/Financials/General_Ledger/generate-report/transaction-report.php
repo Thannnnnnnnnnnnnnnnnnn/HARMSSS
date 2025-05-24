@@ -1,7 +1,7 @@
 <?php
 require('../asset/fpdf/fpdf.php'); // Include FPDF library
 
-$connection = mysqli_connect("localhost:3307","root","","fin_general_ledger");
+$connection = mysqli_connect("127.0.0.1","3206_CENTRALIZED_DATABASE","4562526","fin_general_ledger");
 if (!$connection) {
     die("Connection failed: " . mysqli_connect_error());
 }
