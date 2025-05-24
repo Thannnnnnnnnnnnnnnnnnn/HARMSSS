@@ -2,15 +2,8 @@
 // No whitespace or output before this
 session_start();
 
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
-// Check if user is logged in
-if (!isset($_SESSION['user'])) {
-  header("Location: login.php");
-  exit();
-}
+
 
 require '../Database.php';
 require '../functions.php';
