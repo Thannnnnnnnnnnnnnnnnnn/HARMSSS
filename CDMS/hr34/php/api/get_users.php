@@ -13,6 +13,10 @@ ini_set('log_errors', 1);
 
 session_start(); // Needed for authorization check
 
+$_SESSION['user_id'] = 10; // Example user ID
+ $_SESSION['role_id'] = 1; // Example role
+ $_SESSION['employee_id'] = 17; // Example employee_id if needed by the role
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // Adjust for production
 header('Access-Control-Allow-Methods: GET, OPTIONS');
