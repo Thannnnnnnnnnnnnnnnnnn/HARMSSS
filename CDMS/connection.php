@@ -5,7 +5,7 @@ $databases = [
     // HR Part 1-2
     "hr_1&2_new_hire_onboarding_and_employee_self-service",
     "hr_1&2_performance_management_system",
-    "hr_1&2_recruitment_and_applicant_management",
+    "hr_1&2_recruitment_applicant_management",
     "hr_1&2_social_recognition",
     "hr_1&2_succession_planning",
     "hr_1&2_competency_management",
@@ -16,10 +16,10 @@ $databases = [
 
 
     // Logistics 2
-    // "logs2_document_tracking_system",
-    // "logs2_fleet_management",
-    // "logs2_vehicle_reservation_system",
-    // "logs2_vendor_portal",
+    "logs2_document_tracking_system",
+    "logs2_fleet_management",
+    "logs2_vehicle_reservation_system",
+    "logs2_vendor_portal",
 
     // Core Transaction 1
     // "cr1_inventory_management",
@@ -51,7 +51,7 @@ $databases = [
 $connections = [];
 
 foreach ($databases as $db) {
-    $connection = mysqli_connect("localhost:3306", "3206_CENTRALIZED_DATABASE", "4562526", $db);
+    $connection = mysqli_connect("127.0.0.1", "3206_CENTRALIZED_DATABASE", "4562526", $db);
     if (!$connection) {
         die("Connection failed for $db: " . mysqli_connect_error());
     } else {
