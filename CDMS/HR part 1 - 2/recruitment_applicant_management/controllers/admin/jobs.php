@@ -5,7 +5,7 @@ $heading = 'Job Postings';
 $config = require '../../config.php';
 require '../../Database.php';
 $db = new Database($config['database']);
-$usm = new Database($config['usm']);
+// $usm = new Database($config['usm']);
 
 $errors = [];
 $success = false;
@@ -33,22 +33,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ':description' => $_POST['description'],
                 ':requirements' => $_POST['requirements'],
             ]);
-            $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-                ':department_id' => 1,
-                ':user_id' => $_SESSION['user_id'],
-                ':action' => 'create',
-                ':description' => "admin: {$_SESSION['username']} created a new job posting",
-                ':department_affected' => 'HR part 1&2',
-                ':module_affected' => 'recruitement and applicant management',
-            ]);
-            $usm->query("INSERT INTO department_transaction (department_id, user_id, transaction_type, description, department_affected, module_affected) VALUES (:department_id, :user_id, :transaction_type, :description, :department_affected, :module_affected)", [
-                ':department_id' => 1,
-                ':user_id' => $_SESSION['user_id'],
-                ':transaction_type' => 'job posting creation',
-                ':description' => "admin: {$_SESSION['username']} created a new job posting. Position: {$_POST['job_title']}, Location: {$_POST['location']}",
-                ':department_affected' => 'HR part 1&2',
-                ':module_affected' => 'recruitement and applicant management',
-            ]);
+            // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
+            //     ':department_id' => 1,
+            //     ':user_id' => $_SESSION['user_id'],
+            //     ':action' => 'create',
+            //     ':description' => "admin: {$_SESSION['username']} created a new job posting",
+            //     ':department_affected' => 'HR part 1&2',
+            //     ':module_affected' => 'recruitement and applicant management',
+            // ]);
+            // $usm->query("INSERT INTO department_transaction (department_id, user_id, transaction_type, description, department_affected, module_affected) VALUES (:department_id, :user_id, :transaction_type, :description, :department_affected, :module_affected)", [
+            //     ':department_id' => 1,
+            //     ':user_id' => $_SESSION['user_id'],
+            //     ':transaction_type' => 'job posting creation',
+            //     ':description' => "admin: {$_SESSION['username']} created a new job posting. Position: {$_POST['job_title']}, Location: {$_POST['location']}",
+            //     ':department_affected' => 'HR part 1&2',
+            //     ':module_affected' => 'recruitement and applicant management',
+            // ]);
             $success = true;
         }
     } catch (Exception $e) {
@@ -57,11 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 
-$postings = $db->query('SELECT
-j.*,
-u.username,
-u.user_id
-FROM jobpostings j INNER JOIN user_accounts u on u.user_id = j.posted_by 
+$postings = $db->query('SELECT * FROM jobpostings
+-- u.username,
+-- u.user_id
+-- FROM jobpostings j INNER JOIN user_accounts u on u.user_id = j.posted_by 
 ORDER BY created_at desc')->fetchAll();
 
 require '../../views/admin/jobs.view.php';

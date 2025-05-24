@@ -4,7 +4,7 @@ $heading = 'Job offer';
 $config = require '../../config.php';
 require '../../Database.php';
 $db = new Database($config['database']);
-$usm = new Database($config['usm']);
+// $usm = new Database($config['usm']);
 $nhoes = new Database($config['nhoes']);
 
 $offer = $db->query('SELECT * FROM job_offer WHERE offer_id = :offer_id', [
@@ -45,14 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':for' => 'applicant'
         ]);
 
-        $usm->query("INSERT INTO department_transaction (department_id, user_id, transaction_type, description, department_affected, module_affected) VALUES (:department_id, :user_id, :transaction_type, :description, :department_affected, :module_affected)", [
-            'department_id' => 1,
-            'user_id' => $_SESSION['user_id'],
-            'transaction_type' => 'hried an applicant',
-            'description' => "admin: {$_SESSION['username']} hired applicant {$applicant['first_name']} {$applicant['last_name']}",
-            'department_affected' => 'HR part 1&2',
-            'module_affected' => 'recruitment and applcant management'
-        ]);
+        // $usm->query("INSERT INTO department_transaction (department_id, user_id, transaction_type, description, department_affected, module_affected) VALUES (:department_id, :user_id, :transaction_type, :description, :department_affected, :module_affected)", [
+        //     'department_id' => 1,
+        //     'user_id' => $_SESSION['user_id'],
+        //     'transaction_type' => 'hried an applicant',
+        //     'description' => "admin: {$_SESSION['username']} hired applicant {$applicant['first_name']} {$applicant['last_name']}",
+        //     'department_affected' => 'HR part 1&2',
+        //     'module_affected' => 'recruitment and applcant management'
+        // ]);
 
         $nhoes->query("INSERT INTO employees(first_name, last_name, email, department_id, role_id) VALUES(:first_name, :last_name, :email, :department_id, :role_id)", [
             ':first_name' => $applicant['first_name'],
@@ -94,14 +94,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db->query('DELETE FROM job_offer WHERE offer_id = :offer_id', [
             'offer_id' => $_POST['offer_id']
         ]);
-        $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-            'department_id' => $_SESSION['user_data']['department_id'],
-            'user_id' => $_SESSION['user_data']['user_id'],
-            'action' => 'delete',
-            'description' => "admin: {$_SESSION['username']} deleted a job offer with id: {$_POST['offer_id']} that belongs to applicant: {$applicant['first_name']} {$applicant['last_name']}",
-            'department_affected' => 'Job Offer',
-            'module_affected' => 'Job Offer'
-        ]);
+        // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
+        //     'department_id' => $_SESSION['user_data']['department_id'],
+        //     'user_id' => $_SESSION['user_data']['user_id'],
+        //     'action' => 'delete',
+        //     'description' => "admin: {$_SESSION['username']} deleted a job offer with id: {$_POST['offer_id']} that belongs to applicant: {$applicant['first_name']} {$applicant['last_name']}",
+        //     'department_affected' => 'Job Offer',
+        //     'module_affected' => 'Job Offer'
+        // ]);
         header('Location: /admin/job-offers');
         exit;
     }

@@ -4,7 +4,7 @@ $heading = 'User Accounts';
 $config = require '../../config.php';
 require '../../Database.php';
 $db = new Database($config['database']);
-$usm = new Database($config['usm']);
+// $usm = new Database($config['usm']);
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -31,26 +31,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 if ($isValid) {
                     if ($_POST['create'] ?? '' === true) {
-                        $usm->query("INSERT INTO department_accounts (department_id, first_name, last_name, username, email, password, role status, module) VALUES (:department_id, :first_name, :last_name, :username, :email, :password, :role, :status, :module)", [
-                            ':department_id' => 1,
-                            ':first_name' => trim($_POST['first_name']),
-                            ':last_name' => trim($_POST['last_name']),
-                            ':username' => trim($_POST['username']),
-                            ':email' => rtrim($_POST['email']),
-                            ':password' => password_hash(trim($_POST['password']), PASSWORD_DEFAULT),
-                            ':role' => $_POST['role'],
-                            ':status' => 'active',
-                            ':module' => 'recruitment and applicant management',
-                        ]);
-                        $id = $usm->pdo->lastInsertId();
-                        $usm->query("INSERT INTO department_audit_trail(department_id,user_id,action,description,department_affected,module_affected) VALUES (:department_id,:user_id,:action,:description,:department_affected,:module_affected)", [
-                            ':department_id' => 1,
-                            ':user_id' => $_SESSION['user_id'],
-                            ':action' => 'create',
-                            ':description' => "admin: {$_SESSION['username']} just created a new user account with the Department Account ID: {$id}",
-                            ':department_affected' => 'HR part 1&2',
-                            ':module_affected' => 'recruitment and applicant management',
-                        ]);
+                        // $usm->query("INSERT INTO department_accounts (department_id, first_name, last_name, username, email, password, role status, module) VALUES (:department_id, :first_name, :last_name, :username, :email, :password, :role, :status, :module)", [
+                        //     ':department_id' => 1,
+                        //     ':first_name' => trim($_POST['first_name']),
+                        //     ':last_name' => trim($_POST['last_name']),
+                        //     ':username' => trim($_POST['username']),
+                        //     ':email' => rtrim($_POST['email']),
+                        //     ':password' => password_hash(trim($_POST['password']), PASSWORD_DEFAULT),
+                        //     ':role' => $_POST['role'],
+                        //     ':status' => 'active',
+                        //     ':module' => 'recruitment and applicant management',
+                        // ]);
+                        // $id = $usm->pdo->lastInsertId();
+                        // $usm->query("INSERT INTO department_audit_trail(department_id,user_id,action,description,department_affected,module_affected) VALUES (:department_id,:user_id,:action,:description,:department_affected,:module_affected)", [
+                        //     ':department_id' => 1,
+                        //     ':user_id' => $_SESSION['user_id'],
+                        //     ':action' => 'create',
+                        //     ':description' => "admin: {$_SESSION['username']} just created a new user account with the Department Account ID: {$id}",
+                        //     ':department_affected' => 'HR part 1&2',
+                        //     ':module_affected' => 'recruitment and applicant management',
+                        // ]);
                     }
                 }
             } catch (Exception $e) {
@@ -61,17 +61,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($_POST['delete'] ?? '' === true) {
         try {
-            $usm->query("DELETE FROM user_account WHERE user_id = :user_id", [
-                ':user_id' => $_POST['id'],
-            ]);
-            $usm->query("INSERT INTO department_audit_trail(department_id,user_id,action,description,department_affected,module_affected) VALUES (:department_id,:user_id,:action,:description,:department_affected,:module_affected)", [
-                ':department_id' => 1,
-                ':user_id' => $_SESSION['user_id'],
-                ':action' => 'delete',
-                ':description' => "admin: {$_SESSION['username']} Deleted a user account with the user ID: {$_POST['id']}",
-                ':department_affected' => 'HR part 1&2',
-                ':module_affected' => 'recruitment and applicant management',
-            ]);
+            // $usm->query("DELETE FROM user_account WHERE user_id = :user_id", [
+            //     ':user_id' => $_POST['id'],
+            // ]);
+            // $usm->query("INSERT INTO department_audit_trail(department_id,user_id,action,description,department_affected,module_affected) VALUES (:department_id,:user_id,:action,:description,:department_affected,:module_affected)", [
+            //     ':department_id' => 1,
+            //     ':user_id' => $_SESSION['user_id'],
+            //     ':action' => 'delete',
+            //     ':description' => "admin: {$_SESSION['username']} Deleted a user account with the user ID: {$_POST['id']}",
+            //     ':department_affected' => 'HR part 1&2',
+            //     ':module_affected' => 'recruitment and applicant management',
+            // ]);
             $delete = true;
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
@@ -81,5 +81,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-$users = $usm->query("SELECT * FROM user_account ORDER BY created_at DESC")->fetchAll();
+// $users = $usm->query("SELECT * FROM user_account ORDER BY created_at DESC")->fetchAll();
 require '../../views/admin/users.view.php';

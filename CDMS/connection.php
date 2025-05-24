@@ -22,24 +22,24 @@ $databases = [
     "logs2_vendor_portal",
 
     // Core Transaction 1
-    // "cr1_inventory_management",
-    // "cr1_kitchen_bar_module",
-    // "cr1_order_management_with_pos",
-    // "cr1_restaurant_analytics",
+    "cr1_inventory_management",
+    "cr1_kitchen_bar_module",
+    "cr1_order_management_with_pos",
+    "cr1_restaurant_analytics",
     "cr1_usm",
 
     // Core Transaction 2
-    // "cr2_front_office",
-    // "cr2_housekeeping/laundry_management",
-    // "cr2_room_facilities",
-    // "cr2_supplier_management",
+    "cr2_front_office",
+    "cr2_housekeeping/laundry_management",
+    "cr2_room_facilities",
+    "cr2_supplier_management",
 
     // Financial Transactions
-    // "fin_accounts_payable",
-    // "fin_budget_management",
-    // "fin_collection",
-    // "fin_disbursement",
-    // "fin_general_ledger",
+    "fin_accounts_payable",
+    "fin_budget_management",
+    "fin_collection",
+    "fin_disbursement",
+    "fin_general_ledger",
 
     // User management
     "user_management",
