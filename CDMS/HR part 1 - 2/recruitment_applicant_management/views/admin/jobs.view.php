@@ -39,7 +39,7 @@
                         <hr class="my-5">
                         <form method="post">
                             <div class="grid grid-cols-2 gap-6">
-                                <input type="hidden" name="posted_by" value="<?= $_SESSION['user_id'] ?>">
+                                <input type="hidden" name="posted_by" value="<?= $_SESSION['User_ID'] ?>">
                                 <div class="flex flex-col items-center col-span-1">
                                     <label for="job_title" class="mb-2 text-black font-normal">Job Title</label>
                                     <input type="text" placeholder="Type here" name="job_title" class="input border border-[#594423] text-center" id="job_title" value="<?= htmlspecialchars($_POST['job_title'] ?? '') ?>" />
