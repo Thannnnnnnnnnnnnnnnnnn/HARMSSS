@@ -106,4 +106,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
-require 'views/admin/job-offers-view.view.php';
+require '../../views/admin/job-offers-view.view.php';

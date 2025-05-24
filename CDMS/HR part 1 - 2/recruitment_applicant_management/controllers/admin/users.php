@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'User Accounts';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 $usm = new Database($config['usm']);
 $errors = [];
@@ -81,4 +82,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 $users = $usm->query("SELECT * FROM user_account ORDER BY created_at DESC")->fetchAll();
-require 'views/admin/users.view.php';
+require '../../views/admin/users.view.php';
