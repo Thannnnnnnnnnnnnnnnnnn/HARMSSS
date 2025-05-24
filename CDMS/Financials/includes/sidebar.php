@@ -5,7 +5,7 @@
         <?php
             $currentPath = $_SERVER['PHP_SELF'];
             $depth = substr_count($currentPath, '/');
-            $basePath = str_repeat('../', $depth - 3);
+            $basePath = str_repeat('../', $depth - 2);
 
             // Get the current page file name
             $currentPage = basename($currentPath);
