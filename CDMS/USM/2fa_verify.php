@@ -133,7 +133,7 @@ if ($otpInput === (string)$storedOtp) {
     $redirectMap = [
         'L220305' => '../Logistics 2/Vehicle reservation/VRS/vehicles.php',
         'L120304' => '../Logistics 2/Vehicle reservation/VRS/vehicles.php',
-        'F20309' => '../Financials/financial2/User_Management/Department_Acc.php',
+        'F20309' => '../Financials/Dashboard.php',
         'HR120302' => '../HR part 1 - 2/recruitment_applicant_management/controllers/admin/index.php',
         'HR220303' => '../hr34/admin_landing.php',
         'C120306' => '../Core transaction 1/CoreTrans1/Dashboard.php',

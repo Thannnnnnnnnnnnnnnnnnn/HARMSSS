@@ -5,7 +5,7 @@
         <?php
             $currentPath = $_SERVER['PHP_SELF'];
             $depth = substr_count($currentPath, '/');
-            $basePath = str_repeat('../', $depth - 4);
+            $basePath = str_repeat('../', $depth - 3);
 
             // Get the current page file name
             $currentPage = basename($currentPath);
@@ -13,7 +13,7 @@
             // Define modules and their submodules for easier management
             $modules = [
                 'Disbursement' => [
-                    'path' => 'financial2/Disbursement/',
+                    'path' => 'Disbursement/',
                     'dropdownId' => 'disbursement-dropdown',
                     'links' => [
                         'Disbursement_Request.php' => ['name' => 'Disbursement Request', 'icon' => 'fa-solid fa-hand-holding-dollar'],
@@ -22,7 +22,7 @@
                     ]
                 ],
                 'Budget_Management' => [
-                    'path' => 'financial2/Budget_Management/',
+                    'path' => 'Budget_Management/',
                     'dropdownId' => 'budget-dropdown',
                     'links' => [
                         'budget.php' => ['name' => 'Budget', 'icon' => 'fa-solid fa-money-bill-wave'],
@@ -31,14 +31,14 @@
                     ]
                 ],
                 'Collection' => [
-                    'path' => 'financial2/Collection/',
+                    'path' => 'Collection/',
                     'dropdownId' => 'collection-dropdown',
                     'links' => [
                         'collection.php' => ['name' => 'Invoices', 'icon' => 'fa-solid fa-file-invoice']
                     ]
                 ],
                 'General_Ledger' => [
-                    'path' => 'financial2/General_Ledger/',
+                    'path' => 'General_Ledger/',
                     'dropdownId' => 'general-ledger-dropdown',
                     'links' => [
                         'General-Ledger-Transactions.php' => ['name' => 'Transactions', 'icon' => 'fa-solid fa-exchange-alt'],
@@ -47,14 +47,14 @@
                     ]
                 ],
                 'Account_Payable' => [
-                    'path' => 'financial2/Account_Payable/',
+                    'path' => 'Account_Payable/',
                     'dropdownId' => 'payable-dropdown',
                     'links' => [
                         'PayableInvoices.php' => ['name' => 'Payables', 'icon' => 'fa-solid fa-file-invoice-dollar']
                     ]
                 ],
                 'User_Management' => [
-                    'path' => 'financial2/User_Management/',
+                    'path' => 'User_Management/',
                     'dropdownId' => 'user-manage-dropdown',
                     'links' => [
                         'Department_Acc.php' => ['name' => 'Department Accounts', 'icon' => 'fa-solid fa-user'],
