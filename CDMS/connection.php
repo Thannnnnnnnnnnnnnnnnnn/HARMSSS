@@ -30,7 +30,7 @@ $databases = [
 
     // Core Transaction 2
     "cr2_front_office",
-    "cr2_housekeeping/laundry_management",
+    "cr2_housekeeping",
     "cr2_room_facilities",
     "cr2_supplier_management",
 

@@ -19,6 +19,7 @@ $connectionsList = [
     $connections["hr_1&2_usm"],
     $connections["fin_usm"],
     $connections["cr1_usm"],
+    $connections["cr3_usm"],
     $connections["user_management"],
     $connections["hr34_usm"] ?? ''
 ];
@@ -135,7 +136,8 @@ if ($otpInput === (string)$storedOtp) {
         'F20309' => '../Financials/financial2/User_Management/Department_Acc.php',
         'HR120302' => '../HR part 1 - 2/recruitment_applicant_management/controllers/admin/index.php',
         'HR220303' => '../hr34/admin_landing.php',
-        'C120306' => '../Core transaction 1/CoreTrans1/Dashboard.php'
+        'C120306' => '../Core transaction 1/CoreTrans1/Dashboard.php',
+        'C320308' => '../Core transaction 3/testing/dashboard.php'
     ];
     $redirectUrl = $redirectMap[$Department_ID] ?? 'login.php';
     header("Location: $redirectUrl");
