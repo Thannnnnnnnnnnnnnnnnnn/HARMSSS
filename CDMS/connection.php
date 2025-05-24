@@ -5,7 +5,7 @@ $databases = [
     // HR Part 1-2
     "hr_1&2_new_hire_onboarding_and_employee_self-service",
     "hr_1&2_performance_management_system",
-    "hr_1&2_recruitment_applicant_management",
+    "hr_1&2_recruitment_and_applicant_management",
     "hr_1&2_social_recognition",
     "hr_1&2_succession_planning",
     "hr_1&2_competency_management",

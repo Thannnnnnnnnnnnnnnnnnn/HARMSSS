@@ -3,12 +3,12 @@
 class Database
 {
     public $pdo;
-    public function __construct($config, $username = 'root', $password = '')
+    public function __construct($config, $username = '3206_CENTRALIZED_DATABASE', $password = '4562526')
     {
 
         // required for the PDO instance. this holds the information of the database itself
-        $dsn = 'mysql:' . http_build_query($config, '', ';');
-
+        // $dsn = 'mysql:' . http_build_query($config, '', ';');
+        $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8mb4";
         // $dsn = "mysql:host=localhost;port=3306;dbname=post";
 
         $this->pdo = new pdo($dsn, $username, $password, [
