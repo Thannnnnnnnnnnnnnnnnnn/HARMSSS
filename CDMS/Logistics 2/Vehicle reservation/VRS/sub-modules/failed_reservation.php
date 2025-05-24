@@ -195,19 +195,15 @@ if (!$result) {
                         </div>
                     <div id="fleet-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
                         <ul class="space-y-1">
-                        <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-file text-lg"></i> <span>Fleet</span>
+                            <li>
+                                <a href="drivers.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                                    <i class="bx bx-user text-lg"></i> <span>Drivers</span>
                                 </a>
                             </li>
+
                             <li>
                                 <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-gas-pump text-lg"></i> <span>Fuel logs</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-map text-lg"></i> <span>Mileage Logs</span>
+                                    <i class="bx bx-car text-lg"></i> <span>Vehicles</span>
                                 </a>
                             </li>
                             <li>
@@ -236,23 +232,12 @@ if (!$result) {
                         </div>
                     <div id="VRS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
                         <ul class="space-y-1">
-                        <li>
-                                <a href="drivers.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-user text-lg"></i> <span>Drivers</span>
-                                </a>
-                            </li>
-                           
+
                             <li>
                                 <a href="reservation.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
                                     <i class="bx bx-calendar-event text-lg"></i> <span>Reservation</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href="vehicles.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-car text-lg"></i> <span>Vehicles</span>
-                                </a>
-                            </li>
-                          
 
                         </ul>
                     </div>
