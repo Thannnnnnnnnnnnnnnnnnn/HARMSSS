@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'Update User Account';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $usm = new Database($config['usm']);
 $errors = [];
 
@@ -43,4 +44,4 @@ $user = $usm->query("SELECT user_id, first_name, last_name, username, email, rol
     'user_id' => $_GET['id']
 ])->fetch();
 // dd($user);
-require 'views/admin/user-update.view.php';
+require '../../views/admin/user-update.view.php';

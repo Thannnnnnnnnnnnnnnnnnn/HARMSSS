@@ -6,6 +6,7 @@ define('MAX_ATTEMPTS', 5);
 define('MAX_OTP_ATTEMPTS', 3);
 define('COOLDOWN_SECONDS', 3600);
 
+<<<<<<< HEAD
 // Only process OTP if this is a POST request
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $User_ID = $_SESSION["User_ID"] ?? null;
@@ -40,33 +41,148 @@ function resolveName($User_ID, $connectionsList) {
 
 // === Function: Central Log ===
 function logAttempt($conn, $User_ID, $Name, $Role, $Log_Status, $Attempt_Type, $Attempt_Count, $Failure_reason, $Cooldown_Until) {
+=======
+function dd($value)
+{
+    echo "<pre>";
+    var_dump($value);
+    echo "</pre>";
+    die();
+}
+$User_ID = $_SESSION["User_ID"];
+$otpInput = trim($_POST["otp"] ?? '');
+$Log_Date_Time = date('Y-m-d H:i:s');
+
+// === Function: Log user 2FA attempts ===
+function logAttempt($conn, $User_ID, $Name, $Role, $Log_Status, $Attempt_Type, $Attempt_Count, $Failure_reason, $Cooldown_Until)
+{
+>>>>>>> e7efff534a5dad81579b5b4b4ebd9edaa7e0cd47
     $Log_Date_Time = date('Y-m-d H:i:s');
     $sql = "
         INSERT INTO user_log_history 
         (User_ID, Name, Role, Log_Status, Attempt_Type, Attempt_Count, Failure_reason, Cooldown_Until, `Log_Date_Time`) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sssssssss", 
-        $User_ID, $Name, $Role, $Log_Status, $Attempt_Type, 
-        $Attempt_Count, $Failure_reason, $Cooldown_Until, $Log_Date_Time);
+    mysqli_stmt_bind_param(
+        $stmt,
+        "sssssssss",
+        $User_ID,
+        $Name,
+        $Role,
+        $Log_Status,
+        $Attempt_Type,
+        $Attempt_Count,
+        $Failure_reason,
+        $Cooldown_Until,
+        $Log_Date_Time
+    );
     mysqli_stmt_execute($stmt);
 }
 
+<<<<<<< HEAD
 // === Function: Department Log ===
 function logDepartmentAttempt($conn, $Dept_log_ID, $Department_ID, $User_ID, $Name, $Role, $Log_Status, $Attempt_type, $Attempt_Count, $Failure_reason, $Cooldown_Until) {
+=======
+// === Function: Log department 2FA attempts ===
+function logDepartmentAttempt($conn, $Dept_log_ID, $Department_ID, $User_ID, $Name, $Role, $Log_Status, $Attempt_type, $Attempt_Count, $Failure_reason, $Cooldown_Until)
+{
+>>>>>>> e7efff534a5dad81579b5b4b4ebd9edaa7e0cd47
     $Log_Date_Time = date('Y-m-d H:i:s');
     $sql = "
         INSERT INTO department_log_history 
         (Dept_log_ID, Department_ID, User_ID, Name, Role, Log_Status, Attempt_type, Attempt_count, Failure_reason, Cooldown_until, Log_Date_Time)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "issssssisss", 
-        $Dept_log_ID, $Department_ID, $User_ID, $Name, $Role, $Log_Status, $Attempt_type, 
-        $Attempt_Count, $Failure_reason, $Cooldown_Until, $Log_Date_Time);
+    mysqli_stmt_bind_param(
+        $stmt,
+        "issssssisss",
+        $Dept_log_ID,
+        $Department_ID,
+        $User_ID,
+        $Name,
+        $Role,
+        $Log_Status,
+        $Attempt_type,
+        $Attempt_Count,
+        $Failure_reason,
+        $Cooldown_Until,
+        $Log_Date_Time
+    );
     mysqli_stmt_execute($stmt);
 }
 
+<<<<<<< HEAD
 function incrementOTPAttempts() {
+=======
+$Name = null; // default
+
+// Try logistic 2 first
+$stmt = mysqli_prepare($logs2_usm, "SELECT Name FROM department_accounts WHERE User_ID = ?");
+mysqli_stmt_bind_param($stmt, "s", $User_ID);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+if ($row = mysqli_fetch_assoc($result)) {
+    $Name = $row["Name"];
+}
+
+
+// Try logistic 2 first
+$stmt = mysqli_prepare($hr1_2_usm, "SELECT Name FROM department_accounts WHERE User_ID = ?");
+mysqli_stmt_bind_param($stmt, "s", $User_ID);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+if ($row = mysqli_fetch_assoc($result)) {
+    $Name = $row["Name"];
+}
+
+// If not found, try Financial USM
+if (!$Name) {
+    $stmt = mysqli_prepare($fin_usm_connection, "SELECT Name FROM department_accounts WHERE User_ID = ?");
+    mysqli_stmt_bind_param($stmt, "s", $User_ID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($result)) {
+        $Name = $row["Name"];
+    }
+}
+
+// If not found, try Core 1 USM
+if (!$Name) {
+    $stmt = mysqli_prepare($cr1_usm, "SELECT Name FROM department_accounts WHERE User_ID = ?");
+    mysqli_stmt_bind_param($stmt, "s", $User_ID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($result)) {
+        $Name = $row["Name"];
+    }
+}
+
+
+// If still not found, try Department USM
+if (!$Name) {
+    $stmt = mysqli_prepare($usm_connection, "SELECT Name FROM department_accounts WHERE User_ID = ?");
+    mysqli_stmt_bind_param($stmt, "s", $User_ID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($result)) {
+        $Name = $row["Name"];
+    }
+}
+// If still not found, try Department USM
+if (!$Name) {
+    $stmt = mysqli_prepare($hr3_4_usm, "SELECT Name FROM department_accounts WHERE User_ID = ?");
+    mysqli_stmt_bind_param($stmt, "s", $User_ID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($result)) {
+        $Name = $row["Name"];
+    }
+}
+
+// === Function: Increment OTP attempts ===
+function incrementOTPAttempts()
+{
+>>>>>>> e7efff534a5dad81579b5b4b4ebd9edaa7e0cd47
     if (!isset($_SESSION["otp_attempts"])) {
         $_SESSION["otp_attempts"] = 1;
     } else {
@@ -107,6 +223,7 @@ if ($otpInput === (string)$storedOtp) {
     logAttempt($connections["logs2_usm"], $User_ID, $Name, $Role, 'Success', '2FA', 0, '2FA Successful', '');
     logDepartmentAttempt($connections["logs2_usm"], $User_ID, $Department_ID, $User_ID, $Name, $Role, 'Success', '2FA', 0, '2FA Successful', '');
 
+<<<<<<< HEAD
     $redirectMap = [
         'L220305' => '../Logistics 2/Vehicle reservation/VRS/vehicles.php',
         'L120304' => '../Logistics 2/Vehicle reservation/VRS/vehicles.php',
@@ -138,6 +255,162 @@ if ($otpInput === (string)$storedOtp) {
 ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+=======
+        logAttempt($logs2_usm, $User_ID, $Name, $Role, 'Success', '2FA', 0, '2FA Successful', '');
+        logDepartmentAttempt($logs2_usm, $User_ID, $Department_ID, $User_ID, $Name, $Role, 'Success', '2FA', 0, '2FA Successful', '');
+        // dd('Success');
+        // === Role-based Department Redirects ===
+        if ($Department_ID == 'L220305') {
+            dd('L220305');
+            switch ($User_ID) {
+                case 'S225178160504':  // Vehicle Reservation
+                    header("Location: ../Logistics 2/Vehicle reservation/VRS/vehicles.php");
+                    exit();
+
+                case 'S225186490504':  // Audit Management
+                    header("Location: audit_dashboard.php");
+                    exit();
+
+                case 'S225210110504':  // Fleet Management
+                    header("Location: fleet_dashboard.php");
+                    exit();
+
+                case 'S225101320504':  // Vendor Portal
+                    header("Location: vendor_dashboard.php");
+                    exit();
+
+                case 'S225112233504':  // Document Tracking System
+                    header("Location: document_tracking_dashboard.php");
+                    exit();
+
+                default:
+                    header("Location: login.php");
+                    exit();
+            }
+
+            //Financials
+        } elseif ($Department_ID == 'F20309') {
+            dd('F20309');
+            switch ($User_ID) {
+                case 's254225000904':  // John Mark Balacy
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254223290904':  // Audit Management
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254124910904':  // Fleet Management
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254191860904':  // Vendor Portal
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254105470904':  // Document Tracking System
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254166290904':  // Document Tracking System
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                default:
+                    header("Location: login.php");
+                    exit();
+            }
+
+            //hr 1- 2 1
+        } elseif ($Department_ID == 'HR120302') {
+            dd('HR120302');
+            switch ($User_ID) {
+                case 'S225206660204':  // John Mark Balacy
+                    dd('TEST');
+                    header("Location: HR part 1 - 2/recruitment_applicant_management/controllers/admin/index.php");
+                    exit();
+                default:
+                    header("Location: login.php");
+                    exit();
+            }
+
+            //hr 34
+        } elseif ($Department_ID == 'HR220303') {
+            dd('HR220303');
+            switch ($User_ID) {
+                case 'SA22501830301':  // John Mark Balacy
+                    header("Location:   ../hr34/admin_landing.php");
+                    exit();
+
+
+
+                default:
+                    header("Location: login.php");
+                    exit();
+            }
+
+
+            //Core 1
+        } elseif ($Department_ID == 'C120306') {
+            dd('C120306');
+            switch ($User_ID) {
+                case 'A225224220602':  // bert
+                    header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
+                    exit();
+
+                case 'M2250190810603':  // thei
+                    header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
+                    exit();
+
+                case '#':  //
+                    header("Location: #");
+                    exit();
+
+                case '#2':  // 
+                    header("Location: #");
+                    exit();
+
+                case '#1':  // 
+                    header("Location: #");
+                    exit();
+
+                default:
+                    header("Location: #");
+                    exit();
+            }
+        } else {
+            // fallback
+            dd('Unknown Department_ID');
+            header("Location: login.php");
+            exit();
+        }
+    } else {
+        // OTP is incorrectx`
+        incrementOTPAttempts();
+
+        $Role = $_SESSION["Role"]; // Use Role from session
+        $Department_ID = $_SESSION["Department_ID"]; // Use Department_ID from session
+
+        logAttempt($logs2_usm, $User_ID, $Name, $Role, 'Failed', '2FA', $_SESSION["otp_attempts"], 'Incorrect OTP', '');
+        logDepartmentAttempt($logs2_usm, $User_ID, $Department_ID, $User_ID, $Name, $Role, 'Failed', '2FA', $_SESSION["otp_attempts"], 'Incorrect OTP', '');
+
+        if ($_SESSION["otp_attempts"] >= 3) {
+            $_SESSION["loginError"] = "Too many incorrect OTP attempts. Please try again later.";
+            header("Location: login.php");
+            exit();
+        }
+
+        $_SESSION["loginError"] = "Incorrect OTP.";
+        header("Location: 2fa_verify.php");
+        exit();
+    }
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+>>>>>>> e7efff534a5dad81579b5b4b4ebd9edaa7e0cd47
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -165,6 +438,7 @@ if ($otpInput === (string)$storedOtp) {
     }
   </style>
 </head>
+<<<<<<< HEAD
 
 <body class="flex items-center justify-center p-6">
   <div class="fade-in max-w-md w-full bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/30 p-10 text-center">
@@ -179,6 +453,47 @@ if ($otpInput === (string)$storedOtp) {
       <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Two-Factor Authentication</h1>
       <p class="mt-2 text-gray-600">Enter the one-time passcode sent to your device</p>
     </div>
+=======
+
+<body class="bg-gray-100">
+    <div class="w-full h-dvh flex items-center justify-center bg-cover bg-center relative" style="background-image: url('left.png');">
+        <!-- Dark overlay for readability -->
+        <div class="absolute inset-0 bg-black bg-opacity-40 z-0"></div>
+
+        <!-- 2FA Container -->
+        <div class="relative z-10 bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4">
+            <h3 class="text-center text-4xl font-semibold text-gray-800 mb-6 animate-fade-in-down">🔐 2FA Verification</h3>
+
+            <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="space-y-6">
+                <div>
+                    <label for="otp" class="block text-gray-700 text-lg font-medium mb-2">Enter OTP:</label>
+                    <input
+                        type="text"
+                        id="otp"
+                        name="otp"
+                        required
+                        maxlength="6"
+                        placeholder="6-digit code"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                        aria-label="One Time Password" />
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    ✅ Verify OTP
+                </button>
+            </form>
+
+            <!-- Optional: add resend option -->
+            <div class="text-center text-sm mt-4 text-gray-500">
+                Didn't receive the code?
+                <a href="resend_otp.php" class="text-blue-600 hover:underline">Resend</a>
+            </div>
+        </div>
+    </div>
+
+>>>>>>> e7efff534a5dad81579b5b4b4ebd9edaa7e0cd47
 
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="space-y-6">
       <label for="otp" class="sr-only">OTP Code</label>
@@ -226,4 +541,9 @@ if ($otpInput === (string)$storedOtp) {
     <?php unset($_SESSION["loginError"]); ?>
   <?php endif; ?>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+
+</html>
+>>>>>>> e7efff534a5dad81579b5b4b4ebd9edaa7e0cd47

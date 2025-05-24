@@ -1,11 +1,11 @@
-<?php require '../partials/admin/head.php' ?>
+<?php require '../../partials/admin/head.php' ?>
 
 <div class="flex min-h-screen w-full text-[#594423]">
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
-    <?php require '../partials/admin/sidebar.php' ?>
+    <?php require '../../partials/admin/sidebar.php' ?>
 
     <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">
-        <?php require '../partials/admin/navbar.php' ?>
+        <?php require '../../partials/admin/navbar.php' ?>
         <?php if ($success ?? '' == true) : ?>
             <div role="alert" class="alert alert-success mt-10 mx-10">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
@@ -143,4 +143,4 @@
         });
     })
 </script>
-<?php require '../partials/admin/footer.php' ?>
+<?php require '../../partials/admin/footer.php' ?>

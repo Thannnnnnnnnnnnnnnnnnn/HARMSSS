@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'Update  Applicant Details';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 $usm = new Database($config['usm']);
 
@@ -59,4 +60,4 @@ $applicant = $db->query("SELECT applicant_id, first_name, last_name, contact_num
     ':applicant_id' => $_GET['id']
 ])->fetch();
 
-require 'views/admin/applicant-update.view.php';
+require '../../views/admin/applicant-update.view.php';

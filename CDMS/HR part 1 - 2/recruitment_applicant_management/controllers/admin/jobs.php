@@ -2,7 +2,8 @@
 
 session_start();
 $heading = 'Job Postings';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 $usm = new Database($config['usm']);
 
@@ -63,4 +64,4 @@ u.user_id
 FROM jobpostings j INNER JOIN user_accounts u on u.user_id = j.posted_by 
 ORDER BY created_at desc')->fetchAll();
 
-require 'views/admin/jobs.view.php';
+require '../../views/admin/jobs.view.php';

@@ -1,11 +1,11 @@
-<?php require '../partials/admin/head.php' ?>
+<?php require '../../partials/admin/head.php' ?>
 
 <div class="flex min-h-screen w-full text-black">
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
-    <?php require '../partials/admin/sidebar.php' ?>
+    <?php require '../../partials/admin/sidebar.php' ?>
 
     <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">
-        <?php require '../partials/admin/navbar.php' ?>
+        <?php require '../../partials/admin/navbar.php' ?>
         <main class="px-2 py-3">
             <?php if (isset($error)) : ?>
                 <div role="alert" class="alert alert-error">
@@ -62,7 +62,7 @@
                                     <td><?= $newhire['email'] ?></td>
                                     <td><?= $newhire['status'] ?></td>
                                     <td>
-                                        <a href="/admin/applicant?id=<?= htmlspecialchars($newhire['applicant_id']) ?>" class="btn border border-black"><i class="fa-solid fa-eye"></i></a>
+                                        <a href="applicant.php?id=<?= htmlspecialchars($newhire['applicant_id']) ?>" class="btn border border-black"><i class="fa-solid fa-eye"></i></a>
                                     </td>
                                 </tr>
                             <?php endforeach ?>
@@ -142,4 +142,4 @@
         });
     });
 </script>
-<?php require '../partials/admin/footer.php' ?>
+<?php require '../../partials/admin/footer.php' ?>

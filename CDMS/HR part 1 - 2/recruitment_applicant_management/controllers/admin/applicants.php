@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'Applicants';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 $usm = new Database($config['usm']);
 
@@ -43,4 +44,4 @@ FROM applicants a inner join applicationstatus s on a.applicant_id = s.applicant
 WHERE s.status = 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
-require 'views/admin/applicants.view.php';
+require '../../views/admin/applicants.view.php';

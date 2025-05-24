@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'Interview Schedules Create';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 
 $applicants = $db->query("
@@ -57,4 +58,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-require 'views/admin/interview_schedules-create.view.php';
+require '../../views/admin/interview_schedules-create.view.php';
