@@ -57,10 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $schedules = $db->query("SELECT
 s.*,
-a.first_name,
-i.username
+a.first_name
 FROM interviewschedules s INNER JOIN applicants a on s.applicant_id = a.applicant_id
-INNER JOIN user_accounts i on i.user_id = s.interviewer_id
 ORDER BY created_at DESC
 ")->fetchAll();
 

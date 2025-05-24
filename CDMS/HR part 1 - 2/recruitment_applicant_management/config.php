@@ -4,7 +4,7 @@ return [
     'database' => [
         'host' => 'localhost', // 192.168.71.194
         'port' => 3306, // port: 3206
-        'dbname' => 'hr_ram', //3206_DB
+        'dbname' => 'hr_1&2_recruitment_and_applicant_management', //3206_DB
         'charset' => 'utf8mb4',
     ],
     'nhoes' => [
