@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'Job offer';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 $usm = new Database($config['usm']);
 $nhoes = new Database($config['nhoes']);

@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'Update User Account';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $usm = new Database($config['usm']);
 $errors = [];
 

@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'Applicant Details';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 
 
@@ -18,4 +19,4 @@ WHERE a.applicant_id = :applicant_id
     ':applicant_id' => $_GET['id']
 ])->fetch();
 
-require 'views/admin/applicant.view.php';
+require '../../views/admin/applicant.view.php';

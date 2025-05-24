@@ -2,7 +2,8 @@
 
 session_start();
 $heading = 'Interview Schedules';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 $usm = new Database($config['usm']);
 

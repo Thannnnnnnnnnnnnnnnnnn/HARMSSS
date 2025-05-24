@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'Job offers';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 
 $offers = $db->query('SELECT offer_id, position, applicant_id FROM job_offer WHERE user_decision = :user_decision', [

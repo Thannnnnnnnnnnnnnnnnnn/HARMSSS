@@ -9,36 +9,66 @@ $cr1_usm = $connections["cr1_usm"];
 $hr1_2_usm = $connections["hr_1&2_usm"];
 $hr3_4_usm = $connections["hr34_usm"] ?? '';
 
-
+function dd($value)
+{
+    echo "<pre>";
+    var_dump($value);
+    echo "</pre>";
+    die();
+}
 $User_ID = $_SESSION["User_ID"];
 $otpInput = trim($_POST["otp"] ?? '');
 $Log_Date_Time = date('Y-m-d H:i:s');
 
 // === Function: Log user 2FA attempts ===
-function logAttempt($conn, $User_ID, $Name, $Role, $Log_Status, $Attempt_Type, $Attempt_Count, $Failure_reason, $Cooldown_Until) {
+function logAttempt($conn, $User_ID, $Name, $Role, $Log_Status, $Attempt_Type, $Attempt_Count, $Failure_reason, $Cooldown_Until)
+{
     $Log_Date_Time = date('Y-m-d H:i:s');
     $sql = "
         INSERT INTO user_log_history 
         (User_ID, Name, Role, Log_Status, Attempt_Type, Attempt_Count, Failure_reason, Cooldown_Until, `Log_Date_Time`) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sssssssss", 
-        $User_ID, $Name, $Role, $Log_Status, $Attempt_Type, 
-        $Attempt_Count, $Failure_reason, $Cooldown_Until, $Log_Date_Time);
+    mysqli_stmt_bind_param(
+        $stmt,
+        "sssssssss",
+        $User_ID,
+        $Name,
+        $Role,
+        $Log_Status,
+        $Attempt_Type,
+        $Attempt_Count,
+        $Failure_reason,
+        $Cooldown_Until,
+        $Log_Date_Time
+    );
     mysqli_stmt_execute($stmt);
 }
 
 // === Function: Log department 2FA attempts ===
-function logDepartmentAttempt($conn, $Dept_log_ID, $Department_ID, $User_ID, $Name, $Role, $Log_Status, $Attempt_type, $Attempt_Count, $Failure_reason, $Cooldown_Until) {
+function logDepartmentAttempt($conn, $Dept_log_ID, $Department_ID, $User_ID, $Name, $Role, $Log_Status, $Attempt_type, $Attempt_Count, $Failure_reason, $Cooldown_Until)
+{
     $Log_Date_Time = date('Y-m-d H:i:s');
     $sql = "
         INSERT INTO department_log_history 
         (Dept_log_ID, Department_ID, User_ID, Name, Role, Log_Status, Attempt_type, Attempt_count, Failure_reason, Cooldown_until, Log_Date_Time)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "issssssisss", 
-        $Dept_log_ID, $Department_ID, $User_ID, $Name, $Role, $Log_Status, $Attempt_type, 
-        $Attempt_Count, $Failure_reason, $Cooldown_Until, $Log_Date_Time);
+    mysqli_stmt_bind_param(
+        $stmt,
+        "issssssisss",
+        $Dept_log_ID,
+        $Department_ID,
+        $User_ID,
+        $Name,
+        $Role,
+        $Log_Status,
+        $Attempt_type,
+        $Attempt_Count,
+        $Failure_reason,
+        $Cooldown_Until,
+        $Log_Date_Time
+    );
     mysqli_stmt_execute($stmt);
 }
 
@@ -108,7 +138,8 @@ if (!$Name) {
 }
 
 // === Function: Increment OTP attempts ===
-function incrementOTPAttempts() {
+function incrementOTPAttempts()
+{
     if (!isset($_SESSION["otp_attempts"])) {
         $_SESSION["otp_attempts"] = 1;
     } else {
@@ -143,148 +174,132 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $otpInput) {
 
         logAttempt($logs2_usm, $User_ID, $Name, $Role, 'Success', '2FA', 0, '2FA Successful', '');
         logDepartmentAttempt($logs2_usm, $User_ID, $Department_ID, $User_ID, $Name, $Role, 'Success', '2FA', 0, '2FA Successful', '');
-
+        // dd('Success');
         // === Role-based Department Redirects ===
-if ($Department_ID == 'L220305') {
-    switch ($User_ID) {
-        case 'S225178160504':  // Vehicle Reservation
-            header("Location: ../Logistics 2/Vehicle reservation/VRS/vehicles.php");
-            exit();
+        if ($Department_ID == 'L220305') {
+            dd('L220305');
+            switch ($User_ID) {
+                case 'S225178160504':  // Vehicle Reservation
+                    header("Location: ../Logistics 2/Vehicle reservation/VRS/vehicles.php");
+                    exit();
 
-        case 'S225186490504':  // Audit Management
-            header("Location: audit_dashboard.php");
-            exit();
+                case 'S225186490504':  // Audit Management
+                    header("Location: audit_dashboard.php");
+                    exit();
 
-        case 'S225210110504':  // Fleet Management
-            header("Location: fleet_dashboard.php");
-            exit();
+                case 'S225210110504':  // Fleet Management
+                    header("Location: fleet_dashboard.php");
+                    exit();
 
-        case 'S225101320504':  // Vendor Portal
-            header("Location: vendor_dashboard.php");
-            exit();
+                case 'S225101320504':  // Vendor Portal
+                    header("Location: vendor_dashboard.php");
+                    exit();
 
-        case 'S225112233504':  // Document Tracking System
-            header("Location: document_tracking_dashboard.php");
-            exit();
+                case 'S225112233504':  // Document Tracking System
+                    header("Location: document_tracking_dashboard.php");
+                    exit();
 
-        default:
+                default:
+                    header("Location: login.php");
+                    exit();
+            }
+
+            //Financials
+        } elseif ($Department_ID == 'F20309') {
+            dd('F20309');
+            switch ($User_ID) {
+                case 's254225000904':  // John Mark Balacy
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254223290904':  // Audit Management
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254124910904':  // Fleet Management
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254191860904':  // Vendor Portal
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254105470904':  // Document Tracking System
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                case 's254166290904':  // Document Tracking System
+                    header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
+                    exit();
+
+                default:
+                    header("Location: login.php");
+                    exit();
+            }
+
+            //hr 1- 2 1
+        } elseif ($Department_ID == 'HR120302') {
+            dd('HR120302');
+            switch ($User_ID) {
+                case 'S225206660204':  // John Mark Balacy
+                    dd('TEST');
+                    header("Location: HR part 1 - 2/recruitment_applicant_management/controllers/admin/index.php");
+                    exit();
+                default:
+                    header("Location: login.php");
+                    exit();
+            }
+
+            //hr 34
+        } elseif ($Department_ID == 'HR220303') {
+            dd('HR220303');
+            switch ($User_ID) {
+                case 'SA22501830301':  // John Mark Balacy
+                    header("Location:   ../hr34/admin_landing.php");
+                    exit();
+
+
+
+                default:
+                    header("Location: login.php");
+                    exit();
+            }
+
+
+            //Core 1
+        } elseif ($Department_ID == 'C120306') {
+            dd('C120306');
+            switch ($User_ID) {
+                case 'A225224220602':  // bert
+                    header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
+                    exit();
+
+                case 'M2250190810603':  // thei
+                    header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
+                    exit();
+
+                case '#':  //
+                    header("Location: #");
+                    exit();
+
+                case '#2':  // 
+                    header("Location: #");
+                    exit();
+
+                case '#1':  // 
+                    header("Location: #");
+                    exit();
+
+                default:
+                    header("Location: #");
+                    exit();
+            }
+        } else {
+            // fallback
+            dd('Unknown Department_ID');
             header("Location: login.php");
             exit();
-    }
-
-    //Financials
-} elseif ($Department_ID == 'F20309') {
-    switch ($User_ID) {
-        case 's254225000904':  // John Mark Balacy
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254223290904':  // Audit Management
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254124910904':  // Fleet Management
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254191860904':  // Vendor Portal
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254105470904':  // Document Tracking System
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254166290904':  // Document Tracking System
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-                exit();
-
-        default:
-            header("Location: login.php");
-            exit();
-    }
-
-    //hr 1- 2 1
-} elseif ($Department_ID == 'HR120302 ') {
-    switch ($User_ID) {
-        case 'S225206660204':  // John Mark Balacy
-            header("Location:   ../HR part 1 - 2/recruitment_and_applicant_management/controllers/admin/index.php");
-            exit();
-
-        case 's254223290904':  // Audit Management
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254124910904':  // Fleet Management
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254191860904':  // Vendor Portal
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254105470904':  // Document Tracking System
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-            exit();
-
-        case 's254166290904':  // Document Tracking System
-            header("Location: ../Financials/financial2/User_Management/Department_Acc.php");
-                exit();
-
-        default:
-            header("Location: login.php");
-            exit();
-    }
-
-    //hr 34
-}elseif ($Department_ID == 'HR220303') {
-    switch ($User_ID) {
-        case 'SA22501830301':  // John Mark Balacy
-             header("Location:   ../hr34/admin_landing.php");
-            exit();
-
-        
-
-        default:
-            header("Location: login.php");
-            exit();
-    }
-    
-
-    //Core 1
-}elseif ($Department_ID == 'C120306') {
-    switch ($User_ID) {
-        case 'A225224220602':  // bert
-            header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
-            exit();
-
-        case 'M2250190810603':  // thei
-            header("Location: ../Core transaction 1/CoreTrans1/Dashboard.php");
-            exit();
-
-        case '#':  //
-            header("Location: #");
-            exit();
-
-        case '#2':  // 
-            header("Location: #");
-            exit();
-
-        case '#1':  // 
-            header("Location: #");
-            exit();
-
-        default:
-            header("Location: #");
-            exit();
-    }
-} else {
-    // fallback
-    header("Location: login.php");
-    exit();
-}
-
-        
+        }
     } else {
         // OTP is incorrectx`
         incrementOTPAttempts();
@@ -310,6 +325,7 @@ if ($Department_ID == 'L220305') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -330,6 +346,7 @@ if ($Department_ID == 'L220305') {
         }
     </style>
 </head>
+
 <body class="bg-gray-100">
     <div class="w-full h-dvh flex items-center justify-center bg-cover bg-center relative" style="background-image: url('left.png');">
         <!-- Dark overlay for readability -->
@@ -338,26 +355,24 @@ if ($Department_ID == 'L220305') {
         <!-- 2FA Container -->
         <div class="relative z-10 bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4">
             <h3 class="text-center text-4xl font-semibold text-gray-800 mb-6 animate-fade-in-down">🔐 2FA Verification</h3>
-            
+
             <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="space-y-6">
                 <div>
                     <label for="otp" class="block text-gray-700 text-lg font-medium mb-2">Enter OTP:</label>
-                    <input 
-                        type="text" 
-                        id="otp" 
-                        name="otp" 
-                        required 
+                    <input
+                        type="text"
+                        id="otp"
+                        name="otp"
+                        required
                         maxlength="6"
                         placeholder="6-digit code"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-                        aria-label="One Time Password"
-                    />
+                        aria-label="One Time Password" />
                 </div>
 
-                <button 
+                <button
                     type="submit"
-                    class="w-full py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
+                    class="w-full py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
                     ✅ Verify OTP
                 </button>
             </form>
@@ -369,7 +384,7 @@ if ($Department_ID == 'L220305') {
             </div>
         </div>
     </div>
-    
+
 
     <!-- SweetAlert2 Feedback -->
     <?php if (isset($_SESSION["loginError"])): ?>
@@ -385,6 +400,5 @@ if ($Department_ID == 'L220305') {
         <?php unset($_SESSION["loginError"]); ?>
     <?php endif; ?>
 </body>
+
 </html>
-
-

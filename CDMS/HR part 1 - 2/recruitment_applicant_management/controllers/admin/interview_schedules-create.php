@@ -1,7 +1,8 @@
 <?php
 session_start();
 $heading = 'Interview Schedules Create';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
 
 $applicants = $db->query("

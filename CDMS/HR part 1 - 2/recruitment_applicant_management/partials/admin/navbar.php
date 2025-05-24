@@ -1,5 +1,6 @@
 <?php
-$config = require 'config.php';
+$config = require '../../config.php';
+// require "../../Database.php";
 $db = new Database($config['database']);
 $pm = new Database($config['pm']);
 $soc = new Database($config['socreg']);
