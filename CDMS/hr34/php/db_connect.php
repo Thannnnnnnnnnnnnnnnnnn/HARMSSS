@@ -21,7 +21,7 @@ ini_set('log_errors', 1);
 // --- Database Configuration from Environment Variables ---
 // Provide default values ONLY for local development if necessary,
 // but ideally, these should always be set in the environment.
-$db_host = getenv('DB_HOST') ?: 'localhost';      // Default to 'localhost' if env var not set
+$db_host = getenv('DB_HOST') ?: 'localhost:3206';      // Default to 'localhost' if env var not set
 $db_name = getenv('DB_NAME') ?: 'hr_integrated_db'; // Default to 'hr_integrated_db' if env var not set
 $db_user = getenv('DB_USER') ?: '3206_CENTRALIZED_DATABASE';           // Default to 'root' if env var not set
 $db_pass = getenv('DB_PASS') ?: '2562526';               // Default to empty password if env var not set
@@ -31,13 +31,13 @@ $charset = 'utf8mb4';
 // Check if critical variables are still using defaults or are empty, which might indicate
 // environment variables are not set correctly in production.
 if ($db_host === 'localhost' && getenv('DB_HOST') === false) {
-    error_log("Warning: DB_HOST environment variable not set. Using default 'localhost'.");
+    error_log("Warning: DB_HOST environment variable not set. Using default 'localhost:3206'.");
 }
 if ($db_name === 'hr_integrated_db' && getenv('DB_NAME') === false) {
     error_log("Warning: DB_NAME environment variable not set. Using default 'hr_integrated_db'.");
 }
 if ($db_user === 'root' && getenv('DB_USER') === false) {
-    error_log("Warning: DB_USER environment variable not set. Using default 'root'.");
+    error_log("Warning: DB_USER environment variable not set. Using default '3206_CENTRALIZED_DATABASE'.");
 }
 // No warning for password, as it might legitimately be empty.
 
