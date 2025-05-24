@@ -3,35 +3,27 @@ session_start();
 $heading = 'Applicants';
 $config = require '../../config.php';
 require '../../Database.php';
+require '../../functions.php';
 $db = new Database($config['database']);
 // $usm = new Database($config['usm']);
-function dd($data)
-{
-    echo '<pre>';
-    print_r($data);
-    echo '</pre>';
-    exit;
-}
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    try {
-        $db->query("DELETE FROM applicants WHERE applicant_id = :applicant_id", [
-            ':applicant_id' => $_POST['id'],
+    if ($_POST['approve'] === 'true') {
+        // dd($_POST);
+        $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+            ':status' => 'approved',
+            ':applicant_id' => $_POST['applicant_id'],
         ]);
 
-        // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-        //     ':department_id' => 1,
-        //     ':user_id' => $_SESSION['user_id'],
-        //     ':action' => 'delete',
-        //     ':description' => "admin: {$_SESSION['username']} Deleted an applicant with the applicant ID: {$_POST['applicant_id']}",
-        //     ':department_affected' => 'HR part 1&2',
-        //     ':module_affected' => 'recruitment and applicant management',
-        // ]);
-        $delete = true;
-    } catch (PDOException $e) {
-        if ($e->getCode() == 23000) {
-            $error = 'Error: Action could not be completed. Please contact support for assistance.';
-        }
+        header('location: interview_schedules-create.php');
+        exit();
+    }
+    if ($_POST['reject'] === 'true') {
+        // dd($_POST);
+        $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+            ':status' => 'rejected',
+            ':applicant_id' => $_POST['applicant_id'],
+        ]);
     }
 }
 
@@ -42,7 +34,7 @@ FROM applicants a inner join applicationstatus s on a.applicant_id = s.applicant
 WHERE s.status != 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
-// dd($applicants); 
+// dd($applicants);
 $newhires = $db->query("SELECT
 a.*,
 s.status

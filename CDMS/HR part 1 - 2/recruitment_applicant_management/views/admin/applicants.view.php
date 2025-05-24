@@ -98,9 +98,27 @@
                                 <td class="email border-t"><?= htmlspecialchars($applicant['email']) ?></td>
                                 <td class="created_at border-t"><?= htmlspecialchars($applicant['created_at']) ?></td>
                                 <td class="border-t">
-                                    <a href="applicant.php?id=<?= htmlspecialchars($applicant['applicant_id']) ?>" class="btn border border-black"><i class="fa-solid fa-eye"></i></a>
-                                    <a href="applicant-update.php?id=<?= htmlspecialchars($applicant['applicant_id']) ?>" class="openModal btn btn-primary my-2"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <button data-id="<?= $applicant['user_id'] ?>" class="deleteModal btn btn-error my-2" onclick="my_modal_3.showModal()"><i class="fa-solid fa-trash"></i></button>
+                                    <?php if ($applicant['status'] !== 'approved' && $applicant['status'] !== 'rejected') : ?>
+                                        <div class="flex justify-center gap-2">
+                                            <form method="POST" id="approveForm">
+                                                <input type="hidden" name="approve" value="true">
+                                                <input type="hidden" name="applicant_id" value="<?= $applicant['applicant_id'] ?>">
+                                                <button type="button" title="Approve" id="approveBtn" class="btn bg-green-500 text-xl rounded-lg"><i class="fa-solid fa-user-check"></i></button>
+                                            </form>
+                                            <form method="POST" id="rejectForm">
+                                                <input type="hidden" name="reject" value="true">
+                                                <input type="hidden" name="applicant_id" value="<?= $applicant['applicant_id'] ?>">
+                                                <button type="button" title="Reject" id="rejectBtn" class="btn bg-red-500 text-xl rounded-lg"><i class="fa-solid fa-user-xmark"></i></button>
+                                            </form>
+                                        </div>
+                                    <?php else : ?>
+                                        <div>
+                                            <p class="text-gray-400">Action completed</p>
+                                        </div>
+                                    <?php endif ?>
+                                    <!-- <a href="applicant.php?id=<?= htmlspecialchars($applicant['applicant_id']) ?>" class="btn border border-black"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="applicant-update.php?id=<?= htmlspecialchars($applicant['applicant_id']) ?>" class="openModal btn btn-primary my-2"><i class="fa-solid fa-pen-to-square"></i></a> -->
+                                    <!-- <button data-id="<?= $applicant['user_id'] ?>" class="deleteModal btn btn-error my-2" onclick="my_modal_3.showModal()"><i class="fa-solid fa-trash"></i></button>
                                     <dialog id="my_modal_3" class="modal modal-bottom sm:modal-middle">
                                         <div class="modal-box">
                                             <form method="dialog">
@@ -122,7 +140,7 @@
                                         <form method="dialog" class="modal-backdrop">
                                             <button>close</button>
                                         </form>
-                                    </dialog>
+                                    </dialog> -->
                                 </td>
                             </tr>
                         <?php endforeach ?>
@@ -134,11 +152,51 @@
 </div>
 
 <script>
-    document.querySelectorAll('.deleteModal').forEach((button) => {
-        button.addEventListener('click', (event) => {
-            const row = event.target.closest('tr');
-            const idValue = row.querySelector('.applicant_id').textContent;
-            document.getElementById('delete_id').value = idValue;
+    // document.querySelectorAll('.deleteModal').forEach((button) => {
+    //     button.addEventListener('click', (event) => {
+    //         const row = event.target.closest('tr');
+    //         const idValue = row.querySelector('.applicant_id').textContent;
+    //         document.getElementById('delete_id').value = idValue;
+    //     });
+    // });
+    $('#approveBtn').on('click', function() {
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to approve this applicant!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, approve it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                swal.fire(
+                    'Approved!',
+                    'The applicant has been approved.',
+                    'success'
+                );
+                $('#approveForm').submit();
+            }
+        });
+    });
+    $('#rejectBtn').on('click', function() {
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to reject this applicant!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, reject it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                swal.fire(
+                    'Rejected!',
+                    'The applicant has been rejected.',
+                    'success'
+                );
+                // $('#rejectForm').submit();
+            }
         });
     });
 </script>

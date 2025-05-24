@@ -50,17 +50,17 @@
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">
                                 applicants</a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a
                                 href="users.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">User Accounts</a>
-                        </li>
-                        <li>
+                        </li> -->
+                        <!-- <li>
                             <a
                                 href="job-offers.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">
                                 Job offers</a>
-                        </li>
+                        </li> -->
                         <li>
                             <a
                                 href="interview_schedules.php"

@@ -92,7 +92,7 @@
                         <select name="applicant_id" id="applicant_id" class="select text-center w-full" required>
                             <option selected disabled>Choose an option</option>
                             <?php foreach ($applicants as $applicant) : ?>
-                                <option value="<?= htmlspecialchars($applicant['applicant_id']) ?>"><?= 'ID ' . htmlspecialchars($applicant['applicant_id']) . ': ' . $applicant['first_name'] . ' ' . htmlspecialchars($applicant['last_name']) ?></option>
+                                <option value="<?= htmlspecialchars($applicant['applicant_id']) ?>"><?= 'ID ' . htmlspecialchars($applicant['applicant_id']) . ': ' . htmlspecialchars($applicant['first_name']) . ' ' . htmlspecialchars($applicant['last_name']) ?></option>
                             <?php endforeach ?>
                         </select>
                         <?php if (!empty($errors['applicant_id'])) : ?>
@@ -128,6 +128,11 @@
                 }
             });
             if (isValid) {
+                swal.fire({
+                    title: 'Create Interview Schedule',
+                    text: "Creating interview schedule successful",
+                    icon: 'success'
+                });
                 $('form').submit();
             } else {
                 swal.fire({
