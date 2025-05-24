@@ -10,7 +10,7 @@ return [
     'nhoes' => [
         'host' => 'localhost',
         'port' => 3306,
-        'dbname' => 'hr_nhoes',
+        'dbname' => 'hr_1&2_new_hire_onboarding_and_employee_self-service',
         'charset' => 'utf8mb4',
     ],
     'usm' => [
@@ -22,13 +22,13 @@ return [
     'socreg' => [
         'host' => 'localhost',
         'port' => 3306,
-        'dbname' => 'hr_1_2_social_recognition',
+        'dbname' => 'hr_1&2_social_recognition',
         'charset' => 'utf8mb4',
     ],
     'pm' => [
         'host' => 'localhost',
         'port' => 3306,
-        'dbname' => 'hr_pm',
+        'dbname' => 'hr_1&2_performance_management_system',
         'charset' => 'utf8mb4',
     ],
 ];

@@ -5,7 +5,7 @@ $heading = 'Interview Schedules';
 $config = require '../../config.php';
 require '../../Database.php';
 $db = new Database($config['database']);
-$usm = new Database($config['usm']);
+// $usm = new Database($config['usm']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = [];
@@ -27,14 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ':schedule_id' => $_POST['schedule_id'],
             ]);
 
-            $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-                ':department_id' => 1,
-                ':user_id' => $_SESSION['user_id'],
-                ':action' => 'update',
-                ':description' => "Updated interview schedule with the schedule ID: {$_POST['schedule_id']} for applicant: {$_POST['first_name']}",
-                ':department_affected' => 'HR part 1&2',
-                ':module_affected' => 'recruitment and applicant management',
-            ]);
+            // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
+            //     ':department_id' => 1,
+            //     ':user_id' => $_SESSION['user_id'],
+            //     ':action' => 'update',
+            //     ':description' => "Updated interview schedule with the schedule ID: {$_POST['schedule_id']} for applicant: {$_POST['first_name']}",
+            //     ':department_affected' => 'HR part 1&2',
+            //     ':module_affected' => 'recruitment and applicant management',
+            // ]);
             $updated = true;
         }
     }
@@ -43,14 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ':schedule_id' => $_POST['id'],
         ]);
 
-        $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-            ':department_id' => 1,
-            ':user_id' => $_SESSION['user_id'],
-            ':action' => 'delete',
-            ':description' => "admin: {$_SESSION['username']} Deleted an applicant with the applicant ID: {$_POST['applicant_id']}",
-            ':department_affected' => 'HR part 1&2',
-            ':module_affected' => 'recruitment and applicant management',
-        ]);
+        // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
+        //     ':department_id' => 1,
+        //     ':user_id' => $_SESSION['user_id'],
+        //     ':action' => 'delete',
+        //     ':description' => "admin: {$_SESSION['username']} Deleted an applicant with the applicant ID: {$_POST['applicant_id']}",
+        //     ':department_affected' => 'HR part 1&2',
+        //     ':module_affected' => 'recruitment and applicant management',
+        // ]);
         $deleted = true;
     }
 }
