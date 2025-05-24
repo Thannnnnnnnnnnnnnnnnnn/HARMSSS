@@ -19,7 +19,7 @@ $connectionsList = [
     $connections["hr_1&2_usm"],
     $connections["fin_usm"],
     $connections["cr1_usm"],
-    $connections["cr3_usm"],
+    $connections["cr3_re_usm"],
     $connections["user_management"],
     $connections["hr34_usm"] ?? ''
 ];

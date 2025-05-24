@@ -34,6 +34,13 @@ $databases = [
     "cr2_room_facilities",
     "cr2_supplier_management",
 
+    // Core Transaction 3
+    "cr3_re",
+    "cr3_re_usm",
+    // "cr3_housekeeping",
+    // "cr3_room_facilities",
+    // "cr3_supplier_management",
+
     // Financial Transactions
     "fin_accounts_payable",
     "fin_budget_management",
