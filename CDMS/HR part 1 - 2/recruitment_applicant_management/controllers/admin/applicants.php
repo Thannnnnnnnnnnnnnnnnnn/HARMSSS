@@ -5,7 +5,13 @@ $config = require '../../config.php';
 require '../../Database.php';
 $db = new Database($config['database']);
 // $usm = new Database($config['usm']);
-
+function dd($data)
+{
+    echo '<pre>';
+    print_r($data);
+    echo '</pre>';
+    exit;
+}
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
@@ -36,7 +42,7 @@ FROM applicants a inner join applicationstatus s on a.applicant_id = s.applicant
 WHERE s.status != 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
-
+// dd($applicants); 
 $newhires = $db->query("SELECT
 a.*,
 s.status
@@ -44,4 +50,5 @@ FROM applicants a inner join applicationstatus s on a.applicant_id = s.applicant
 WHERE s.status = 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
+// dd($newhires);
 require '../../views/admin/applicants.view.php';

@@ -32,7 +32,6 @@
                 </div>
             <?php endif ?>
             <div class="w-full max-w-3xl p-6 rounded-lg shadow-lg bg-white border border-[#594423]">
-                <p class="text-sm mb-2">Posted by <?= htmlspecialchars($job['username']) ?></p>
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
                     <div>
                         <h1 class="text-2xl md:text-3xl font-bold text-black mb-2">

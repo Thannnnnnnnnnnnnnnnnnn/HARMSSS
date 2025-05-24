@@ -98,9 +98,9 @@
                                 <td class="email border-t"><?= htmlspecialchars($applicant['email']) ?></td>
                                 <td class="created_at border-t"><?= htmlspecialchars($applicant['created_at']) ?></td>
                                 <td class="border-t">
-                                    <a href="/admin/applicant?id=<?= htmlspecialchars($applicant['applicant_id']) ?>" class="btn border border-black"><i class="fa-solid fa-eye"></i></a>
-                                    <a href="/admin/applicant-update?id=<?= htmlspecialchars($applicant['applicant_id']) ?>" class="openModal btn btn-primary my-2"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <button data-id="<?= $user['user_id'] ?>" class="deleteModal btn btn-error my-2" onclick="my_modal_3.showModal()"><i class="fa-solid fa-trash"></i></button>
+                                    <a href="applicant.php?id=<?= htmlspecialchars($applicant['applicant_id']) ?>" class="btn border border-black"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="applicant-update.php?id=<?= htmlspecialchars($applicant['applicant_id']) ?>" class="openModal btn btn-primary my-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <button data-id="<?= $applicant['user_id'] ?>" class="deleteModal btn btn-error my-2" onclick="my_modal_3.showModal()"><i class="fa-solid fa-trash"></i></button>
                                     <dialog id="my_modal_3" class="modal modal-bottom sm:modal-middle">
                                         <div class="modal-box">
                                             <form method="dialog">

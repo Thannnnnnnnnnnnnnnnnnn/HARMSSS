@@ -2,18 +2,18 @@
 $config = require '../../config.php';
 // require "../../Database.php";
 $db = new Database($config['database']);
-$pm = new Database($config['pm']);
-$soc = new Database($config['socreg']);
+// $pm = new Database($config['pm']);
+// $soc = new Database($config['socreg']);
 $notifs = [];
 $notifications = $db->query('SELECT title, message FROM notifications WHERE `for` = :for', [
     ':for' => 'admin'
 ])->fetchAll();
 
-$pm_notifs = $pm->query('SELECT action FROM user_audit_trail')->fetchAll();
+// $pm_notifs = $pm->query('SELECT action FROM user_audit_trail')->fetchAll();
 // dd($pm_notifs);
-$socreg_notifs = $soc->query('SELECT title, message FROM notifications')->fetchAll();
+// $socreg_notifs = $soc->query('SELECT title, message FROM notifications')->fetchAll();
 // dd($socreg_notifs);
-$notifs = $notifications + $socreg_notifs;
+// $notifs = $notifications + $socreg_notifs;
 // dd($notifs);
 ?>
 <div class="shadow-sm sticky top-0 z-50">
@@ -48,12 +48,12 @@ $notifs = $notifications + $socreg_notifs;
                         <?php foreach ($notifications as $notification) : ?>
                             <li class="px-4 py-2 text-sm text-gray-600 border-b hover:bg-[#f7e6ca]"><a><?= $notification['title'] ?></a></li>
                         <?php endforeach; ?>
-                        <?php foreach ($pm_notifs as $pm_notif) : ?>
+                        <!-- <?php foreach ($pm_notifs as $pm_notif) : ?>
                             <li class="px-4 py-2 text-sm text-gray-600 border-b hover:bg-[#f7e6ca"><a><?= $pm_notif['action'] ?></a></li>
                         <?php endforeach; ?>
                         <?php foreach ($socreg_notifs as $soc_notif) : ?>
                             <li class="px-4 py-2 text-sm text-gray-600 border-b hover:bg-[#f7e6ca"><a><?= $soc_notif['message'] ?></a></li>
-                        <?php endforeach; ?>
+                        <?php endforeach; ?> -->
                     </div>
                 </div>
             </div>

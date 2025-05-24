@@ -1,9 +1,11 @@
 <?php
 session_start();
 $heading = 'Job Posting';
+require '../../functions.php';
 $config = require '../../config.php';
 require '../../Database.php';
 $db = new Database($config['database']);
+$nhoes = new Database($config['nhoes']);
 // $usm = new Database($config['usm']);
 
 $errors = [];
@@ -95,12 +97,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $job = $db->query('SELECT 
 j.*,
-u.username,
-u.user_id,
 p.*
-FROM jobpostings j INNER JOIN user_accounts u on u.user_id = j.posted_by 
-INNER JOIN prerequisites p on p.posting_id = j.posting_id
+FROM jobpostings j INNER JOIN prerequisites p on p.posting_id = j.posting_id
 WHERE j.posting_id = :posting_id', [
     ':posting_id' => $_GET['id'],
 ])->fetch();
+$departments = $nhoes->query('SELECT * FROM departments')->fetchAll();
+// dd($departments);
+// dd($job);
 require '../../views/admin/job.view.php';
