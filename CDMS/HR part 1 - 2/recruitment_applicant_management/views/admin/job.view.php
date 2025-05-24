@@ -1,11 +1,11 @@
-<?php require 'partials/admin/head.php' ?>
+<?php require '../../partials/admin/head.php' ?>
 
 <div class="flex min-h-screen w-full text-black">
     <div class="sidebar-overlay fixed top-0 left-0 w-full h-full bg-black opacity-50 z-40 hidden" id="sidebar-overlay"></div>
-    <?php require 'partials/admin/sidebar.php' ?>
+    <?php require '../../partials/admin/sidebar.php' ?>
 
     <div class="main w-full bg-[#FFF6E8] md:ml-[320px] transition-all duration-300">
-        <?php require 'partials/admin/navbar.php' ?>
+        <?php require '../../partials/admin/navbar.php' ?>
         <main class="px-4 py-10 flex flex-col items-center">
             <?php if ($success ?? '' == true) : ?>
                 <div role="alert" class="alert alert-success mb-4 w-full">
@@ -228,4 +228,4 @@
     });
 </script>
 
-<?php require 'partials/admin/footer.php' ?>
+<?php require '../../partials/admin/footer.php' ?>

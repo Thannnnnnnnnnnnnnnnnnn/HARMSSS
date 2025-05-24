@@ -1,11 +1,11 @@
-<?php require 'partials/admin/head.php' ?>
+<?php require '../../partials/admin/head.php' ?>
 
 
 <div class="flex min-h-screen w-full text-[#594423]">
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
-    <?php require 'partials/admin/sidebar.php' ?>
+    <?php require '../../partials/admin/sidebar.php' ?>
     <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">
-        <?php require 'partials/admin/navbar.php' ?>
+        <?php require '../../partials/admin/navbar.php' ?>
         <div class="text-end pe-10 pt-10">
             <a href="/admin/users" class="hover:underline text-blue-500"><i class="fa-solid fa-arrow-left"></i> Back to users page</a>
         </div>
@@ -82,4 +82,4 @@
             });
         });
     </script>
-    <?php require 'partials/admin/footer.php' ?>
+    <?php require '../../partials/admin/footer.php' ?>
