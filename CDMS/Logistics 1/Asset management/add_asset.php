@@ -147,7 +147,7 @@ if (!$result) {
                         <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('DTS-dropdown', this)">
                             <div class="flex items-center space-x-2">
                                 <i class="bx bx-calculator text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Asset management</span>
+                                <span class="text-sm font-medium">Document tracking</span>
                             </div>
                             <div class="arrow">
                                 <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
@@ -156,13 +156,13 @@ if (!$result) {
                     <div id="DTS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
                         <ul class="space-y-1">
                         <li>
-                                <a href="../Asset management/add_asset" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-check-shield text-lg"></i> <span>Asset</span>
+                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                                    <i class="bx bx-check-shield text-lg"></i> <span>Approvals</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-folder text-lg"></i> <span>Release asset</span>
+                                    <i class="bx bx-folder text-lg"></i> <span>Document categories</span>
                                 </a>
                             </li>
                             <li>

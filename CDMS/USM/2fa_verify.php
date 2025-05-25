@@ -20,7 +20,7 @@ $connectionsList = [
     $connections["fin_usm"],
     $connections["cr1_usm"],
     $connections["user_management"],
-    $connections["hr34_usm"] ?? ''
+    $connections["hr34_usm"],
 ];
 
 // === Function: Resolve User Name Across Databases ===

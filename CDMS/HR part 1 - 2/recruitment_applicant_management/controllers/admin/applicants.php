@@ -69,8 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ]);
         switch ($applicant['department_id']) {
             case 1:
-                $nhoes->query("INSERT INTO employees (FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                // dd("HR 1&2");
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                    ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
                     ':Email' => $applicant['email'],
@@ -80,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
                 ]);
-                $nhoes->query("INSERT INTO documents (DocumentType, EmployeeID, FilePath) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
+                $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
                     ':EmployeeID' => $nhoes->pdo->lastInsertId(),
                     ':FilePath' => $applicant['resume'],
@@ -118,8 +120,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 break;
             case 2:
-                $nhoes->query("INSERT INTO employees (FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                // dd("HR 3&4");
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                    ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
                     ':Email' => $applicant['email'],
@@ -129,13 +133,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
                 ]);
-                $nhoes->query("INSERT INTO documents (DocumentType, EmployeeID, FilePath) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
+                $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
                     ':EmployeeID' => $nhoes->pdo->lastInsertId(),
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $hr34_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "HR120303",
+                    ':Department_ID' => "HR220303",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -167,8 +171,10 @@ The HR Team
                 // dd("HR 3&4");
                 break;
             case 3:
-                $nhoes->query("INSERT INTO employees (FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                // dd("Logistic 1");
+                $nhoes->query("INSERT INTO employees (EmployeeID FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                    ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
                     ':Email' => $applicant['email'],
@@ -178,7 +184,7 @@ The HR Team
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
                 ]);
-                $nhoes->query("INSERT INTO documents (DocumentType, EmployeeID, FilePath) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
+                $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
                     ':EmployeeID' => $nhoes->pdo->lastInsertId(),
                     ':FilePath' => $applicant['resume'],
@@ -216,8 +222,10 @@ The HR Team
                 // dd("Logistic 1");
                 break;
             case 4:
-                $nhoes->query("INSERT INTO employees (FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                dd("Logistic 2");
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                    ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
                     ':Email' => $applicant['email'],
@@ -227,7 +235,7 @@ The HR Team
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
                 ]);
-                $nhoes->query("INSERT INTO documents (DocumentType, EmployeeID, FilePath) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
+                $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
                     ':EmployeeID' => $nhoes->pdo->lastInsertId(),
                     ':FilePath' => $applicant['resume'],
@@ -265,8 +273,10 @@ The HR Team
                 // dd("Logistic 2");
                 break;
             case 5:
-                $nhoes->query("INSERT INTO employees (FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                // dd("CR 1");
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                    ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
                     ':Email' => $applicant['email'],
@@ -276,7 +286,7 @@ The HR Team
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
                 ]);
-                $nhoes->query("INSERT INTO documents (DocumentType, EmployeeID, FilePath) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
+                $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
                     ':EmployeeID' => $nhoes->pdo->lastInsertId(),
                     ':FilePath' => $applicant['resume'],
@@ -314,8 +324,10 @@ The HR Team
                 // dd("Core transaction 1");
                 break;
             case 6:
-                $nhoes->query("INSERT INTO employees (FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                // dd("CR 2"); 
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                    ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
                     ':Email' => $applicant['email'],
@@ -325,7 +337,7 @@ The HR Team
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
                 ]);
-                $nhoes->query("INSERT INTO documents (DocumentType, EmployeeID, FilePath) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
+                $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
                     ':EmployeeID' => $nhoes->pdo->lastInsertId(),
                     ':FilePath' => $applicant['resume'],
@@ -363,8 +375,10 @@ The HR Team
                 // dd("Core transaction 2");
                 break;
             case 7:
-                $nhoes->query("INSERT INTO employees (FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                // dd("CR 3");
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                    ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
                     ':Email' => $applicant['email'],
@@ -374,7 +388,7 @@ The HR Team
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
                 ]);
-                $nhoes->query("INSERT INTO documents (DocumentType, EmployeeID, FilePath) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
+                $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
                     ':EmployeeID' => $nhoes->pdo->lastInsertId(),
                     ':FilePath' => $applicant['resume'],
@@ -412,8 +426,10 @@ The HR Team
                 // dd("Core transaction 3");
                 break;
             case 8:
-                $nhoes->query("INSERT INTO employees (FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                // dd("Financials");
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                    ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
                     ':Email' => $applicant['email'],
@@ -423,7 +439,7 @@ The HR Team
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
                 ]);
-                $nhoes->query("INSERT INTO documents (DocumentType, EmployeeID, FilePath) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
+                $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
                     ':EmployeeID' => $nhoes->pdo->lastInsertId(),
                     ':FilePath' => $applicant['resume'],
