@@ -3,6 +3,7 @@
  * API Endpoint: Get Users
  * Retrieves a list of system users with their associated employee and role details.
  * Optionally filters by RoleID.
+ * Version: Simplified for default admin access
  */
 
 // --- Error Reporting & Headers ---
@@ -11,17 +12,13 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 // ini_set('error_log', '/path/to/your/php-error.log');
 
-session_start(); // Needed for authorization check
-
-$_SESSION['user_id'] = 10; // Example user ID
- $_SESSION['role_id'] = 1; // Example role
- $_SESSION['employee_id'] = 17; // Example employee_id if needed by the role
+// session_start(); // No longer strictly needed for this script's direct purpose
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // Adjust for production
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Credentials: true');
+// header('Access-Control-Allow-Credentials: true'); // Not needed if not relying on session cookies
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -43,15 +40,16 @@ try {
     exit;
 }
 
-// --- Authorization Check ---
-// Only allow System Admins to view the user list
-$allowed_roles = [1]; // RoleID 1 = System Admin
-if (!isset($_SESSION['role_id']) || !in_array($_SESSION['role_id'], $allowed_roles)) {
-     http_response_code(403); // Forbidden
-     echo json_encode(['error' => 'Permission denied. You do not have rights to view users.']);
-     exit;
-}
-// --- End Auth Check ---
+// --- Authorization Check (Simplified for Default Admin) ---
+// Since login is bypassed, we assume any call to this endpoint is authorized for the default admin.
+// The original check was:
+// $allowed_roles = [1]; // RoleID 1 = System Admin
+// if (!isset($_SESSION['role_id']) || !in_array($_SESSION['role_id'], $allowed_roles)) {
+//      http_response_code(403); // Forbidden
+//      echo json_encode(['error' => 'Permission denied. You do not have rights to view users.']);
+//      exit;
+// }
+// --- End Simplified Auth Check ---
 
 
 // --- Optional Filters ---
@@ -83,10 +81,19 @@ try {
 
     $conditions = [];
 
+    // Since we simplified roles to only RoleID = 1 (System Admin),
+    // this filter might always effectively be for RoleID 1 or not needed.
+    // However, keeping the logic in case it's used for other purposes or if roles are re-introduced.
     if ($role_id_filter !== null && $role_id_filter > 0) {
         $conditions[] = "u.RoleID = :role_id";
         $params[':role_id'] = $role_id_filter;
+    } else {
+        // If no role filter, and we only have System Admins, we can implicitly filter for RoleID 1
+        // or just fetch all users if the role simplification means all users are now RoleID 1.
+        // The SQL already joins on RoleID, so it will fetch users with their assigned roles.
+        // If all users were updated to RoleID 1, this will fetch all of them.
     }
+
 
     if (!empty($conditions)) {
         $sql .= " WHERE " . implode(" AND ", $conditions);

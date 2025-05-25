@@ -1,7 +1,8 @@
 <?php
 /**
  * API Endpoint: Get Notifications
- * Retrieves notifications for the currently logged-in user.
+ * Retrieves notifications for the default admin user.
+ * Version: Simplified for default admin access
  */
 
 // --- Error Reporting & Headers ---
@@ -10,13 +11,13 @@ ini_set('display_errors', 0); // Production: 0, Development: 1
 ini_set('log_errors', 1);
 // ini_set('error_log', '/path/to/your/php-error.log'); // Set a specific log file path if needed
 
-session_start(); // Needed for authentication
+// session_start(); // No longer strictly needed for this script's direct purpose, but harmless if other includes need it.
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // IMPORTANT: For production, restrict this.
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Credentials: true');
+// header('Access-Control-Allow-Credentials: true'); // Not needed if we're not relying on session cookies for this API
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -38,19 +39,15 @@ try {
     exit;
 }
 
-// --- Authentication Check ---
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(['error' => 'Authentication required. Please log in.']);
-    exit;
-}
-$loggedInUserId = $_SESSION['user_id'];
-// --- End Authentication Check ---
+// --- Simplified Authentication: Assume Default Admin ---
+// UserID 5 (Maria Santos) is our default System Admin from the sample data.
+$defaultAdminUserId = 5; 
+$loggedInUserId = $defaultAdminUserId; 
+// --- End Simplified Authentication ---
 
 // --- Fetch Notifications ---
 try {
     // Fetch a limited number of notifications, prioritizing unread ones.
-    // You can adjust the LIMIT as needed.
     $limit = 15; // Number of notifications to fetch
 
     $sql = "SELECT
