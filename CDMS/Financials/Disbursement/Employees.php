@@ -19,7 +19,7 @@
                                     <tr>
                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider rounded-tl-lg" >Employee ID</th>
                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" >Employee Name</th>
-                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" >Types</th>
+                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" >Department ID</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
@@ -37,8 +37,8 @@
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr class='hover:bg-gray-50'>
                                                     <td class='px-6 py-4 whitespace-nowrap text-md text-gray-800'>{$row['EmployeeID']}</td>
-                                                    <td class='px-6 py-4 whitespace-nowrap text-md text-gray-800'>{$row['EmployeeName']}</td>
-                                                     <td class='px-6 py-4 whitespace-nowrap text-md text-gray-800'>{$row['Types']}</td>
+                                                    <td class='px-6 py-4 whitespace-nowrap text-md text-gray-800'>{$row['FirstName']}</td>
+                                                     <td class='px-6 py-4 whitespace-nowrap text-md text-gray-800'>{$row['DepartmentID']}</td>
                                                   </tr>";
                                         }
                                     } else {
