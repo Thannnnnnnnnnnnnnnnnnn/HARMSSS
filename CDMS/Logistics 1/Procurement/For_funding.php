@@ -22,9 +22,9 @@ if ($result_sql === false) {
 
 // Unified query to count various reservation statuses
 $query = "SELECT 
-        (SELECT COUNT(*) FROM for_funding) AS total_request,
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Pending for funds request') AS For_clearance_Approval,
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds approved') AS Denied_request,
+        (SELECT COUNT(*) FROM for_funding WHERE status = 'Pending for funds request') AS total_request,
+        (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds successfully requested') AS For_clearance_Approval,
+        (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds requisition was cancelled') AS Denied_request,
         (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds denied') AS Clearance_approve
 ";
 
@@ -368,7 +368,7 @@ if (!$result) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
             <i class='bx bxs-file-doc text-xl text-blue-600'></i>
-            <h2 class="dashboard-title">No. For funding</h2>
+            <h2 class="dashboard-title">Pending for funds request</h2>
           </div>
           <p class="dashboard-number text-black-600 font-semibold">
             <?php echo isset($total_request_count) ? $total_request_count : '0'; ?>
@@ -386,7 +386,7 @@ if (!$result) {
             <h2 class="dashboard-title">No. Funds requested</h2>
           </div>
           <p class="dashboard-number text-black-600 font-semibold">
-            <?php echo isset($total_request_count) ? $total_request_count : '0'; ?>
+            <?php echo isset($FRA_count) ? $FRA_count : '0'; ?>
           </p>
         </div>
       </div>
@@ -478,16 +478,17 @@ if (!$result) {
     <i class="bx bx-show"></i>
 </button>
 <b> | </b>
-<!-- approved Button -->
-<button class="bg-green-600 hover:bg-red-800 text-white px-4 py-2 rounded"
-        onclick="denyPermit('<?php echo urlencode($row['funding_id']); ?>')">
+<!-- Approve Button -->
+<button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded"
+        onclick="approveFunding('<?php echo urlencode($row['funding_id']); ?>')">
     <i class='bx bx-check-circle'></i>
 </button>
 
 <b> | </b>
-<!-- Denied Button -->
+
+<!-- Deny Button -->
 <button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded"
-        onclick="denyPermit('<?php echo urlencode($row['funding_id']); ?>')">
+        onclick="denyFunding('<?php echo urlencode($row['funding_id']); ?>')">
     <i class='bx bx-x-circle'></i>
 </button>
 
@@ -584,6 +585,8 @@ if (!$result) {
     <script src="../JS/edit_purchase.js"> </script>
     <script src="../JS/cancel.js"> </script>
     <script src="../JS/notification_pr.js"> </script>
+    <script src="../JS/funding.js"> </script>
+
 
 
 

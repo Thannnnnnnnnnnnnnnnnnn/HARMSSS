@@ -92,9 +92,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['permit_id'])) {
     $notification_status = "Unread";
     $date_sent = date("Y-m-d H:i:s");
     $recipient_role = $submitted_by; // Adjust to correct role
-    $module = "Purchase Management";
+    $module = "Document Tracking";
 
-    $notifStmt = $conn->prepare("INSERT INTO notification_dt (title, message, status, date_sent, sent_by, User_ID, recipient_role, module) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $notifStmt = $log2_conn->prepare("INSERT INTO notification_dt (title, message, status, date_sent, sent_by, User_ID, recipient_role, module) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $notifStmt->bind_param("ssssssss", $notification_title, $notification_message, $notification_status, $date_sent, $submitted_by, $user_id, $recipient_role, $module);
     $notifStmt->execute();
     $notifStmt->close();

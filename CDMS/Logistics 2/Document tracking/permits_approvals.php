@@ -23,8 +23,8 @@ if ($result_sql === false) {
 // Unified query to count various reservation statuses
 $query = "SELECT 
         (SELECT COUNT(*) FROM permits_approval) AS total_request,
-        (SELECT COUNT(*) FROM permits_approval WHERE status = 'For clearance approval') AS For_clearance_Approval,
-        (SELECT COUNT(*) FROM permits_approval WHERE status = 'Permit Deined') AS Denied_request,
+        (SELECT COUNT(*) FROM permits_approval WHERE status = 'For permit approval') AS For_clearance_Approval,
+        (SELECT COUNT(*) FROM permits_approval WHERE status = 'Permit Denied') AS Denied_request,
         (SELECT COUNT(*) FROM permits_approval WHERE status = 'Permit Approved') AS Clearance_approve
 ";
 
@@ -414,10 +414,10 @@ if (!$result) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
             <i class='bx bx-time-five text-xl text-green-600'></i>
-            <h2 class="dashboard-title">Cancelled permit request</h2>
+            <h2 class="dashboard-title">Denied permit request</h2>
           </div>
           <p class="dashboard-number text-black-500 font-semibold">
-            <?php echo isset($CA_count) ? $CA_count : '0'; ?>
+            <?php echo isset($DR_count) ? $DR_count : '0'; ?>
           </p>
         </div>
       </div>
@@ -476,18 +476,20 @@ if (!$result) {
     <i class="bx bx-show"></i>
 </button>
 <b> | </b>
-<!-- approved Button -->
-<button class="bg-green-600 hover:bg-red-800 text-white px-4 py-2 rounded"
-        onclick="denyPermit('<?php echo urlencode($row['permit_id']); ?>')">
+<!-- Approve Button -->
+<button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded"
+        onclick="openApproveModal('<?php echo htmlspecialchars($row['permit_id'], ENT_QUOTES); ?>')">
     <i class='bx bx-check-circle'></i>
 </button>
 
 <b> | </b>
-<!-- Denied Button -->
+
+<!-- Deny Button -->
 <button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded"
-        onclick="denyPermit('<?php echo urlencode($row['permit_id']); ?>')">
+        onclick="openDenyModal('<?php echo htmlspecialchars($row['permit_id'], ENT_QUOTES); ?>')">
     <i class='bx bx-x-circle'></i>
 </button>
+
 
 
             </tr>
@@ -547,32 +549,30 @@ if (!$result) {
 </div>
 
 
-<!-- Cancel Modal -->
-<div id="cancelModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+<!-- Approve Modal -->
+<div id="approveModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-xl font-semibold mb-4 text-green-600">Approve Permit Request</h2>
+        <p class="mb-4">Are you sure you want to approve this permit request?</p>
+        <form id="approveForm" method="POST" action="approved_permit.php">
+            <input type="hidden" name="permit_id" id="approvePermitId">
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeApproveModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded">Approve</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Deny Modal -->
+<div id="denyModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-xl font-semibold mb-4 text-red-600">Deny Permit Request</h2>
         <p class="mb-4">Are you sure you want to deny this permit request?</p>
         <form id="denyForm" method="POST" action="deny_permit.php">
             <input type="hidden" name="permit_id" id="denyPermitId">
             <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeCancelModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Cancel</button>
-                <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded">Deny</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-
-
-<!-- approved Modal -->
-<div id="cancelModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 class="text-xl font-semibold mb-4 text-red-600">Approve Permit Request</h2>
-        <p class="mb-4">Are you sure you want to Approve this permit request?</p>
-        <form id="denyForm" method="POST" action="approved_permit.php">
-            <input type="hidden" name="permit_id" id="denyPermitId">
-            <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeCancelModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Cancel</button>
+                <button type="button" onclick="closeDenyModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Cancel</button>
                 <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded">Deny</button>
             </div>
         </form>
@@ -585,7 +585,7 @@ if (!$result) {
     <script src="../JS/view_modal.js"> </script>
     <script src="../JS/edit_purchase.js"> </script>
     <script src="../JS/cancel_permit.js"> </script>
-        <script src="../JS/approved_permit.js"> </script>
+    <script src="../JS/approved_permit.js"> </script>
 
     <script src="../JS/notification_pr.js"> </script>
 

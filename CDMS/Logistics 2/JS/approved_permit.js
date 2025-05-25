@@ -19,3 +19,20 @@ function denyPermit(permitId) {
         }
     });
 }
+function openApproveModal(permitId) {
+    document.getElementById("approvePermitId").value = permitId;
+    document.getElementById("approveModal").classList.remove("hidden");
+}
+
+function closeApproveModal() {
+    document.getElementById("approveModal").classList.add("hidden");
+}
+
+function openDenyModal(permitId) {
+    document.getElementById("denyPermitId").value = permitId;
+    document.getElementById("denyModal").classList.remove("hidden");
+}
+
+function closeDenyModal() {
+    document.getElementById("denyModal").classList.add("hidden");
+}

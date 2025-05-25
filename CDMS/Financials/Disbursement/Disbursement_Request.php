@@ -100,7 +100,7 @@
                                     }
 
                                    
-                                    $query = "SELECT d.RequestID, d.EmployeeID, e.EmployeeName, d.AllocationID, d.Amount, d.DateOfRequest, d.Status 
+                                    $query = "SELECT d.RequestID, d.EmployeeID, e.FirstName, d.AllocationID, d.Amount, d.DateOfRequest, d.Status 
                                               FROM disbursementrequests d 
                                               JOIN employees e ON d.EmployeeID = e.EmployeeID 
                                               ORDER BY d.RequestID ASC";
@@ -120,7 +120,7 @@
                                             echo "<tr class='hover:bg-gray-50'>
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['RequestID']}</td>
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['EmployeeID']}</td>
-                                                    <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['EmployeeName']}</td>
+                                                    <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['FirstName']}</td>
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['AllocationID']}</td>
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>₱" . number_format($row['Amount'], 2) . "</td>
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['DateOfRequest']}</td>

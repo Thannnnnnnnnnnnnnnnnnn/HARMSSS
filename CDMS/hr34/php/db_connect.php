@@ -22,7 +22,7 @@ ini_set('log_errors', 1);
 // but ideally, these should always be set in the environment.
 $db_host = getenv('DB_HOST') ?: '127.0.0.1';      // Default to 'localhost' if env var not set
 $db_name = getenv('DB_NAME') ?: 'hr_integrated_db'; // Default to 'hr_integrated_db' if env var not set
-$db_user = getenv('DB_USER') ?: '3206_INTEGRATED_DB';           // Default to 'root' if env var not set
+$db_user = getenv('DB_USER') ?: '3206_CENTRALIZED_DATABASE';           // Default to 'root' if env var not set
 $db_pass = getenv('DB_PASS') ?: '4562526';               // Default to empty password if env var not set
 $charset = 'utf8mb4';
 
