@@ -1,13 +1,4 @@
 <?php
-// Prevent multiple inclusion
-if (defined('DB_CONFIG_INCLUDED')) {
-    return;
-}
-
-// Start session for CSRF protection if not already started
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 // Database configuration - using const for better performance
 const DB_HOST = 'localhost';
@@ -15,16 +6,11 @@ const DB_USER = 'root';
 const DB_PASS = '';
 const DB_NAME = 'logs2_audit_management';
 
-// Mark as included
-define('DB_CONFIG_INCLUDED', true);
 
 // Generate CSRF token if not exists
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-
-// Include database helpers first
-require_once __DIR__ . '/database_helpers.php';
 
 // Error handling
 try {
