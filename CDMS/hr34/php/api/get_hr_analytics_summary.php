@@ -7,13 +7,13 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 // ini_set('error_log', '/path/to/your/php-error.log'); 
 
-session_start(); 
+// session_start(); // No longer strictly needed for this script's direct purpose
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); 
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Credentials: true'); 
+// header('Access-Control-Allow-Credentials: true'); // Not needed if not relying on session cookies
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -28,7 +28,7 @@ try {
         throw new Exception('Database connection object ($pdo) not properly created by db_connect.php.');
     }
 } catch (Throwable $e) {
-    error_log("PHP Error in get_hr_analytics_summary.php (db_connect include): " . $e->getMessage());
+    error_log("PHP Error in " . __FILE__ . " (db_connect include): " . $e->getMessage());
     if (!headers_sent()) { 
         header('Content-Type: application/json'); 
         http_response_code(500); 
@@ -37,13 +37,18 @@ try {
     exit;
 }
 
-// --- Authorization Check ---
-$allowed_roles = [1, 2]; 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role_id']) || !in_array((int)$_SESSION['role_id'], $allowed_roles)) {
-     http_response_code(403); 
-     echo json_encode(['error' => 'Permission denied. You do not have rights to view HR analytics.']);
-     exit;
-}
+// --- Authorization Check (Simplified for Default Admin) ---
+// Since we've removed login, we assume any call to this endpoint is for the default admin.
+// No specific role check is needed here anymore if this endpoint is intended for the admin dashboard.
+// If specific role-based data filtering were still needed, it would have to be re-thought.
+// For now, we proceed as if authorized.
+// $allowed_roles = [1, 2]; // System Admin, HR Admin
+// if (!isset($_SESSION['user_id']) || !isset($_SESSION['role_id']) || !in_array((int)$_SESSION['role_id'], $allowed_roles)) {
+//      http_response_code(403); 
+//      echo json_encode(['error' => 'Permission denied. You do not have rights to view HR analytics.']);
+//      exit;
+// }
+// --- End Simplified Authorization Check ---
 
 $analytics_summary = [
     'totalActiveEmployees' => 0,
@@ -51,9 +56,9 @@ $analytics_summary = [
     'totalLeaveDaysRequestedThisYear' => 0,
     'totalPayrollCostLastRun' => 0,
     'lastPayrollRunIdForCost' => null,
-    'averageTenureYears' => 0, // New KPI
-    'totalLeaveTypes' => 0,      // New KPI
-    'leaveDaysByTypeThisYear' => [], // New Chart Data
+    'averageTenureYears' => 0, 
+    'totalLeaveTypes' => 0,      
+    'leaveDaysByTypeThisYear' => [], 
     'error' => null 
 ];
 
@@ -113,7 +118,6 @@ try {
     }
 
     // 5. Average Active Employee Tenure (in years)
-    // Calculates the average tenure based on HireDate for active employees.
     $sql_avg_tenure = "SELECT AVG(DATEDIFF(CURDATE(), HireDate) / 365.25) as AvgTenure
                        FROM Employees
                        WHERE IsActive = TRUE AND HireDate IS NOT NULL";
@@ -126,7 +130,6 @@ try {
     }
 
     // 6. Total Number of Configured Leave Types
-    // Counts the distinct types of leave available.
     $stmt_total_leave_types = $pdo->query("SELECT COUNT(*) FROM LeaveTypes WHERE IsActive = TRUE");
     if ($stmt_total_leave_types) {
         $analytics_summary['totalLeaveTypes'] = (int)$stmt_total_leave_types->fetchColumn();
@@ -135,7 +138,6 @@ try {
     }
 
     // 7. Approved Leave Days by Type This Year (for Pie Chart)
-    // Gathers data on the number of approved leave days for each leave type within the current year.
     $sql_leave_by_type = "SELECT lt.TypeName, SUM(lr.NumberOfDays) as TotalDays
                           FROM LeaveRequests lr
                           JOIN LeaveTypes lt ON lr.LeaveTypeID = lt.LeaveTypeID
