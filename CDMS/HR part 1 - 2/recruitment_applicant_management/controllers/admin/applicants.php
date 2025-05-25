@@ -9,9 +9,7 @@ $nhoes = new Database($config['nhoes']);
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // dd($applicants);
     if ($_POST['approve'] ?? '' === 'true') {
-        // dd($_POST);
         $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
             ':status' => 'approved',
             ':applicant_id' => $_POST['applicant_id'],
@@ -21,14 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
     if ($_POST['reject'] ?? '' === 'true') {
-        // dd($_POST);
         $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
             ':status' => 'rejected',
             ':applicant_id' => $_POST['applicant_id'],
         ]);
     }
     if ($_POST['hire'] ?? '' === 'true') {
-        // dd($_POST);
         $applicant = $db->query("SELECT
         a.*,
         s.status,
@@ -38,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         WHERE a.applicant_id = :applicant_id", [
             ':applicant_id' => $_POST['applicant_id'],
         ])->fetch();
-        dd($applicant);
         $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
             ':status' => 'hired',
             ':applicant_id' => $_POST['applicant_id'],
@@ -67,7 +62,6 @@ INNER JOIN jobpostings j ON a.posting_id = j.posting_id
 WHERE s.status != 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
-// dd($applicants);
 
 $newhires = $db->query("SELECT
 a.*,
@@ -76,6 +70,5 @@ FROM applicants a inner join applicationstatus s on a.applicant_id = s.applicant
 WHERE s.status = 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
-// dd($newhires);
 
 require '../../views/admin/applicants.view.php';
