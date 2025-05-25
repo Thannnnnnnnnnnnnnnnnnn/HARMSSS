@@ -3,40 +3,73 @@ session_start();
 $heading = 'Applicants';
 $config = require '../../config.php';
 require '../../Database.php';
+require '../../functions.php';
 $db = new Database($config['database']);
-// $usm = new Database($config['usm']);
+$nhoes = new Database($config['nhoes']);
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    try {
-        $db->query("DELETE FROM applicants WHERE applicant_id = :applicant_id", [
-            ':applicant_id' => $_POST['id'],
+    if ($_POST['approve'] ?? '' === 'true') {
+        $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+            ':status' => 'approved',
+            ':applicant_id' => $_POST['applicant_id'],
         ]);
 
-        // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-        //     ':department_id' => 1,
-        //     ':user_id' => $_SESSION['user_id'],
-        //     ':action' => 'delete',
-        //     ':description' => "admin: {$_SESSION['username']} Deleted an applicant with the applicant ID: {$_POST['applicant_id']}",
-        //     ':department_affected' => 'HR part 1&2',
-        //     ':module_affected' => 'recruitment and applicant management',
-        // ]);
-        $delete = true;
-    } catch (PDOException $e) {
-        if ($e->getCode() == 23000) {
-            $error = 'Error: Action could not be completed. Please contact support for assistance.';
-        }
+        header('location: interview_schedules-create.php');
+        exit();
+    }
+    if ($_POST['reject'] ?? '' === 'true') {
+        $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+            ':status' => 'rejected',
+            ':applicant_id' => $_POST['applicant_id'],
+        ]);
+    }
+    if ($_POST['hire'] ?? '' === 'true') {
+        $applicant = $db->query("SELECT
+        a.*,
+        s.status,
+        j.department_id
+        FROM applicants a inner join applicationstatus s on a.applicant_id = s.applicant_id
+        INNER JOIN jobpostings j ON a.posting_id = j.posting_id
+        WHERE a.applicant_id = :applicant_id", [
+            ':applicant_id' => $_POST['applicant_id'],
+        ])->fetch();
+        $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+            ':status' => 'hired',
+            ':applicant_id' => $_POST['applicant_id'],
+        ]);
+
+        $nhoes->query("INSERT INTO employees (first_name, last_name, email, phone_number, DateOfBirth, AddressLine1, department, hire_date)
+        VALUES (:first_name, :last_name, :email, :phone_number, :DateOfBirth, :AddressLine1, :department, :hire_date)", [
+            ':first_name' => $applicants['first_name'],
+            ':last_name' => $applicants['last_name'],
+            ':email' => $applicants['email'],
+            ':phone_number' => $applicants['phone_number'],
+            ':DateOfBirth' => $applicants['date_of_birth'],
+            ':AddressLine1' => $applicants['address'],
+            ':department' => $applicants['department'],
+            ':hire_date' => $applicants['updated_at'],
+        ]);
+
+        $nhoes->query("INSERT INTO documents(document_type, employee_id, file_path) VALUES
+        (:document_type, :employee_id, :file_path)", [
+            ':document_type' => 'Resume',
+            ':employee_id' => $nhoes->pdo->lastInsertId(),
+            ':file_path' => $applicant['resume'],
+        ]);
     }
 }
 
 $applicants = $db->query("SELECT
 a.*,
-s.status
+s.status,
+j.department_id
 FROM applicants a inner join applicationstatus s on a.applicant_id = s.applicant_id
+INNER JOIN jobpostings j ON a.posting_id = j.posting_id
 WHERE s.status != 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
-
+// dd($applicants);
 $newhires = $db->query("SELECT
 a.*,
 s.status
@@ -44,4 +77,5 @@ FROM applicants a inner join applicationstatus s on a.applicant_id = s.applicant
 WHERE s.status = 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
+
 require '../../views/admin/applicants.view.php';

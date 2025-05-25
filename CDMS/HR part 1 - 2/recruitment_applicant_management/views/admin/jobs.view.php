@@ -56,6 +56,15 @@
                                         <option value="part-time" class="text-center">part time</option>
                                     </select>
                                 </div>
+                                <div class="flex flex-col items-center col-span-2">
+                                    <label for="department" class="mb-2 text-black font-normal">Employment Type</label>
+                                    <select name="department" id="department" class="w-full text-center input border border-[#594423]" value="<?= htmlspecialchars($_POST['department'] ?? '') ?>">
+                                        <option selected disabled class="text-center">Choose an option:</option>
+                                        <?php foreach ($departments as $department) : ?>
+                                            <option value="<?= $department['dept_id'] ?>" class="text-center"><?= $department['department_name'] ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
                                 <div class="flex flex-col items-center col-span-1">
                                     <label for="salary" class="mb-2 text-black font-normal">Salary</label>
                                     <input type="number" placeholder="Type here" name="salary" class="input border border-[#594423] text-center" id="salary" value="<?= htmlspecialchars($_POST['salary'] ?? '') ?>" />
@@ -87,7 +96,6 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     <?php foreach ($postings as $posting) : ?>
                         <div class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg p-5 rounded-xl shadow-lg border border-[#594423] flex flex-col h-full transition transform hover:-translate-y-1 hover:shadow-xl">
-                            <p><span>Posted By:</span> <?= htmlspecialchars($posting['username'])     ?></p>
                             <h3 class="text-lg font-bold text-[#3D2F1F] mb-2"><?= htmlspecialchars($posting['job_title']) ?></h3>
 
                             <p class="text-sm text-gray-500 font-medium mb-2"><?= htmlspecialchars($posting['company']) ?></p>
@@ -100,9 +108,16 @@
                             <p class="inline-block w-fit text-xs font-semibold px-3 py-1 bg-[#3D2F1F] text-white rounded-lg">
                                 <?= htmlspecialchars($posting['employment_type']) ?>
                             </p>
+                            <p class="">
+                                <?php foreach ($departments as $department) : ?>
+                                    <?php if ($posting['department_id'] === $department['dept_id']) : ?>
+                                        <?= htmlspecialchars($department['department_name']) ?>
+                                    <?php endif ?>
+                                <?php endforeach ?>
+                            </p>
 
                             <div class="mt-auto pt-4">
-                                <a href="/admin/job?id=<?= htmlspecialchars($posting['posting_id']) ?>"
+                                <a href="job.php?id=<?= htmlspecialchars($posting['posting_id']) ?>"
                                     class="block text-center bg-[#3D2F1F] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#594423] transition">
                                     See Details
                                 </a>

@@ -3,63 +3,93 @@
 session_start();
 $heading = 'Interview Schedules';
 $config = require '../../config.php';
+require '../../functions.php';
 require '../../Database.php';
 $db = new Database($config['database']);
 // $usm = new Database($config['usm']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = [];
-    validate('date', $errors);
-    validate('time', $errors);
-    validate('location', $errors);
-    validate('mode', $errors);
-    validate('interview_type', $errors);
-    validate('interview_status', $errors);
+    // validate('date', $errors);
+    // validate('time', $errors);
+    // validate('location', $errors);
+    // validate('mode', $errors);
+    // validate('interview_type', $errors);
+    // validate('interview_status', $errors);
+    // dd($errors);
     if (empty($errors)) {
-        if ($_POST['update'] ?? '' == true) {
-            $db->query("UPDATE interviewschedules SET date = :date, time = :time, location = :location, mode = :mode, interview_type = :interview_type, interview_status = :interview_status WHERE schedule_id = :schedule_id", [
-                ':date' => $_POST['date'],
-                ':time' => $_POST['time'],
-                ':location' => $_POST['location'],
-                ':mode' => $_POST['mode'],
-                ':interview_type' => $_POST['interview_type'],
-                ':interview_status' => $_POST['interview_status'],
+        // dd($_POST);
+
+        if ($_POST['pass'] ?? '' === true) {
+            $db->query("UPDATE interviewschedules SET interview_status = :interview_status WHERE schedule_id = :schedule_id", [
+                ':interview_status' => 'passed',
                 ':schedule_id' => $_POST['schedule_id'],
             ]);
-
-            // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-            //     ':department_id' => 1,
-            //     ':user_id' => $_SESSION['user_id'],
-            //     ':action' => 'update',
-            //     ':description' => "Updated interview schedule with the schedule ID: {$_POST['schedule_id']} for applicant: {$_POST['first_name']}",
-            //     ':department_affected' => 'HR part 1&2',
-            //     ':module_affected' => 'recruitment and applicant management',
-            // ]);
-            $updated = true;
+            if ($_POST['interview_type'] === 'initial') {
+                // dd('initial interview passed');
+                $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+                    ':status' => 'initial interview passed',
+                    ':applicant_id' => $_POST['applicant_id'],
+                ]);
+            } else {
+                // dd('final interview passed');
+                $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+                    ':status' => 'final interview passed',
+                    ':applicant_id' => $_POST['applicant_id'],
+                ]);
+                header('location: applicants.php');
+            }
+            // $updated = true;
         }
     }
-    if ($_POST['delete'] ?? '' == true) {
-        $db->query("DELETE FROM interviewschedules WHERE schedule_id = :schedule_id", [
-            ':schedule_id' => $_POST['id'],
+    if ($_POST['fail'] ?? '' === true) {
+        $db->query("UPDATE interviewschedules SET interview_status = :interview_status WHERE schedule_id = :schedule_id", [
+            ':interview_status' => 'failed',
+            ':schedule_id' => $_POST['schedule_id'],
         ]);
-
-        // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-        //     ':department_id' => 1,
-        //     ':user_id' => $_SESSION['user_id'],
-        //     ':action' => 'delete',
-        //     ':description' => "admin: {$_SESSION['username']} Deleted an applicant with the applicant ID: {$_POST['applicant_id']}",
-        //     ':department_affected' => 'HR part 1&2',
-        //     ':module_affected' => 'recruitment and applicant management',
-        // ]);
-        $deleted = true;
+        if ($_POST['interview_type'] === 'initial') {
+            $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+                ':status' => 'initial interview failed',
+                ':applicant_id' => $_POST['applicant_id'],
+            ]);
+        } else {
+            $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+                ':status' => 'final interview failed',
+                ':applicant_id' => $_POST['applicant_id'],
+            ]);
+        }
+        // $deleted = true;
     }
 }
 
-$schedules = $db->query("SELECT
-s.*,
+$initial_schedules = $db->query("SELECT
+i.*,
 a.first_name
-FROM interviewschedules s INNER JOIN applicants a on s.applicant_id = a.applicant_id
+FROM interviewschedules i INNER JOIN applicants a on i.applicant_id = a.applicant_id
+WHERE i.interview_status = 'pending'
+AND i.interview_type = 'initial'
+ORDER BY i.created_at DESC
+")->fetchAll();
+
+$final_schedules = $db->query("SELECT
+i.*,
+a.first_name
+FROM interviewschedules i INNER JOIN applicants a on i.applicant_id = a.applicant_id
+INNER JOIN applicationstatus s on i.applicant_id = s.applicant_id
+WHERE i.interview_status = 'pending'
+AND i.interview_type = 'final'
 ORDER BY created_at DESC
 ")->fetchAll();
+
+$done_schedules = $db->query("SELECT
+i.*,
+a.first_name
+FROM interviewschedules i INNER JOIN applicants a on i.applicant_id = a.applicant_id
+INNER JOIN applicationstatus s on i.applicant_id = s.applicant_id
+WHERE i.interview_status != 'pending'
+ORDER BY created_at DESC
+")->fetchAll();
+// dd(count($done_schedules));
+// dd($initial_schedules);
 
 require '../../views/admin/interview_schedules.view.php';
