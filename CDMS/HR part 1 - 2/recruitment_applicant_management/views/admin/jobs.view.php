@@ -71,7 +71,7 @@
                                 </div>
                                 <div class="flex flex-col items-center col-span-1">
                                     <label for="company" class="mb-2 text-black font-normal">Company</label>
-                                    <input type="text" placeholder="Type here" name="company" class="input border border-[#594423] text-center" id="company" value="<?= htmlspecialchars($_POST['company'] ?? '') ?>" />
+                                    <input type="text" placeholder="Type here" name="company" class="input border border-[#594423] text-center" id="company" value="Avalon Hotel & Restaurant" readonly />
                                 </div>
                                 <div class="flex flex-col items-center col-span-1">
                                     <label for="description" class="mb-2 text-black font-normal">Description</label>

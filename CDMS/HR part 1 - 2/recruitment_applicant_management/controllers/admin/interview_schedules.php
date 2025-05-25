@@ -10,15 +10,14 @@ $db = new Database($config['database']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = [];
-    // validate('date', $errors);
-    // validate('time', $errors);
-    // validate('location', $errors);
-    // validate('mode', $errors);
-    // validate('interview_type', $errors);
-    // validate('interview_status', $errors);
-    // dd($errors);
+    $applicant = $db->query("SELECT * FROM applicants WHERE applicant_id = :applicant_id", [
+        ':applicant_id' => $_POST['applicant_id'],
+    ])->fetch();
+    $job = $db->query("SELECT * FROM jobpostings WHERE posting_id = :posting_id", [
+        ':posting_id' => $applicant['posting_id'],
+    ])->fetch();
+    // dd($job);
     if (empty($errors)) {
-        // dd($_POST);
 
         if ($_POST['pass'] ?? '' === true) {
             $db->query("UPDATE interviewschedules SET interview_status = :interview_status WHERE schedule_id = :schedule_id", [
@@ -26,20 +25,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ':schedule_id' => $_POST['schedule_id'],
             ]);
             if ($_POST['interview_type'] === 'initial') {
-                // dd('initial interview passed');
+                // dd($_POST);
                 $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
                     ':status' => 'initial interview passed',
                     ':applicant_id' => $_POST['applicant_id'],
                 ]);
+                sendMail(
+                    $applicant['email'],
+                    "Congratulations! Next Steps for {$job['job_title']} at {$job['company']}",
+                    "Dear {$applicant['first_name']} {$applicant['last_name']},
+
+                    Following your recent initial interview for the {$job['job_title']} position at {$job['company']}, we are pleased to inform you that you have successfully moved forward to the next stage of our hiring process!
+
+In the meantime, please let us know if you have any questions.
+
+We look forward to continuing the conversation!
+
+Sincerely,
+
+The HR Team
+{$job['company']}"
+                );
             } else {
-                // dd('final interview passed');
                 $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
                     ':status' => 'final interview passed',
                     ':applicant_id' => $_POST['applicant_id'],
                 ]);
+                sendMail(
+                    $applicant['email'],
+                    "Congratulations! Offer for {$job['job_title']} at {$job['company']}",
+                    "Dear {$applicant['first_name']} {$applicant['last_name']},
+
+                    Following your final interview for the {$job['job_title']} position at {$job['company']}, we are thrilled to inform you that you have successfully completed our hiring process!
+
+We were very impressed with your qualifications and believe you would be an excellent addition to our team.
+
+We will be in touch very soon with an official offer letter and details regarding the next steps. In the meantime, please let us know if you have any questions.
+
+We are excited about the possibility of you joining us!
+
+Sincerely,
+
+The HR Team
+{$job['company']}"
+                );
                 header('location: applicants.php');
+                exit();
             }
-            // $updated = true;
         }
     }
     if ($_POST['fail'] ?? '' === true) {
@@ -58,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ':applicant_id' => $_POST['applicant_id'],
             ]);
         }
-        // $deleted = true;
     }
 }
 
@@ -89,7 +120,5 @@ INNER JOIN applicationstatus s on i.applicant_id = s.applicant_id
 WHERE i.interview_status != 'pending'
 ORDER BY created_at DESC
 ")->fetchAll();
-// dd(count($done_schedules));
-// dd($initial_schedules);
 
 require '../../views/admin/interview_schedules.view.php';
