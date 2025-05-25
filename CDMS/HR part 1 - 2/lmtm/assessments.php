@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+include '../../.php';
 
 // Fetch all training programs for the dropdown
 $programs = $conn->query("SELECT ProgramID, ProgramName FROM trainingprograms");
