@@ -1,8 +1,6 @@
 <?php
 // --- Error Reporting for Debugging ---
-$_SESSION['user_id'] = 10; // Example user ID
- $_SESSION['role_name'] = 'System Admin'; // Example role
- $_SESSION['employee_id'] = 17; // Example employee_id if needed by the roleerror_reporting(E_ALL);
+error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 // ini_set('error_log', '/path/to/your/php-error.log');

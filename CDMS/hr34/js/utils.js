@@ -4,11 +4,7 @@
 
 // Base URL for API calls
 export const API_BASE_URL = 'php/api/'; // Ensure this path is correct relative to index.php
-window.currentUser = {
-    user_id: 10,       // Example user ID
-    role_name: 'System Admin', // Simulate System Admin role
-    employee_id: 17,   // Example employee_id if needed by the role
-    };
+
 /**
  * Fetches employees and populates a given select element.
  * @param {string} selectElementId - The ID of the select element to populate.
