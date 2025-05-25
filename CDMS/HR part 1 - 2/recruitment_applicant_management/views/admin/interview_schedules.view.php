@@ -32,26 +32,26 @@
                                     <td class="schedule_id border-r border-t"><?= htmlspecialchars($initial_schedule['schedule_id']) ?></td>
                                     <td class="date border-r border-t"><?= htmlspecialchars($initial_schedule['date']) ?></td>
                                     <td class="time border-r border-t"><?= htmlspecialchars($initial_schedule['time']) ?></td>
-                                    <td class="location border-r border-t"><?= htmlspecialchars($initial_schedule['location']) ?></td>
+                                    <td class="location border-r border-t"><a href="<?= htmlspecialchars($initial_schedule['location']) ?>" target="_blank"><?= htmlspecialchars($initial_schedule['location']) ?></a></td>
                                     <td class="mode border-r border-t"><?= htmlspecialchars($initial_schedule['mode']) ?></td>
                                     <td class="interview_type border-r border-t"><?= htmlspecialchars($initial_schedule['interview_type']) ?></td>
                                     <td class="interview_status border-r border-t"><?= htmlspecialchars($initial_schedule['interview_status']) ?></td>
                                     <td class="first_name border-r border-t"><?= htmlspecialchars($initial_schedule['first_name']) ?></td>
                                     <td class="border-t">
                                         <div class="flex justify-center gap-2">
-                                            <form method="POST" id="passForm">
+                                            <form method="POST" class="passForm">
                                                 <input type="hidden" name="pass" value="true">
                                                 <input type="hidden" name="interview_type" value="<?= $initial_schedule['interview_type'] ?>">
                                                 <input type="hidden" name="applicant_id" value="<?= htmlspecialchars($initial_schedule['applicant_id']) ?>">
                                                 <input type="hidden" name="schedule_id" value="<?= htmlspecialchars($initial_schedule['schedule_id']) ?>">
-                                                <button type="button" title="Passed" id="passBtn" class="btn bg-green-500 text-xl rounded-lg"><i class="fa-solid fa-user-check"></i></button>
+                                                <button type="button" title="Passed" class="passBtn btn bg-green-500 text-xl rounded-lg"><i class="fa-solid fa-user-check"></i></button>
                                             </form>
-                                            <form method="POST" id="failForm">
+                                            <form method="POST" class="failForm">
                                                 <input type="hidden" name="fail" value="true">
                                                 <input type="hidden" name="interview_type" value="<?= $initial_schedule['interview_type'] ?>">
                                                 <input type="hidden" name="applicant_id" value="<?= htmlspecialchars($initial_schedule['applicant_id']) ?>">
                                                 <input type="hidden" name="schedule_id" value="<?= htmlspecialchars($initial_schedule['schedule_id']) ?>">
-                                                <button type="button" title="Failed" id="failBtn" class="btn bg-red-500 text-xl rounded-lg"><i class="fa-solid fa-user-xmark"></i></button>
+                                                <button type="button" title="Failed" class="failBtn btn bg-red-500 text-xl rounded-lg"><i class="fa-solid fa-user-xmark"></i></button>
                                             </form>
                                         </div>
                                     </td>
@@ -91,19 +91,19 @@
                                     <td class="first_name border-r border-t"><?= htmlspecialchars($final_schedule['first_name']) ?></td>
                                     <td class="border-t">
                                         <div class="flex justify-center gap-2">
-                                            <form method="POST" id="passForm">
+                                            <form method="POST" class="passForm">
                                                 <input type="hidden" name="pass" value="true">
                                                 <input type="hidden" name="interview_type" value="<?= $final_schedule['interview_type'] ?>">
                                                 <input type="hidden" name="applicant_id" value="<?= htmlspecialchars($final_schedule['applicant_id']) ?>">
                                                 <input type="hidden" name="schedule_id" value="<?= htmlspecialchars($final_schedule['schedule_id']) ?>">
-                                                <button type="button" title="Passed" id="passBtn" class="btn bg-green-500 text-xl rounded-lg"><i class="fa-solid fa-user-check"></i></button>
+                                                <button type="button" title="Passed" class="passBtn btn bg-green-500 text-xl rounded-lg"><i class="fa-solid fa-user-check"></i></button>
                                             </form>
-                                            <form method="POST" id="failForm">
+                                            <form method="POST" class="failForm">
                                                 <input type="hidden" name="fail" value="true">
                                                 <input type="hidden" name="interview_type" value="<?= $final_schedule['interview_type'] ?>">
                                                 <input type="hidden" name="applicant_id" value="<?= htmlspecialchars($final_schedule['applicant_id']) ?>">
                                                 <input type="hidden" name="schedule_id" value="<?= htmlspecialchars($final_schedule['schedule_id']) ?>">
-                                                <button type="button" title="Failed" id="failBtn" class="btn bg-red-500 text-xl rounded-lg"><i class="fa-solid fa-user-xmark"></i></button>
+                                                <button type="button" title="Failed" class="failBtn btn bg-red-500 text-xl rounded-lg"><i class="fa-solid fa-user-xmark"></i></button>
                                             </form>
                                         </div>
                                     </td>
@@ -164,22 +164,38 @@
     </div>
 </div>
 <script>
-    $('#passBtn').on('click', function() {
-        // console.log('Pass button clicked');
-        swal.fire({
+    $('.passBtn').on('click', function() {
+        const form = $(this).closest('.passForm');
+        Swal.fire({
             title: 'Application Passed',
-            text: "Applicant passed the interview",
+            text: "Are you sure this applicant passed the interview?",
             icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#10B981',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Pass'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
         });
-        $('#passForm').submit();
     });
-    $('#failBtn').on('click', function() {
-        swal.fire({
+
+    $('.failBtn').on('click', function() {
+        const form = $(this).closest('.failForm');
+        Swal.fire({
             title: 'Application Failed',
-            text: "Applicant failed the interview",
+            text: "Are you sure this applicant failed the interview?",
             icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#EF4444',
+            cancelButtonColor: '#6B7280',
+            confirmButtonText: 'Yes, Fail'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
         });
-        $('#failForm').submit();
     });
 </script>
 <?php require '../../partials/admin/footer.php' ?>

@@ -15,22 +15,6 @@
                     <span class="font-normal"><?= $error ?></span>
                 </div>
             <?php endif ?>
-            <?php if (isset($delete)) : ?>
-                <div role="alert" class="alert alert-error">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="font-normal">Record deleted successfully! It has been removed from the system.</span>
-                </div>
-            <?php endif ?>
-            <?php if ($updated ?? '' === true) : ?>
-                <div role="alert" class="alert alert-success">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="font-normal">Your changes have been successfully updated!</span>
-                </div>
-            <?php endif ?>
             <div>
                 <div class="my-3 mx-5">
                     <h1 class="font-semibold text-lg">New hired applicants</h1>
@@ -100,23 +84,23 @@
                                 <td class="border-t">
                                     <?php if ($applicant['status'] === 'applied') : ?>
                                         <div class="flex justify-center gap-2">
-                                            <form method="POST" id="approveForm">
+                                            <form method="POST" class="approveForm">
                                                 <input type="hidden" name="approve" value="true">
                                                 <input type="hidden" name="applicant_id" value="<?= $applicant['applicant_id'] ?>">
-                                                <button type="button" title="Approve" id="approveBtn" class="btn bg-green-500 text-xl rounded-lg"><i class="fa-solid fa-user-check"></i></button>
+                                                <button type="button" title="Approve" class="btn bg-green-500 text-xl rounded-lg approveBtn" data-applicant-id="<?= $applicant['applicant_id'] ?>"><i class="fa-solid fa-user-check"></i></button>
                                             </form>
-                                            <form method="POST" id="rejectForm">
+                                            <form method="POST" class="rejectForm">
                                                 <input type="hidden" name="reject" value="true">
                                                 <input type="hidden" name="applicant_id" value="<?= $applicant['applicant_id'] ?>">
-                                                <button type="button" title="Reject" id="rejectBtn" class="btn bg-red-500 text-xl rounded-lg"><i class="fa-solid fa-user-xmark"></i></button>
+                                                <button type="button" title="Reject" class="btn bg-red-500 text-xl rounded-lg rejectBtn" data-applicant-id="<?= $applicant['applicant_id'] ?>"><i class="fa-solid fa-user-xmark"></i></button>
                                             </form>
                                         </div>
                                     <?php elseif ($applicant['status'] == 'final interview passed') : ?>
                                         <div class="flex justify-center gap-2">
-                                            <form method="POST" id="hireForm">
+                                            <form method="POST" class="hireForm">
                                                 <input type="hidden" name="hire" value="true">
                                                 <input type="hidden" name="applicant_id" value="<?= $applicant['applicant_id'] ?>">
-                                                <button type="button" title="Hire" id="hireBtn" class="btn text-xl bg-green-500 text-white rounded-xl"><i class="fa-solid fa-handshake"></i></button>
+                                                <button type="button" title="Hire" class="btn text-xl bg-green-500 text-white rounded-xl hireBtn" data-applicant-id="<?= $applicant['applicant_id'] ?>"><i class="fa-solid fa-handshake"></i></button>
                                             </form>
                                         </div>
                                     <?php else : ?>
@@ -135,7 +119,7 @@
 </div>
 
 <script>
-    $('#approveBtn').on('click', function() {
+    $('.approveBtn').on('click', function() {
         swal.fire({
             title: 'Are you sure?',
             text: "You are about to approve this applicant!",
@@ -151,11 +135,11 @@
                     'The applicant has been approved.',
                     'success'
                 );
-                $('#approveForm').submit();
+                $('.approveForm').submit();
             }
         });
     });
-    $('#rejectBtn').on('click', function() {
+    $('.rejectBtn').on('click', function() {
         swal.fire({
             title: 'Are you sure?',
             text: "You are about to reject this applicant!",
@@ -171,11 +155,14 @@
                     'The applicant has been rejected.',
                     'success'
                 );
-                $('#rejectForm').submit();
+                $('.rejectForm').submit();
             }
         });
     });
-    $('#hireBtn').on('click', function() {
+    $('.hireBtn').on('click', function() {
+        const clickedButton = $(this);
+        const parentForm = clickedButton.closest('.hireForm');
+
         swal.fire({
             title: 'Are you sure?',
             text: "You are about to hire this applicant! This action cannot be undone.",
@@ -191,7 +178,7 @@
                     'The applicant has been hired.',
                     'success'
                 );
-                $('#hireForm').submit();
+                parentForm.submit();
             }
         });
     });

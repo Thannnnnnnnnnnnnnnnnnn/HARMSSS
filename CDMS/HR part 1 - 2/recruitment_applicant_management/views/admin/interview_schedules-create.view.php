@@ -76,17 +76,6 @@
                             <p class="text-red-500 text-sm"><?= $errors['interview_type'] ?></p>
                         <?php endif ?>
                     </div>
-                    <!-- <div class="flex flex-col gap-2">
-                        <label for="interview_status">interview status</label>
-                        <select name="interview_status" id="interview_status" class="select text-center" required>
-                            <option selected disabled>Choose an option:</option>
-                            <option value="passed">Passed</option>
-                            <option value="failed">Failed</option>
-                        </select>
-                        <?php if (!empty($errors['interview_status'])) : ?>
-                            <p class="text-red-500 text-sm"><?= $errors['interview_status'] ?></p>
-                        <?php endif ?>
-                    </div> -->
                     <div class="flex flex-col col-span-2 gap-2">
                         <label for="applicant_id">applicant_id</label>
                         <select name="applicant_id" id="applicant_id" class="select text-center w-full" required>
