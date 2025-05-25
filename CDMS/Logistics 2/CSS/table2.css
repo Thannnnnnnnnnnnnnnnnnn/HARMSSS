@@ -1,0 +1,141 @@
+/* ========== Responsive Table Styles ========== */
+
+.table-responsive {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px;
+    position: relative;
+}
+
+.styled-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.20) 0px 5px 10px;
+    overflow: hidden;
+}
+
+/* Table Headings */
+.styled-table thead {
+    background-color: #F7E6CA;
+    color: maroon;
+    text-align: left;
+}
+
+.styled-table thead th {
+    padding: 12px 16px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+/* Table Rows */
+.styled-table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #EDB886;
+}
+
+.styled-table tbody td {
+    padding: 12px 16px;
+    color: #333;
+    vertical-align: middle;
+    white-space: nowrap;
+    position: relative;  /* Enables absolutely positioned dropdowns inside */
+    overflow: visible !important; /* Allow dropdowns to escape the td */
+    z-index: 1;
+}
+
+/* ========== Legal Division Tag ========== */
+.div-legal {
+    width: 100%;
+    max-width: 250px;
+    margin: 10px 0;
+    padding: 8px 12px;
+    border-radius: 5px;
+    color: black;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: left;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+}
+
+/* ========== Media Queries for Responsiveness ========== */
+
+@media (max-width: 992px) {
+    .styled-table {
+        font-size: 0.9rem;
+    }
+
+    .styled-table thead th,
+    .styled-table tbody td {
+        padding: 10px 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .styled-table {
+        font-size: 0.85rem;
+    }
+
+    .div-legal {
+        font-size: 0.9rem;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-responsive {
+        padding: 0; /* Remove side padding for mobile */
+    }
+
+    /* Make table scroll horizontally if needed */
+    .styled-table {
+        min-width: 100%;
+        font-size: 0.8rem;
+    }
+
+    .styled-table thead {
+        display: none; /* Hide header for stacked view */
+    }
+
+    .styled-table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
+    }
+
+    .styled-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 10px;
+        white-space: normal;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        text-align: right;
+    }
+
+    /* Add label before each data cell using data-label attribute */
+    .styled-table tbody td::before {
+        content: attr(data-label);
+        flex-basis: 50%;
+        text-align: left;
+        font-weight: 600;
+        color: #555;
+        white-space: nowrap;
+    }
+
+    .styled-table tbody td:last-child {
+        border-bottom: none;
+    }
+}

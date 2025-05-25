@@ -3,6 +3,7 @@ session_start();
 include("../../connection.php"); // Ensure this includes $connections[]
 
 $db_name = "logs1_procurement";
+$log2_dt = "logs2_document_tracking";
 $usm_db = "logs1_usm"; // User database
 
 if (!isset($connections[$db_name]) || !isset($connections[$usm_db])) {
@@ -11,6 +12,8 @@ if (!isset($connections[$db_name]) || !isset($connections[$usm_db])) {
 
 $conn = $connections[$db_name];
 $usm_conn = $connections[$usm_db];
+$log2_conn = $connections[$log2_dt];
+
 
 // Debugging only (disable in production)
 ini_set('display_errors', 1);
@@ -25,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $estimated_budget = floatval($_POST['estimated_budget'] ?? 0);
     $purpose = trim($_POST['purpose'] ?? '');
     $requested_date = trim($_POST['requested_date'] ?? '');
-    $status = "For clearance approval"; // Default status
+    $status = "For permit approval"; // Default purchase_request status
 
     // Check user session
     if (!isset($_SESSION['User_ID'])) {
@@ -33,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     $user_id = $_SESSION['User_ID'];
 
-    // Fetch user info from logs1_usm if not in session
+    // Fetch user info if not in session
     if (!isset($_SESSION['Name']) || !isset($_SESSION['Role'])) {
         $getUser = $usm_conn->prepare("SELECT Name, Role FROM department_accounts WHERE User_ID = ?");
         $getUser->bind_param("s", $user_id);
@@ -44,7 +47,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $user = $result->fetch_assoc();
             $name = $user['Name'];
             $Role = $user['Role'];
-
             $_SESSION['Name'] = $name;
             $_SESSION['Role'] = $Role;
         } else {
@@ -67,7 +69,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($stmt->execute()) {
         $stmt->close();
 
-        // Insert Notification
+        // ✅ Insert into permits_approval
+        $permit_status = "For permit approval";
+        $permitStmt = $log2_conn->prepare("INSERT INTO permits_approval (User_ID, requested_date, status, purpose, type_of_item, submitted_by, item_name) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        if (!$permitStmt) {
+            die("Permit prepare failed: " . $log2_conn->error);
+        }
+        $permitStmt->bind_param("sssssss", $user_id, $requested_date, $permit_status, $purpose, $type_of_item, $name, $item_name);
+        if (!$permitStmt->execute()) {
+            die("Permit insert failed: " . $permitStmt->error);
+        }
+        $permitStmt->close();
+
+        // ✅ Insert Notification
         $notification_title = "New Purchase Request Submitted";
         $notification_message = "<strong>$name</strong> has submitted a purchase request for: <strong>\"$item_name\"</strong>.";
         $notification_status = "Unread";
@@ -75,33 +89,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $recipient_role = $Role;
         $module = "Purchase Management";
 
-        $notifStmt = $conn->prepare("
-            INSERT INTO notification_pr (
-                title, message, status, date_sent, sent_by, User_ID, recipient_role, module
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ");
+        $notifStmt = $conn->prepare("INSERT INTO notification_pr (title, message, status, date_sent, sent_by, User_ID, recipient_role, module) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         if (!$notifStmt) {
             die("Notification prepare failed: " . $conn->error);
         }
 
-        $notifStmt->bind_param(
-            "ssssssss",
-            $notification_title,
-            $notification_message,
-            $notification_status,
-            $date_sent,
-            $name,
-            $user_id,
-            $recipient_role,
-            $module
-        );
+        $notifStmt->bind_param("ssssssss", $notification_title, $notification_message, $notification_status, $date_sent, $name, $user_id, $recipient_role, $module);
 
         if (!$notifStmt->execute()) {
             die("Notification execute failed: " . $notifStmt->error);
         }
         $notifStmt->close();
 
-        // Output SweetAlert + redirect
+        // ✅ SweetAlert2 success and redirect
         echo '<!DOCTYPE html>
 <html lang="en">
 <head>

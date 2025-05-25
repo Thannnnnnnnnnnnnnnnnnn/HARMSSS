@@ -5,7 +5,7 @@ include("../../connection.php");
 $db_name = "logs1_procurement";
 $conn = $connections[$db_name];
 
-// Show confirmation prompt only if it's a GET request with purchase_id
+// Show confirmation prompt (GET)
 if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['purchase_id'])) {
     $purchase_id = $_GET['purchase_id'];
     ?>
@@ -29,10 +29,9 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['purchase_id'])) {
                 cancelButtonText: 'No'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Submit via POST after confirmation
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = 'cancel_request.php';
+                    form.action = 'cancel_purchase.php'; // Same file
 
                     const input = document.createElement('input');
                     input.type = 'hidden';
@@ -53,12 +52,12 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['purchase_id'])) {
     exit;
 }
 
-// Actual cancel logic
+// Cancel logic (POST)
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $purchase_id = $_POST['purchase_id'] ?? '';
 
     if ($purchase_id) {
-        // Check current status to prevent unauthorized cancel
+        // Validate status
         $stmt_check = $conn->prepare("SELECT status FROM purchase_request WHERE purchase_id = ?");
         $stmt_check->bind_param("s", $purchase_id);
         $stmt_check->execute();
@@ -67,17 +66,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt_check->close();
 
         if (!$current || in_array($current['status'], ['Clearance approved', 'Cancelled'])) {
-            echo "<script>
-                alert('Request cannot be cancelled. Status is already \"{$current['status']}\".');
-                window.location.href = 'purchase_request.php';
-            </script>";
+            ?>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            </head>
+            <body>
+            <script>
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cannot Cancel',
+                    text: 'Request cannot be cancelled. Current status: "<?php echo $current['status']; ?>"'
+                }).then(() => {
+                    window.location.href = 'purchase_request.php';
+                });
+            </script>
+            </body>
+            </html>
+            <?php
             exit;
         }
 
+        // Proceed with cancel
         $stmt = $conn->prepare("UPDATE purchase_request SET status = 'Cancelled' WHERE purchase_id = ?");
         $stmt->bind_param("s", $purchase_id);
         if ($stmt->execute()) {
-            echo "<script>
+            ?>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            </head>
+            <body>
+            <script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Cancelled!',
@@ -85,7 +107,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }).then(() => {
                     window.location.href = 'purchase_request.php';
                 });
-            </script>";
+            </script>
+            </body>
+            </html>
+            <?php
             exit;
         } else {
             die("Error cancelling request: " . $stmt->error);

@@ -85,7 +85,7 @@ if ($approval) {
         $stmt->close();
         
         // Get Employee Type from employees 
-        $stmt = $conn->prepare("SELECT e.Types FROM employees e 
+        $stmt = $conn->prepare("SELECT e.DepartmentID FROM employees e 
                                JOIN disbursementrequests d ON e.EmployeeID = d.EmployeeID
                                WHERE d.RequestID = ?");
         $stmt->bind_param("i", $requestId);
