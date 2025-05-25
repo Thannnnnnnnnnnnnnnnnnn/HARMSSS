@@ -50,6 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ':department' => $applicants['department'],
             ':hire_date' => $applicants['updated_at'],
         ]);
+
+        $nhoes->query("INSERT INTO documents(document_type, employee_id, file_path) VALUES
+        (:document_type, :employee_id, :file_path)", [
+            ':document_type' => 'Resume',
+            ':employee_id' => $nhoes->pdo->lastInsertId(),
+            ':file_path' => $applicant['resume'],
+        ]);
     }
 }
 
@@ -62,7 +69,7 @@ INNER JOIN jobpostings j ON a.posting_id = j.posting_id
 WHERE s.status != 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
-
+// dd($applicants);
 $newhires = $db->query("SELECT
 a.*,
 s.status
