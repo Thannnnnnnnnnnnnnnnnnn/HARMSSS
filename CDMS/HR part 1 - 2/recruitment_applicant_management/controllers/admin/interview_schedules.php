@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':status' => 'final interview passed',
                     ':applicant_id' => $_POST['applicant_id'],
                 ]);
+                header('location: applicants.php');
             }
             // $updated = true;
         }
