@@ -1,4 +1,4 @@
-    <?php
+<?php
 session_start();
 include("../connection.php");
 
@@ -19,7 +19,6 @@ $connectionsList = [
     $connections["hr_1&2_usm"],
     $connections["fin_usm"],
     $connections["cr1_usm"],
-    $connections["cr3_re_usm"],
     $connections["user_management"],
     $connections["hr34_usm"] ?? ''
 ];
@@ -47,19 +46,9 @@ function logAttempt($conn, $User_ID, $Name, $Role, $Log_Status, $Attempt_Type, $
         (User_ID, Name, Role, Log_Status, Attempt_Type, Attempt_Count, Failure_reason, Cooldown_Until, `Log_Date_Time`) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param(
-        $stmt,
-        "sssssssss",
-        $User_ID,
-        $Name,
-        $Role,
-        $Log_Status,
-        $Attempt_Type,
-        $Attempt_Count,
-        $Failure_reason,
-        $Cooldown_Until,
-        $Log_Date_Time
-    );
+    mysqli_stmt_bind_param($stmt, "sssssssss", 
+        $User_ID, $Name, $Role, $Log_Status, $Attempt_Type, 
+        $Attempt_Count, $Failure_reason, $Cooldown_Until, $Log_Date_Time);
     mysqli_stmt_execute($stmt);
 }
 
@@ -71,21 +60,9 @@ function logDepartmentAttempt($conn, $Dept_log_ID, $Department_ID, $User_ID, $Na
         (Dept_log_ID, Department_ID, User_ID, Name, Role, Log_Status, Attempt_type, Attempt_count, Failure_reason, Cooldown_until, Log_Date_Time)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param(
-        $stmt,
-        "issssssisss",
-        $Dept_log_ID,
-        $Department_ID,
-        $User_ID,
-        $Name,
-        $Role,
-        $Log_Status,
-        $Attempt_type,
-        $Attempt_Count,
-        $Failure_reason,
-        $Cooldown_Until,
-        $Log_Date_Time
-    );
+    mysqli_stmt_bind_param($stmt, "issssssisss", 
+        $Dept_log_ID, $Department_ID, $User_ID, $Name, $Role, $Log_Status, $Attempt_type, 
+        $Attempt_Count, $Failure_reason, $Cooldown_Until, $Log_Date_Time);
     mysqli_stmt_execute($stmt);
 }
 
@@ -132,12 +109,12 @@ if ($otpInput === (string)$storedOtp) {
 
     $redirectMap = [
         'L220305' => '../Logistics 2/Vehicle reservation/VRS/vehicles.php',
-        'L120304' => '../Logistics 2/Vehicle reservation/VRS/vehicles.php',
-        'F20309' => '../Financials/Dashboard.php',
+        'L120304' => '../Logistics 1/Procurement/submit_request.php',
+
+        'F20309' => '../Financials/financial2/User_Management/Department_Acc.php',
         'HR120302' => '../HR part 1 - 2/recruitment_applicant_management/controllers/admin/index.php',
         'HR220303' => '../hr34/admin_landing.php',
-        'C120306' => '../Core transaction 1/CoreTrans1/Dashboard.php',
-        'C320308' => '../Core transaction 3/testing/dashboard.php'
+        'C120306' => '../Core transaction 1/CoreTrans1/Dashboard.php'
     ];
     $redirectUrl = $redirectMap[$Department_ID] ?? 'login.php';
     header("Location: $redirectUrl");
@@ -161,64 +138,93 @@ if ($otpInput === (string)$storedOtp) {
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2FA Verification</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2FA Verification</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    /* Soft fade-in animation */
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-100">
-    <div class="w-full h-dvh flex items-center justify-center bg-cover bg-center relative" style="background-image: url('left.png');">
-        <div class="absolute inset-0 bg-black bg-opacity-40 z-0"></div>
-        <div class="relative z-10 bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4">
-            <h3 class="text-center text-4xl font-semibold text-gray-800 mb-6">🔐 2FA Verification</h3>
-            <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="space-y-6">
-                <div>
-                    <label for="otp" class="block text-gray-700 text-lg font-medium mb-2">Enter OTP:</label>
-                    <input 
-                        type="text" 
-                        id="otp" 
-                        name="otp" 
-                        required 
-                        maxlength="6"
-                        placeholder="6-digit code"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-                        aria-label="One Time Password"
-                    />
-                </div>
-                <button 
-                    type="submit"
-                    class="w-full py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
-                    ✅ Verify OTP
-                </button>
-            </form>
-            <div class="text-center text-sm mt-4 text-gray-500">
-                Didn't receive the code?
-                <a href="resend_otp.php" class="text-blue-600 hover:underline">Resend</a>
-            </div>
-        </div>
+
+<body class="flex items-center justify-center p-6">
+  <div class="fade-in max-w-md w-full bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/30 p-10 text-center">
+
+    <div class="mb-8">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-full shadow-lg mx-auto mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c1.104 0 2-.672 2-1.5S13.104 8 12 8s-2 .672-2 1.5S10.896 11 12 11z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21c-5.523 0-10-3.134-10-7 0-1.72 1.283-3.299 3.492-4.34M12 21c5.523 0 10-3.134 10-7 0-1.72-1.283-3.299-3.492-4.34" />
+        </svg>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Two-Factor Authentication</h1>
+      <p class="mt-2 text-gray-600">Enter the one-time passcode sent to your device</p>
     </div>
 
-    <?php if (isset($_SESSION["loginError"])): ?>
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Verification Failed',
-                text: "<?= htmlspecialchars($_SESSION['loginError'], ENT_QUOTES); ?>",
-                confirmButtonColor: '#3085d6',
-                background: '#fefefe'
-            });
-        </script>
-        <?php unset($_SESSION["loginError"]); ?>
-    <?php endif; ?>
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="space-y-6">
+      <label for="otp" class="sr-only">OTP Code</label>
+      <input 
+        type="text" 
+        id="otp" 
+        name="otp" 
+        maxlength="6" 
+        required 
+        autocomplete="one-time-code"
+        pattern="[0-9]{6}"
+        placeholder="123456"
+        inputmode="numeric"
+        class="w-full px-6 py-4 text-center text-2xl tracking-widest font-semibold rounded-xl border border-gray-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-400 transition outline-none"
+        aria-label="One Time Password"
+      />
+      
+      <button 
+        type="submit"
+        class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg transition focus:ring-4 focus:ring-indigo-400 focus:outline-none"
+      >
+        Verify <span class="ml-2">🔐</span>
+      </button>
+    </form>
+
+    <p class="mt-6 text-sm text-gray-500">
+      Didn’t get the code?&nbsp;
+      <a href="resend_otp.php" class="font-semibold text-indigo-600 hover:underline">Resend</a>
+    </p>
+
+  </div>
+
+  <?php if (isset($_SESSION["loginError"])): ?>
+    <script>
+      Swal.fire({
+        icon: 'error',
+        title: 'Verification Failed',
+        text: "<?= htmlspecialchars($_SESSION['loginError'], ENT_QUOTES); ?>",
+        confirmButtonColor: '#5a67d8',
+        background: '#ffffff',
+        timer: 3500,
+        timerProgressBar: true,
+      });
+    </script>
+    <?php unset($_SESSION["loginError"]); ?>
+  <?php endif; ?>
 </body>
 </html>
