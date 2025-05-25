@@ -20,7 +20,7 @@ $pdo_hr12 = null;
 $db_config_hr12 = [
     'dsn' => 'mysql:host=127.0.0.1;dbname=hr_1&2_new_hire_onboarding_and_employee_self-service;charset=utf8mb4',
     'username' => '3206_CENTRALIZED_DATABASE', // REPLACE with HR 1-2 DB username
-    'password' => '4562526'      // REPLACE with HR 1-2 DB password
+    'password' => '4    562526'      // REPLACE with HR 1-2 DB password
 ];
 
 try {
