@@ -222,7 +222,7 @@ The HR Team
                 // dd("Logistic 1");
                 break;
             case 4:
-                dd("Logistic 2");
+                // dd("Logistic 2");
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
                                 VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],

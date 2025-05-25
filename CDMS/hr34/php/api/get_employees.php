@@ -1,9 +1,8 @@
 <?php
 /**
  * API Endpoint: Get Employees
- * Retrieves a list of employees with detailed information.
- * v2.1 - Added UserID to the selection.
- * v2.0 - Fetches more comprehensive employee details including personal, contact, address, and employment info.
+ * Retrieves a list of employees with detailed information from the HR 1-2 Database.
+ * v3.1 - Corrected database name for HR 1-2 connection.
  */
 
 // --- Error Reporting & Headers ---
@@ -15,22 +14,39 @@ ini_set('log_errors', 1);
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // Adjust for production
 
-// --- Database Connection ---
-$pdo = null;
+// --- Database Connection for HR 1-2 System ---
+// !! IMPORTANT !!
+// Ensure these credentials are correct for your HR 1-2 Database.
+// The database name below MUST match the one from your hr_1_2_*.sql file.
+
+$db_host_hr12 = getenv('DB_HOST_HR12') ?: '127.0.0.1'; // Your HR 1-2 DB host
+// Corrected Database Name:
+$db_host_hr12 = '127.0.0.1'; // Your HR 1-2 DB host (often 'localhost' or '127.0.0.1')
+$db_name_hr12 = 'hr_1&2_new_hire_onboarding_and_employee_self-service'; // The target database name
+$db_user_hr12 = '3206_CENTRALIZED_DATABASE'; // REPLACE with your HR 1-2 DB username
+$db_pass_hr12 = '4562526'; // REPLACE with your HR 1-2 DB password
+$charset_hr12 = 'utf8mb4';
+
+$dsn_hr12 = "mysql:host={$db_host_hr12};dbname={$db_name_hr12};charset={$charset_hr12}";
+$options_hr12 = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
+
+$pdo_hr12 = null;
 try {
-    require_once '../db_connect.php'; // Path relative to this api script
-    if (!isset($pdo) || !$pdo instanceof PDO) {
-        throw new Exception('Database connection object ($pdo) not properly created by db_connect.php.');
-    }
-} catch (Throwable $e) {
-    error_log("PHP Error in get_employees.php (db_connect include): " . $e->getMessage());
+    $pdo_hr12 = new PDO($dsn_hr12, $db_user_hr12, $db_pass_hr12, $options_hr12);
+} catch (PDOException $e) {
+    error_log("PHP Error in get_employees.php (HR 1-2 DB Connection): " . $e->getMessage() . " | Attempted DB: " . $db_name_hr12);
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Server configuration error: Could not connect to the database.']);
+    echo json_encode(['error' => 'Server configuration error: Could not connect to the HR 1-2 database. Check connection details and database name. Expected: ' . $db_name_hr12]);
     exit;
 }
+// --- End Database Connection ---
 
 try {
-    // Prepare SQL statement to select detailed employee data
+    // SQL query remains the same as previous correct version
     $sql = "SELECT
                 e.EmployeeID,
                 e.FirstName,
@@ -56,29 +72,26 @@ try {
                 e.HireDate,
                 e.JobTitle,
                 e.DepartmentID,
-                d.DepartmentName,
+                d.department_name AS DepartmentName,
                 e.ManagerID,
                 CONCAT(m.FirstName, ' ', m.LastName) AS ManagerName,
                 e.IsActive,
                 e.TerminationDate,
                 e.TerminationReason,
                 e.EmployeePhotoPath,
-                u.UserID -- Added UserID
+                NULL AS UserID
             FROM
-                Employees e
+                employees e
             LEFT JOIN
-                OrganizationalStructure d ON e.DepartmentID = d.DepartmentID
+                departments d ON e.DepartmentID = d.dept_id
             LEFT JOIN
-                Employees m ON e.ManagerID = m.EmployeeID
-            LEFT JOIN 
-                Users u ON e.EmployeeID = u.EmployeeID -- Join with Users table
+                employees m ON e.ManagerID = m.EmployeeID
             ORDER BY
                 e.LastName, e.FirstName";
 
-    $stmt = $pdo->query($sql);
+    $stmt = $pdo_hr12->query($sql);
     $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Format dates and other fields as needed
     foreach ($employees as &$employee) {
         if (!empty($employee['HireDate'])) {
             $employee['HireDateFormatted'] = date('M d, Y', strtotime($employee['HireDate']));
@@ -91,21 +104,20 @@ try {
         }
         $employee['Status'] = ($employee['IsActive'] == 1) ? 'Active' : 'Inactive';
     }
-    unset($employee); // Unset the reference
+    unset($employee);
 
-    // Output the results as JSON
     if (headers_sent()) { exit; }
     http_response_code(200);
     echo json_encode($employees);
 
-} catch (\PDOException $e) {
-    error_log("API Error (get_employees): " . $e->getMessage());
+} catch (PDOException $e) {
+    error_log("API Error (get_employees from HR 1-2): " . $e->getMessage() . " | SQL: " . $sql);
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Failed to retrieve employee data.']);
+    echo json_encode(['error' => 'Failed to retrieve employee data from HR 1-2 database. SQL error.']);
 } catch (Throwable $e) {
-    error_log("PHP Throwable in get_employees.php: " . $e->getMessage());
+    error_log("PHP Throwable in get_employees.php (HR 1-2): " . $e->getMessage());
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Unexpected server error retrieving employee data.']);
+    echo json_encode(['error' => 'Unexpected server error retrieving employee data from HR 1-2.']);
 }
 exit;
 ?>
