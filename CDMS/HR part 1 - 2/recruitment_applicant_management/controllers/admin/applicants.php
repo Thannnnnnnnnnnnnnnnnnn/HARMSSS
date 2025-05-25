@@ -69,7 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ]);
         switch ($applicant['department_id']) {
             case 1:
-                // dd("HR 1&2");
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
                                 VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
@@ -120,7 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 break;
             case 2:
-                // dd("HR 3&4");
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
                                 VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
@@ -168,10 +166,8 @@ Sincerely,
 The HR Team
 {$applicant['company']}"
                 );
-                // dd("HR 3&4");
                 break;
             case 3:
-                // dd("Logistic 1");
                 $nhoes->query("INSERT INTO employees (EmployeeID FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
                                 VALUES (:EmployeeID :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
@@ -219,10 +215,12 @@ Sincerely,
 The HR Team
 {$applicant['company']}"
                 );
-                // dd("Logistic 1");
                 break;
             case 4:
+<<<<<<< HEAD
                 // dd("Logistic 2");
+=======
+>>>>>>> df8c943cbee38a7f802fd42360bb9faf9438b43b
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
                                 VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
@@ -270,10 +268,8 @@ Sincerely,
 The HR Team
 {$applicant['company']}"
                 );
-                // dd("Logistic 2");
                 break;
             case 5:
-                // dd("CR 1");
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
                                 VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
@@ -321,10 +317,8 @@ Sincerely,
 The HR Team
 {$applicant['company']}"
                 );
-                // dd("Core transaction 1");
                 break;
             case 6:
-                // dd("CR 2"); 
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
                                 VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
@@ -372,10 +366,8 @@ Sincerely,
 The HR Team
 {$applicant['company']}"
                 );
-                // dd("Core transaction 2");
                 break;
             case 7:
-                // dd("CR 3");
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
                                 VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
@@ -423,10 +415,8 @@ Sincerely,
 The HR Team
 {$applicant['company']}"
                 );
-                // dd("Core transaction 3");
                 break;
             case 8:
-                // dd("Financials");
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
                                 VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
@@ -491,7 +481,6 @@ INNER JOIN jobpostings j ON a.posting_id = j.posting_id
 WHERE s.status != 'hired'
 ORDER BY created_at DESC 
 ")->fetchAll();
-// dd($applicants);
 $newhires = $db->query("SELECT
 a.*,
 s.status
