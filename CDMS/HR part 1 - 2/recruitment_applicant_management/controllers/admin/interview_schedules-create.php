@@ -6,13 +6,13 @@ require '../../Database.php';
 require '../../functions.php';
 $db = new Database($config['database']);
 
-$applicants = $db->query("
-    SELECT a.applicant_id, a.first_name, a.last_name
-    FROM applicants a
-    LEFT JOIN interviewschedules i ON a.applicant_id = i.applicant_id
-    WHERE i.applicant_id IS NULL
+$applicants = $db->query(" SELECT 
+applicant_id,
+first_name,
+last_name 
+    FROM applicants 
 ")->fetchAll();
-
+// dd($applicsants);
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // dd($_POST);
