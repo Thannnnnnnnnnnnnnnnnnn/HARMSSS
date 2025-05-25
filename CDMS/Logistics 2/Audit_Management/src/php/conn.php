@@ -1,5 +1,13 @@
 <?php
 
+// Helper function for JSON responses
+function jsonResponse($data, $status = 200) {
+    header('Content-Type: application/json');
+    http_response_code($status);
+    echo json_encode($data);
+    exit;
+}
+
 // Database configuration - using const for better performance
 const DB_HOST = 'localhost';
 const DB_USER = 'root';
