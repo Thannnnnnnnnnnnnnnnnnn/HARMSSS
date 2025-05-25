@@ -1,3 +1,6 @@
 [submodule "Audit_Management"]
 	path = Audit_Management
 	url = https://github.com/RishHolt/Audit_Management.git
+[submodule "CDMS/Logistics 2/Audit_Management"]
+	path = CDMS/Logistics 2/Audit_Management
+	url = https://github.com/RishHolt/Audit_Management.git
