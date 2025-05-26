@@ -152,22 +152,13 @@ The HR Team
 
                 To help you get started, here are your initial login credentials for our internal systems:
 
-<<<<<<< HEAD
-                Employee ID: {$employee_id}
-                Temporary Password: {$password}
-=======
 Employee ID: {$employee_id}
 Password: {$password}
->>>>>>> 7554af6ff6b3f2040651c34b6705d5a95ff5f7c0
 
                 You can log in to your account at {$uri}.
 
-<<<<<<< HEAD
-                We are excited for you to begin your journey with us!
-=======
 
 We are excited for you to begin your journey with us!
->>>>>>> 7554af6ff6b3f2040651c34b6705d5a95ff5f7c0
 
                 Sincerely,
 
@@ -176,13 +167,8 @@ We are excited for you to begin your journey with us!
                 );
                 break;
             case 3:
-<<<<<<< HEAD
-                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
-=======
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
                     VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
->>>>>>> 7554af6ff6b3f2040651c34b6705d5a95ff5f7c0
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -217,13 +203,8 @@ We are excited for you to begin your journey with us!
 
                 To help you get started, here are your initial login credentials for our internal systems:
 
-<<<<<<< HEAD
-                Employee ID: {$employee_id}
-                Temporary Password: {$password}
-=======
 Employee ID: {$employee_id}
 Password: {$password}
->>>>>>> 7554af6ff6b3f2040651c34b6705d5a95ff5f7c0
 
                 You can log in to your account at {$uri}.
 
@@ -272,13 +253,8 @@ Password: {$password}
 
                 To help you get started, here are your initial login credentials for our internal systems:
 
-<<<<<<< HEAD
-                Employee ID: {$employee_id}
-                Temporary Password: {$password}
-=======
 Employee ID: {$employee_id}
 Password: {$password}
->>>>>>> 7554af6ff6b3f2040651c34b6705d5a95ff5f7c0
 
                 You can log in to your account at {$uri}.
 
@@ -327,13 +303,8 @@ Password: {$password}
 
                 To help you get started, here are your initial login credentials for our internal systems:
 
-<<<<<<< HEAD
-                Employee ID: {$employee_id}
-                Temporary Password: {$password}
-=======
 Employee ID: {$employee_id}
 Password: {$password}
->>>>>>> 7554af6ff6b3f2040651c34b6705d5a95ff5f7c0
 
                 You can log in to your account at {$uri}.
 
@@ -382,13 +353,8 @@ Password: {$password}
 
                 To help you get started, here are your initial login credentials for our internal systems:
 
-<<<<<<< HEAD
-                Employee ID: {$employee_id}
-                Temporary Password: {$password}
-=======
 Employee ID: {$employee_id}
 Password: {$password}
->>>>>>> 7554af6ff6b3f2040651c34b6705d5a95ff5f7c0
 
                 You can log in to your account at {$uri}.
 
@@ -437,13 +403,8 @@ Password: {$password}
 
                 To help you get started, here are your initial login credentials for our internal systems:
 
-<<<<<<< HEAD
-                Employee ID: {$employee_id}
-                Temporary Password: {$password}
-=======
 Employee ID: {$employee_id}
 Password: {$password}
->>>>>>> 7554af6ff6b3f2040651c34b6705d5a95ff5f7c0
 
                 You can log in to your account at {$uri}.
 
@@ -492,13 +453,8 @@ Password: {$password}
 
                 To help you get started, here are your initial login credentials for our internal systems:
 
-<<<<<<< HEAD
-                Employee ID: {$employee_id}
-                Temporary Password: {$password}
-=======
 Employee ID: {$employee_id}
 Password: {$password}
->>>>>>> 7554af6ff6b3f2040651c34b6705d5a95ff5f7c0
 
                 You can log in to your account at {$uri}.
 
