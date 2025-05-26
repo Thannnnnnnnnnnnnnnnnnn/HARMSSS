@@ -82,13 +82,12 @@
                             <table class="w-full border-collapse">
                                 <thead class="bg-[#4E3B2A]">
                                     <tr>
-                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider rounded-tl-lg" ">Approval ID</th>
-                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" ">Request ID</th>
-
-                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" ">Amount</th>
-                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" ">Status</th>
-                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" ">Date of Approval</th>
-                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider rounded-tr-lg" ">Action</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider rounded-tl-lg">Approval ID</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider">Request ID</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider">Date of Approval</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider rounded-tr-lg">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
