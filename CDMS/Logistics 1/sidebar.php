@@ -96,6 +96,15 @@ if (in_array('warehousing', $allowed_modules)):
                     <i class="bx bx-user-check text-lg"></i> <span>Warehousing logs</span>
                 </a>
             </li>
+
+            <li>
+                                    <form action="../../USM/logout.php" method="POST">
+                                        <button type="submit" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg w-full text-left">
+                                            <i class="bx bx-log-out text-lg"></i>
+                                            <span>Logout</span>
+                                        </button>
+                                    </form>
+                                </li>
         </ul>
     </div>
 </div>
