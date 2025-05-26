@@ -99,10 +99,6 @@ $allowed_modules = $permissions[$role] ?? [];
 if (in_array('asset_management', $allowed_modules)):
 ?>
 
-
-<?php
-dd($role);
-?>
  <div class="flex min-h-screen w-full">
         <!-- Overlay -->
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -157,7 +153,6 @@ dd($role);
             </div>
         </div>
 <?php endif; ?>
-<script src="JS/sidebar.js"></script>
 
 <?php
 $role = $_SESSION['Role'];
@@ -166,10 +161,6 @@ $allowed_modules = $permissions[$role] ?? [];
 
 if (in_array('procurement', $allowed_modules)):
 
-?>
-
-<?php
-dd($role);
 ?>
  <div class="flex min-h-screen w-full">
         <!-- Overlay -->
@@ -232,6 +223,16 @@ dd($role);
             </div>
         </div>
 <?php endif; ?>
+
+<!-- Logout Button -->
+<div class="mt-auto px-4 pb-6">
+    <form action="../../USM/logout.php" method="POST">
+        <button type="submit" class="w-full flex items-center justify-center space-x-2 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300 ease-in-out">
+            <i class="bx bx-log-out text-lg"></i>
+            <span class="text-sm font-medium">Logout</span>
+        </button>
+    </form>
+</div>
 
 
 <script src="JS/sidebar.js"></script>
