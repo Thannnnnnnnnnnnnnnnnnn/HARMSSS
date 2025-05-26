@@ -113,7 +113,7 @@
                     icon: "warning",
                     button: "OK",
                 });
-                window.location.href = '/session_timeout';
+                window.location.href = '../session_timeout.php';
             })
             .catch(err => console.error("Logout error:", err));
     }
