@@ -151,7 +151,7 @@ if (!$result) {
                                             </select>
                                         </label>
                                     </div>
-                                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Record Payment</button>
+                                    <button type="submit" name="tite" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Record Payment</button>
                                 </form>
                             </div>
                         </div>
