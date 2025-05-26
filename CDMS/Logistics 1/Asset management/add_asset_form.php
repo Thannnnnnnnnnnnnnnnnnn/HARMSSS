@@ -67,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $notifStmt->close();
 
-        // Insert into permits_approval in logs2_document_tracking
-        $permit_status = 1; // Assuming 1 = "For permit approval"
+        
+        $permit_status = "For permit approval"; 
         $insert_permit = $logs2_doc_conn->prepare("
-            INSERT INTO permits_approval (asset_id, item_name, type_of_item, status, submitted_by, requested_date, User_ID)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO permits_approval (asset_id, item_name, type_of_item, purpose, status, submitted_by, requested_date, User_ID)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $insert_permit->bind_param("ississi", $asset_id, $name, $type, $permit_status, $sent_by, $date_sent, $user_id);
+        $insert_permit->bind_param("isssissi", $asset_id, $name, $type, $type, $permit_status, $sent_by, $date_sent, $user_id);
 
         if (!$insert_permit->execute()) {
             die("Permit approval insert failed: " . $insert_permit->error);
