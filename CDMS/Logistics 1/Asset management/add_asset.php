@@ -81,7 +81,7 @@ if (!$result) {
     
 </head>
 <body>
-      <?php include '../sidebar.php'; ?>
+      <?php include '../sidebar.php'; ?> 
 
 
         <!-- Main + Navbar -->
