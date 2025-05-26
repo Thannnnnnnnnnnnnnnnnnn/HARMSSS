@@ -37,29 +37,42 @@ $notifications = $db->query('SELECT
         </nav>
     </div>
 
-    <div class="text-center md:py-3 flex flex-col items-center">
+    <div class="text-center md:py-3z">
 
         <h1 class="text-xl md:text-2xl font-semibold text-[#594423] text-center"><?= $heading ?></h1>
 
         <div class="relative inline-block">
-            <div class="text-white font-normal py-1 px-2">
-                NOTIFICATIONS
-            </div>
-            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                <?php if (count($notifications) == 0) :  ?>
-                    <div>
-                        <p class="text-md ps-4">Empty notifications</p>
-                    </div>
-                <?php else : ?>
-                    <?php foreach ($notifications as $notification) : ?>
-                        <li>
-                            <a href="/notifications?id=<?= $notification['id'] ?>" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white <?= $notification['status'] == 'unread' ? 'font-semibold' : '' ?>"><?= $notification['title'] ?></a>
-                        </li>
-                    <?php endforeach ?>
-                <?php endif ?>
-            </ul>
-        </div> -->
-    </div>
+            <!-- <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="text-white bg-[#594423] hover:bg-[#F7E6CA] border hover:border-[#594423] hover:text-[#594423] focus:ring-4 focus:outline-none focus:ring-[#594423] font-medium rounded-lg text-sm px-3 py-2 md:px-5 md:py-2.5 text-center inline-flex items-center relative" type="button" data-turbo="false">
+                <i class="fa-solid fa-bell"></i>
+                <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                </svg>
+                <?php if (count(array_filter($notifications, function ($n) {
+                    return $n['status'] == 'unread';
+                })) > 0): ?>
+                    <span class="absolute top-2 right-2 transform translate-x-1/2 -translate-y-1/2 bg-red-500 w-3 h-3 rounded-full border-2 border-white"></span>
+                <?php endif; ?>
+            </button>
+
+            <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-64 max-h-64 overflow-y-auto dark:bg-gray-700 absolute right-0 mt-2">
+                <div class="text-white font-normal py-1 px-2">
+                    NOTIFICATIONS
+                </div>
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                    <?php if (count($notifications) == 0) :  ?>
+                        <div>
+                            <p class="text-md ps-4">Empty notifications</p>
+                        </div>
+                    <?php else : ?>
+                        <?php foreach ($notifications as $notification) : ?>
+                            <li>
+                                <a href="/notifications?id=<?= $notification['id'] ?>" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white <?= $notification['status'] == 'unread' ? 'font-semibold' : '' ?>"><?= $notification['title'] ?></a>
+                            </li>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </ul>
+            </div> -->
+        </div>
     </div>
 </header>
 
