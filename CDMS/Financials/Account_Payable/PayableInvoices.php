@@ -119,7 +119,7 @@ if (!$result) {
                             </div>
                             <div class="modal-body-viewAdjust">
                                 <form id="paymentForm" action="backend/payment_schedule.php" method="POST" class="flex flex-col gap-4">
-                                    <input type="hidden" name="invoice_id" id="schedule_invoice_id">
+                                    <!-- <input type="hidden" name="invoice_id" id="schedule_invoice_id"> -->
                                     <label class="block">
                                         <span class="text-gray-700">Due Date:</span>
                                         <input type="date" name="due_date" required class="w-full border p-2 rounded">
