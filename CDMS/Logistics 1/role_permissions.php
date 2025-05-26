@@ -11,7 +11,7 @@ return [
     ],
 
     // Individual role permissions
-    'procurement_officer' => [
+    'Procurement officer' => [
         'procurement',
     ],
 
