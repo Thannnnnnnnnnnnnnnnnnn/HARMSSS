@@ -194,7 +194,7 @@ if (!$result) {
 <!-- Trigger Button -->
 <button onclick="toggleModal(true)" 
   class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-  <i class='bx bx-plus'></i> New Purchase Request
+  <i class='bx bx-plus'></i> Add assets
 </button>
 
 
@@ -204,11 +204,11 @@ if (!$result) {
             <thead class="bg-gray-100">
                 <tr>
                     <th class="p-2">ID</th>
-                    <th class="p-2">Request date</th>
-                    <th class="p-2">Item name</th>
-                    <th class="p-2">Funds status</th>
-                    <th class="p-2">Funds purpose</th>
-                    <th class="p-2">Estimated budget</th>
+                    <th class="p-2">Asset name</th>
+                    <th class="p-2">Asset type</th>
+                    <th class="p-2">Asset quantity</th>
+                    <th class="p-2">Asset status</th>
+                    <th class="p-2">Date added</th>
                     <th class="p-2">Operation</th>
 
                     
@@ -221,12 +221,12 @@ if (!$result) {
 
 
                     <tr>
-                <td class="p-2"><?php echo htmlspecialchars($row['funding_id']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['requested_date']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['item_name']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['status']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['purpose']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['estimated_budget']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_id']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_name']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_type']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_quantity']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_status']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['date_created']); ?></td>
 
                 
                 <td class="p-2">
@@ -235,12 +235,12 @@ if (!$result) {
    <!-- View Button -->
 <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
         onclick="showViewModal(
-            '<?php echo addslashes($row['funding_id']); ?>',
-            '<?php echo addslashes($row['requested_date']); ?>',
-            '<?php echo addslashes($row['item_name']); ?>',
-            '<?php echo addslashes($row['status']); ?>',
-            '<?php echo addslashes($row['purpose']); ?>',
-            '<?php echo addslashes($row['estimated_budget']); ?>',
+            '<?php echo addslashes($row['asset_id']); ?>',
+            '<?php echo addslashes($row['asset_name']); ?>',
+            '<?php echo addslashes($row['asset_type']); ?>',
+            '<?php echo addslashes($row['asset_quantity']); ?>',
+            '<?php echo addslashes($row['asset_status']); ?>',
+            '<?php echo addslashes($row['date_created']); ?>',
             '<?php echo addslashes($row['submitted_by']); ?>',
         )">
     <i class="bx bx-show"></i>
@@ -248,7 +248,7 @@ if (!$result) {
 <b> | </b>
 <!-- Approve Button -->
 <button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded"
-        onclick="approveFunding('<?php echo urlencode($row['funding_id']); ?>')">
+        onclick="approveFunding('<?php echo urlencode($row['asset_id']); ?>')">
     <i class='bx bx-check-circle'></i>
 </button>
 
@@ -256,7 +256,7 @@ if (!$result) {
 
 <!-- Deny Button -->
 <button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded"
-        onclick="denyFunding('<?php echo urlencode($row['funding_id']); ?>')">
+        onclick="denyFunding('<?php echo urlencode($row['asset_id']); ?>')">
     <i class='bx bx-x-circle'></i>
 </button>
 
