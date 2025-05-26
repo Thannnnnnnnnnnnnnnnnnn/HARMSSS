@@ -1,12 +1,7 @@
-<?php
-include('includes/config.php'); // Loads $conn, $conn_budget, $conn_disbursement, $conn_general_ledger
-function dd($value){
-    echo "<pre>";
-    var_dump($value);
-    echo "</pre>";
-    die();
-}
-// Update payment status
+<?php 
+include('includes/config.php'); 
+
+// Update payment status based on due dates and payment completion
 $statusUpdateQuery = "
     UPDATE fin_accounts_payable.payableinvoices pi
     LEFT JOIN fin_accounts_payable.paymentschedules ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
@@ -17,31 +12,33 @@ $statusUpdateQuery = "
         ELSE 'Pending'
     END;
 ";
-if (!$conn->query($statusUpdateQuery)) {
-    die("Error updating payment status: " . $conn->error);
+
+if (!$conn_budget->query($statusUpdateQuery)) {
+    die("Error updating payment status: " . $conn_budget->error);
 }
 
-// Fetch invoice data
+// Fetch invoice data with payment schedule and payment status
 $sql = "
     SELECT 
         pi.PayableInvoiceID, 
-        MAX(pi.AccountID) AS AccountID, 
-        MAX(pi.BudgetName) AS BudgetName, 
-        MAX(pi.Department) AS Department, 
-        MAX(pi.Amount) AS Amount, 
-        MAX(pi.StartDate) AS StartDate, 
-        MAX(vp.PaymentStatus) AS PaymentStatus, -- Use pi.Status instead of vp.PaymentStatus
+        pi.AccountID, 
+        pi.BudgetName, 
+        pi.Department, 
+        pi.Amount, 
+        pi.StartDate, 
+     MAX(vp.PaymentStatus) AS PaymentStatus,
         MAX(ps.PaymentSchedule) AS PaymentSchedule,
         MAX(vp.PaymentMethod) AS PaymentMethod
+      
     FROM fin_accounts_payable.payableinvoices pi
     LEFT JOIN fin_accounts_payable.paymentschedules ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
     LEFT JOIN fin_accounts_payable.vendorpayments vp ON pi.PayableInvoiceID = vp.PayableInvoiceID
-    GROUP BY pi.PayableInvoiceID;
+    GROUP BY pi.PayableInvoiceID
 ";
-$result = $conn->query($sql);
-// dd($result->fetch_assoc());
+$result = $conn_budget->query($sql);
+
 if (!$result) {
-    die("Error retrieving data: " . $conn->error);
+    die("Error retrieving data: " . $conn_budget->error);
 }
 ?>
 <?php include('../includes/head.php'); ?>
@@ -136,7 +133,7 @@ if (!$result) {
                             <div class="modal-body-viewAdjust">
                                 <form id="recordPaymentForm" action="backend/Addpayments.php" method="POST" class="flex flex-col gap-4">
                                     <input type="hidden" name="invoice_id" id="payment_invoice_id">
-                                    <div class="flex flex-col gap-2">
+                                    <div class="flex flex-col gap-2"> 
                                         <label class="block">
                                             <span class="text-gray-700">Payment Date:</span>
                                             <input type="date" name="payment_date" required class="w-full border p-2 rounded">
