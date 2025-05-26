@@ -26,7 +26,7 @@ $sql = "
         pi.Department, 
         pi.Amount, 
         pi.StartDate, 
-     MAX(vp.PaymentStatus) AS PaymentStatus,
+        MAX(vp.PaymentStatus) AS PaymentStatus,
         MAX(ps.PaymentSchedule) AS PaymentSchedule,
         MAX(vp.PaymentMethod) AS PaymentMethod
       
