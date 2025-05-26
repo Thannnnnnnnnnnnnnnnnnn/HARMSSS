@@ -19,7 +19,7 @@ if ($conn_general_ledger->connect_error) {
     die("Connection failed: " . $conn_general_ledger->connect_error); 
 }  
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {     
+if (isset($_POST['tite']) && $_SERVER['REQUEST_METHOD'] === 'POST') {   
     $invoice_id = isset($_POST['invoice_id']) ? (int) $_POST['invoice_id'] : 0;     
     $payment_date = $_POST['payment_date'] ?? '';     
     $amount_paid = isset($_POST['amount_paid']) ? (float) $_POST['amount_paid'] : 0.00;     
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Payment Insertion Error: " . $e->getMessage());
         
         // Redirect with error message instead of leaving blank page
-        header('Location: PayableInvoices.php?error=payment_failed&message=' . urlencode($e->getMessage()));
+        header('Location: ../PayableInvoices.php?error=payment_failed&message=' . urlencode($e->getMessage()));
         exit();
     } finally {
         // Close database connections in finally block to ensure they're always closed
