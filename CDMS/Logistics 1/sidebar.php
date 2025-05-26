@@ -109,17 +109,19 @@ $allowed_modules = $permissions[$role] ?? [];
 if (in_array('asset_management', $allowed_modules)):
 ?>
 
-  <div class="flex min-h-screen w-full">
+ <div class="flex min-h-screen w-full">
         <!-- Overlay -->
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
+        <!-- Sidebar -->
         <div class="sidebar sidebar-expanded fixed z-50 overflow-y-auto overflow-x-hidden h-screen bg-white border-r border-[#F7E6CA] flex flex-col">
             <div class="h-16 border-b border-[#F7E6CA] flex items-center px-2 space-x-2">
                 <h1 class="text-xl font-bold text-black bg-[#D9D9D9] p-2 rounded-xl">LOGO</h1>
                 <h1 class="text-xl font-bold text-[#4E3B2A]">Logistic 1</h1>
                 <!--Close Button-->
             </div>
-            <div class="side-menu px-4 py-6"></div>
+            <div class="side-menu px-4 py-6">
+                     <!--- Procurement --->
 
         <div class="menu-option">
             <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('DTS-dropdown', this)">
