@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     "Congratulations! Next Steps for {$job['job_title']} at {$job['company']}",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-                    Following your recent initial interview for the {$job['job_title']} position at {$job['company']}, we are pleased to inform you that you have successfully moved forward to the next stage of our hiring process!
+Following your recent initial interview for the {$job['job_title']} position at {$job['company']}, we are pleased to inform you that you have successfully moved forward to the next stage of our hiring process!
 
 In the meantime, please let us know if you have any questions.
 
@@ -56,7 +56,7 @@ The HR Team
                     "Congratulations! Offer for {$job['job_title']} at {$job['company']}",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-                    Following your final interview for the {$job['job_title']} position at {$job['company']}, we are thrilled to inform you that you have successfully completed our hiring process!
+Following your final interview for the {$job['job_title']} position at {$job['company']}, we are thrilled to inform you that you have successfully completed our hiring process!
 
 We were very impressed with your qualifications and believe you would be an excellent addition to our team.
 

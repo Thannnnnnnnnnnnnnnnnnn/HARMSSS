@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $employee_id = "S225{$fiveRandom}0204";
         $surname = firstTwo($applicant['last_name']);
         $password = "#{$surname}2258080";
-        $uri = "{$_SERVER['HTTP_HOST']}HARMS/CDMS/USM/login.php";
+        $uri = "{$_SERVER['HTTP_HOST']}/HARMS/CDMS/USM/login.php";
         $extension = pathinfo($applicant['resume']);
         $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
             ':status' => 'hired',
@@ -69,8 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ]);
         switch ($applicant['department_id']) {
             case 1:
-                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
+                    VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':AddressLine1' => $applicant['address'],
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
+                    ':JobTitle' => $applicant['job_title'],
                 ]);
                 $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
@@ -100,27 +101,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     "Welcome to {$applicant['company']}! Your Employee Credentials",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-                Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
+Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
 
-                To help you get started, here are your initial login credentials for our internal systems:
+To help you get started, here are your initial login credentials for our internal systems:
 
-                Employee ID: {$employee_id}
-                Temporary Password: {$password}
+Employee ID: {$employee_id}
+Password: {$password}
 
-                You can log in to your account at {$uri}.
+You can log in to your account at {$uri}.
 
-                We are excited for you to begin your journey with us!
+We are excited for you to begin your journey with us!
 
-                Sincerely,
+Sincerely,
 
-                The HR Team
-                {$applicant['company']}"
+The HR Team
+{$applicant['company']}"
                 );
 
                 break;
             case 2:
-                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
+                    VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -130,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':AddressLine1' => $applicant['address'],
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
+                    ':JobTitle' => $applicant['job_title'],
                 ]);
                 $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
@@ -155,9 +157,10 @@ Welcome to the team at {$applicant['company']}! We are thrilled to have you join
 To help you get started, here are your initial login credentials for our internal systems:
 
 Employee ID: {$employee_id}
-Temporary Password: {$password}
+Password: {$password}
 
 You can log in to your account at {$uri}.
+
 
 We are excited for you to begin your journey with us!
 
@@ -168,8 +171,8 @@ The HR Team
                 );
                 break;
             case 3:
-                $nhoes->query("INSERT INTO employees (EmployeeID FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
+                    VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -179,6 +182,7 @@ The HR Team
                     ':AddressLine1' => $applicant['address'],
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
+                    ':JobTitle' => $applicant['job_title'],
                 ]);
                 $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
@@ -204,7 +208,7 @@ Welcome to the team at {$applicant['company']}! We are thrilled to have you join
 To help you get started, here are your initial login credentials for our internal systems:
 
 Employee ID: {$employee_id}
-Temporary Password: {$password}
+Password: {$password}
 
 You can log in to your account at {$uri}.
 
@@ -217,8 +221,8 @@ The HR Team
                 );
                 break;
             case 4:
-                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
+                    VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -228,6 +232,7 @@ The HR Team
                     ':AddressLine1' => $applicant['address'],
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
+                    ':JobTitle' => $applicant['job_title'],
                 ]);
                 $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
@@ -253,7 +258,7 @@ Welcome to the team at {$applicant['company']}! We are thrilled to have you join
 To help you get started, here are your initial login credentials for our internal systems:
 
 Employee ID: {$employee_id}
-Temporary Password: {$password}
+Password: {$password}
 
 You can log in to your account at {$uri}.
 
@@ -266,8 +271,8 @@ The HR Team
                 );
                 break;
             case 5:
-                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
+                    VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -277,6 +282,7 @@ The HR Team
                     ':AddressLine1' => $applicant['address'],
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
+                    ':JobTitle' => $applicant['job_title'],
                 ]);
                 $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
@@ -302,7 +308,7 @@ Welcome to the team at {$applicant['company']}! We are thrilled to have you join
 To help you get started, here are your initial login credentials for our internal systems:
 
 Employee ID: {$employee_id}
-Temporary Password: {$password}
+Password: {$password}
 
 You can log in to your account at {$uri}.
 
@@ -315,8 +321,8 @@ The HR Team
                 );
                 break;
             case 6:
-                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
+                    VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -326,6 +332,7 @@ The HR Team
                     ':AddressLine1' => $applicant['address'],
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
+                    ':JobTitle' => $applicant['job_title'],
                 ]);
                 $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
@@ -351,7 +358,7 @@ Welcome to the team at {$applicant['company']}! We are thrilled to have you join
 To help you get started, here are your initial login credentials for our internal systems:
 
 Employee ID: {$employee_id}
-Temporary Password: {$password}
+Password: {$password}
 
 You can log in to your account at {$uri}.
 
@@ -364,8 +371,8 @@ The HR Team
                 );
                 break;
             case 7:
-                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
+                    VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -375,6 +382,7 @@ The HR Team
                     ':AddressLine1' => $applicant['address'],
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
+                    ':JobTitle' => $applicant['job_title'],
                 ]);
                 $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
@@ -400,7 +408,7 @@ Welcome to the team at {$applicant['company']}! We are thrilled to have you join
 To help you get started, here are your initial login credentials for our internal systems:
 
 Employee ID: {$employee_id}
-Temporary Password: {$password}
+Password: {$password}
 
 You can log in to your account at {$uri}.
 
@@ -413,8 +421,8 @@ The HR Team
                 );
                 break;
             case 8:
-                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
+                    VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -424,6 +432,7 @@ The HR Team
                     ':AddressLine1' => $applicant['address'],
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
+                    ':JobTitle' => $applicant['job_title'],
                 ]);
                 $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
@@ -449,7 +458,7 @@ Welcome to the team at {$applicant['company']}! We are thrilled to have you join
 To help you get started, here are your initial login credentials for our internal systems:
 
 Employee ID: {$employee_id}
-Temporary Password: {$password}
+Password: {$password}
 
 You can log in to your account at {$uri}.
 
