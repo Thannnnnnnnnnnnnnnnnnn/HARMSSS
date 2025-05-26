@@ -1,7 +1,10 @@
 <?php
-$host = "127.0.0.1";  
-$username = "3206_CENTRALIZED_DATABASE";   
-$password = "4562526";        
+$host = "localhost";
+$username = "3206_CENTRALIZED_DATABASE";
+$password = "4562526";    
+// $host = "localhost:3307";  
+// $username = "root";   
+// $password = "";       
 
 // Connect to Accounts Payable Database
 $accounts_payable_db = "fin_accounts_payable";

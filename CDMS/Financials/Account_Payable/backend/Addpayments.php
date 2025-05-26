@@ -6,7 +6,7 @@
 //     die(); 
 // }  
 
-include('includes/config.php');  
+include('../includes/config.php');  
 
 // Connect to the databases 
 $conn = new mysqli($host, $username, $password, "fin_accounts_payable"); 
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->commit();          
         
         // Redirect with success message         
-        header('Location: PayableInvoices.php?payment_success=1');         
+        header('Location: ../PayableInvoices.php?payment_success=1');         
         exit();     
         
     } catch (Exception $e) {         
