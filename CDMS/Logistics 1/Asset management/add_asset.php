@@ -10,6 +10,10 @@ if (!isset($connections[$db_name])) {
     die("Database connection not found for $db_name");
 }
 
+$role = $_SESSION['Role'] ?? 'guest';
+$permissions = include '../role_permissions.php';
+$allowed_modules = $permissions[$role] ?? [];
+
 $connection = $connections[$db_name]; // Assign the correct connection
 // SQL Query for reservations
 $result = "SELECT asset_id  , User_ID, asset_name, asset_type, asset_quantity, asset_status, date_created, User_ID, submitted_by FROM assets";
@@ -77,7 +81,8 @@ if (!$result) {
     
 </head>
 <body>
-    
+      <?php include '../sidebar.php'; ?>
+
 
         <!-- Main + Navbar -->
         <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">
@@ -186,17 +191,24 @@ if (!$result) {
 </div>
 
                         
+<!-- Trigger Button -->
+<button onclick="toggleModal(true)" 
+  class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+  <i class='bx bx-plus'></i> Add assets
+</button>
 
+
+  <br><br>
 
         <table class="styled-table w-full border-collapse">
             <thead class="bg-gray-100">
                 <tr>
                     <th class="p-2">ID</th>
-                    <th class="p-2">Request date</th>
-                    <th class="p-2">Item name</th>
-                    <th class="p-2">Funds status</th>
-                    <th class="p-2">Funds purpose</th>
-                    <th class="p-2">Estimated budget</th>
+                    <th class="p-2">Asset name</th>
+                    <th class="p-2">Asset type</th>
+                    <th class="p-2">Asset quantity</th>
+                    <th class="p-2">Asset status</th>
+                    <th class="p-2">Date added</th>
                     <th class="p-2">Operation</th>
 
                     
@@ -209,12 +221,12 @@ if (!$result) {
 
 
                     <tr>
-                <td class="p-2"><?php echo htmlspecialchars($row['funding_id']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['requested_date']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['item_name']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['status']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['purpose']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['estimated_budget']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_id']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_name']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_type']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_quantity']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['asset_status']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['date_created']); ?></td>
 
                 
                 <td class="p-2">
@@ -223,12 +235,12 @@ if (!$result) {
    <!-- View Button -->
 <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
         onclick="showViewModal(
-            '<?php echo addslashes($row['funding_id']); ?>',
-            '<?php echo addslashes($row['requested_date']); ?>',
-            '<?php echo addslashes($row['item_name']); ?>',
-            '<?php echo addslashes($row['status']); ?>',
-            '<?php echo addslashes($row['purpose']); ?>',
-            '<?php echo addslashes($row['estimated_budget']); ?>',
+            '<?php echo addslashes($row['asset_id']); ?>',
+            '<?php echo addslashes($row['asset_name']); ?>',
+            '<?php echo addslashes($row['asset_type']); ?>',
+            '<?php echo addslashes($row['asset_quantity']); ?>',
+            '<?php echo addslashes($row['asset_status']); ?>',
+            '<?php echo addslashes($row['date_created']); ?>',
             '<?php echo addslashes($row['submitted_by']); ?>',
         )">
     <i class="bx bx-show"></i>
@@ -236,7 +248,7 @@ if (!$result) {
 <b> | </b>
 <!-- Approve Button -->
 <button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded"
-        onclick="approveFunding('<?php echo urlencode($row['funding_id']); ?>')">
+        onclick="approveFunding('<?php echo urlencode($row['asset_id']); ?>')">
     <i class='bx bx-check-circle'></i>
 </button>
 
@@ -244,7 +256,7 @@ if (!$result) {
 
 <!-- Deny Button -->
 <button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded"
-        onclick="denyFunding('<?php echo urlencode($row['funding_id']); ?>')">
+        onclick="denyFunding('<?php echo urlencode($row['asset_id']); ?>')">
     <i class='bx bx-x-circle'></i>
 </button>
 
@@ -306,7 +318,72 @@ if (!$result) {
     <i class="bx bx-x"></i>
   </button>
   <div id="notifList" class="max-h-64 overflow-y-auto space-y-2 text-sm text-gray-700">
-    <p class="text-center text-gray-400">Loading..</p>
+    <p class="text-center text-gray-400">Loading...</p>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="assetModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+
+    <!-- Close Button -->
+    <button onclick="toggleModal(false)" class="absolute top-3 right-3 text-gray-500 hover:text-black">
+      <i class='bx bx-x text-2xl'></i>
+    </button>
+
+    <!-- Modal Header -->
+    <h2 class="text-xl font-semibold mb-4 text-gray-800">Add New Asset</h2>
+
+    <!-- Form -->
+    <form action="add_asset_form.php" method="POST" class="space-y-4">
+      <!-- Asset Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Asset Name</label>
+        <input type="text" name="asset_name" required
+               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+        <!-- Asset Type -->
+        <div>
+    <label class="block text-sm font-medium text-gray-700">Asset Type</label>
+    <select name="asset_type" required
+            class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="" disabled selected>Select asset type</option>
+        <option value="Tangible assets">Tangible assets</option>
+        <option value="Non-tangible assets">Non-tangible assets</option>
+        <option value="Cash assets">Cash assets</option>
+        <option value="Digital assets">Digital assets</option>
+    </select>
+    </div>
+
+
+      <!-- Asset Quantity -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Asset Quantity</label>
+        <input type="number" name="asset_quantity" min="1" required
+               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <!-- Date Added -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Date Added</label>
+        <input type="date" name="date_created" required
+               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end pt-2">
+        <button type="button" onclick="toggleModal(false)"
+                class="mr-2 px-4 py-2 text-sm border border-gray-300 text-gray-700 hover:bg-gray-100 rounded-md">
+          Cancel
+        </button>
+        <button type="submit"
+                class="px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 rounded-md">
+          Add Asset
+        </button>
+      </div>
+    </form>
+
   </div>
 </div>
 
@@ -342,6 +419,8 @@ if (!$result) {
     <script src="../JS/cancel.js"> </script>
     <script src="../JS/notification_pr.js"> </script>
     <script src="../JS/funding.js"> </script>
+        <script src="../JS/add_assets.js"> </script>
+
 
 
 
