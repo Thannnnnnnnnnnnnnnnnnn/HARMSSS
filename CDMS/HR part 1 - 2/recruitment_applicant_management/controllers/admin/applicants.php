@@ -53,6 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         WHERE a.applicant_id = :applicant_id", [
             ':applicant_id' => $_POST['applicant_id'],
         ])->fetch();
+
+        $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+            ':status' => 'hired',
+            ':applicant_id' => $applicant['applicant_id'],
+        ]);
+
         $job = $nhoes->query("SELECT department_name FROM departments WHERE dept_id = :dept_id", [
             ':dept_id' => $applicant['department_id'],
         ])->fetch();
@@ -336,7 +342,7 @@ The HR Team
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $logs2_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "HR120302",
+                    ':Department_ID' => "L220305",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -386,7 +392,7 @@ Password: {$password}
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $cr1_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "HR120302",
+                    ':Department_ID' => "C120306",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -436,7 +442,7 @@ Password: {$password}
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $cr2_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "HR120302",
+                    ':Department_ID' => "C220307",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -486,7 +492,7 @@ Password: {$password}
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $cr3_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "HR120302",
+                    ':Department_ID' => "C320308",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -536,7 +542,7 @@ Password: {$password}
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $fin_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "HR120302",
+                    ':Department_ID' => "F20309",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
