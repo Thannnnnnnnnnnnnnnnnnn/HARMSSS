@@ -15,7 +15,7 @@ return [
         'procurement',
     ],
 
-    'asset_manager' => [
+    'Warehousing manager' => [
         'asset_management',
     ],
 

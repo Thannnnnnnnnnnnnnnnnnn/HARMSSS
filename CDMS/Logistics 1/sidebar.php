@@ -92,12 +92,17 @@ if (in_array('warehousing', $allowed_modules)):
 <?php endif; ?>
 
 <?php
-$role = $_SESSION['Role'] ?? 'guest';
+$role = $_SESSION['Role'];
 $permissions = include 'role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
 
 if (in_array('asset_management', $allowed_modules)):
 ?>
+
+ <div class="flex min-h-screen w-full">
+        <!-- Overlay -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
 <div class="menu-option">
     <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('DTS-dropdown', this)">
         <div class="flex items-center space-x-2">
@@ -129,6 +134,11 @@ if (in_array('asset_management', $allowed_modules)):
         </ul>
     </div>
 </div>
+
+             
+                </ul>
+            </div>
+        </div>
 <?php endif; ?>
 
 <?php
@@ -179,7 +189,7 @@ if (in_array('procurement', $allowed_modules)):
                     <div id="audit-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
                         <ul class="space-y-1">
                         <li>
-                                <a href="../Procurement/purchase_request" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                                <a href="../Procurement/purchase_request.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
                                     <i class="bx bx-shield text-lg"></i> <span>Purchase request</span>
                                     </a>
                                 </li>
@@ -189,7 +199,7 @@ if (in_array('procurement', $allowed_modules)):
                                     </a>
                                 </li>
                                 <li>
-                                <a href="../Procurement/Propurchase_order.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                                <a href="../Procurement/purchase_order.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
                                         <i class="bx bx-list-check text-lg"></i> <span>Purchase order</span>
                                     </a>
                                 </li>
