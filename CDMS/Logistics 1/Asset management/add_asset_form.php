@@ -67,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $notifStmt->close();
 
-        
+        $type_1 = "For added asset approval";
         $permit_status = "For permit approval"; 
         $insert_permit = $logs2_doc_conn->prepare("
             INSERT INTO permits_approval (asset_id, item_name, type_of_item, purpose, status, submitted_by, requested_date, User_ID)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $insert_permit->bind_param("issssssi", $asset_id, $name, $type_1, $type, $permit_status, $sent_by, $date_sent, $user_id);
+        $insert_permit->bind_param("issssssi", $asset_id, $name, $type, $type_1, $permit_status, $sent_by, $date_sent, $user_id);
 
         if (!$insert_permit->execute()) {
             die("Permit approval insert failed: " . $insert_permit->error);
