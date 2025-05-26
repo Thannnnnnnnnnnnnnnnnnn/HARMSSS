@@ -17,7 +17,7 @@ $allowed_modules = $permissions[$role] ?? [];
 // if (!in_array('procurement', $allowed_modules)) {
 //     header('Location: purchase_request.php');
 //     exit;
-// }
+//  }
 $connection = $connections[$db_name]; // Assign the correct connection
 // SQL Query for reservations
 $result = "SELECT purchase_id, User_ID, requested_date, status, purpose, type_of_item, quantity, estimated_budget, submitted_by, item_name FROM purchase_request ORDER BY requested_date ";
