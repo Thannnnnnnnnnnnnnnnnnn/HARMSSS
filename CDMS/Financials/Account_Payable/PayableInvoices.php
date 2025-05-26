@@ -3,14 +3,23 @@ include('includes/config.php');
 
 // Update payment status based on due dates and payment completion
 $statusUpdateQuery = "
-    UPDATE fin_accounts_payable.payableinvoices pi
-    LEFT JOIN fin_accounts_payable.paymentschedules ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
-    LEFT JOIN fin_accounts_payable.vendorpayments vp ON pi.PayableInvoiceID = vp.PayableInvoiceID
-    SET pi.Status = CASE 
-        WHEN vp.PayablePaymentID IS NOT NULL THEN 'Paid'
-        WHEN ps.PaymentSchedule < CURDATE() AND vp.PayablePaymentID IS NULL THEN 'Overdue'
-        ELSE 'Pending'
-    END;
+UPDATE fin_accounts_payable.payableinvoices pi
+LEFT JOIN (
+    SELECT PayableInvoiceID, MAX(PaymentStatus) AS MaxStatus
+    FROM fin_accounts_payable.vendorpayments
+    GROUP BY PayableInvoiceID
+) vp ON pi.PayableInvoiceID = vp.PayableInvoiceID
+LEFT JOIN (
+    SELECT PayableInvoiceID, MAX(PaymentSchedule) AS LatestSchedule
+    FROM fin_accounts_payable.paymentschedules
+    GROUP BY PayableInvoiceID
+) ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
+SET pi.Status = CASE
+    WHEN vp.MaxStatus = 'Completed' THEN 'Paid'
+    WHEN ps.LatestSchedule < CURDATE() THEN 'Overdue'
+    ELSE 'Pending'
+END;
+
 ";
 
 if (!$conn_budget->query($statusUpdateQuery)) {
@@ -110,7 +119,7 @@ if (!$result) {
                             </div>
                             <div class="modal-body-viewAdjust">
                                 <form id="paymentForm" action="backend/payment_schedule.php" method="POST" class="flex flex-col gap-4">
-                                    <input type="hidden" name="invoice_id" id="schedule_invoice_id">
+                                    <!-- <input type="hidden" name="invoice_id" id="schedule_invoice_id"> -->
                                     <label class="block">
                                         <span class="text-gray-700">Due Date:</span>
                                         <input type="date" name="due_date" required class="w-full border p-2 rounded">
@@ -151,7 +160,7 @@ if (!$result) {
                                             </select>
                                         </label>
                                     </div>
-                                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Record Payment</button>
+                                    <button type="submit" name="tite" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Record Payment</button>
                                 </form>
                             </div>
                         </div>
