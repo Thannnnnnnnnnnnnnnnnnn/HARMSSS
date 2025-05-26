@@ -6,7 +6,7 @@ include('../includes/config.php');
 $conn = new mysqli($host, $username, $password, "fin_accounts_payable");
 $conn_general_ledger = new mysqli($host, $username, $password, "fin_general_ledger");
 
-if ($conn->connect_error) {
+if ($conn->connect_error) { 
     die("Connection failed: " . $conn->connect_error);
 }
 if ($conn_general_ledger->connect_error) {
