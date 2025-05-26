@@ -1,6 +1,9 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-include('../includes/config.php');
+include(__DIR__ . '../../includes/config.php');
  //ahahahahha
 // Connect to the databases //minanual ko nagloloko yung include sa taas
 $conn = new mysqli($host, $username, $password, "fin_accounts_payable");
