@@ -26,10 +26,9 @@ $sql = "
         pi.Department, 
         pi.Amount, 
         pi.StartDate, 
-        MAX(vp.PaymentStatus) AS PaymentStatus,
-        MAX(ps.PaymentSchedule) AS PaymentSchedule,
-        MAX(vp.PaymentMethod) AS PaymentMethod
-      
+        vp.PaymentStatus, 
+        ps.PaymentSchedule ,
+        vp.PaymentMethod
     FROM fin_accounts_payable.payableinvoices pi
     LEFT JOIN fin_accounts_payable.paymentschedules ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
     LEFT JOIN fin_accounts_payable.vendorpayments vp ON pi.PayableInvoiceID = vp.PayableInvoiceID
