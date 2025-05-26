@@ -246,19 +246,20 @@ if (!$result) {
     <i class="bx bx-show"></i>
 </button>
 <b> | </b>
-<!-- Approve Button -->
-<button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded"
-        onclick="approveFunding('<?php echo urlencode($row['asset_id']); ?>')">
+<!-- Buttons -->
+<button onclick="openModal('approve', '<?php echo $row['asset_id']; ?>')" 
+        class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded">
     <i class='bx bx-check-circle'></i>
 </button>
 
 <b> | </b>
 
-<!-- Deny Button -->
-<button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded"
-        onclick="denyFunding('<?php echo urlencode($row['asset_id']); ?>')">
+<button onclick="openModal('deny', '<?php echo $row['asset_id']; ?>')" 
+        class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded">
     <i class='bx bx-x-circle'></i>
 </button>
+
+
 
 
 
@@ -322,6 +323,20 @@ if (!$result) {
   </div>
 </div>
 
+
+<!-- Modal Background -->
+<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+  <!-- Modal Box -->
+  <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+    <h2 class="text-lg font-semibold mb-4" id="modalTitle">Confirm Action</h2>
+    <p class="text-gray-700 mb-6" id="modalMessage">Are you sure you want to proceed?</p>
+
+    <div class="flex justify-end gap-4">
+      <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md">Cancel</button>
+      <button id="confirmActionBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded-md">Yes, Confirm</button>
+    </div>
+  </div>
+</div>
 <!-- Modal -->
 <div id="assetModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
   <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
@@ -388,29 +403,21 @@ if (!$result) {
 </div>
 
 
-<!-- Cancel Confirmation Modal -->
-<div id="cancelModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white rounded-2xl shadow-lg p-6 max-w-md w-full text-center">
-        <h2 class="text-xl font-semibold text-red-600 mb-4">
-            <i class="bx bx-x-circle text-3xl align-middle mr-1"></i> Cancel Request?
-        </h2>
-        <p class="mb-6 text-gray-700">Are you sure you want to cancel this purchase request? This action cannot be undone.</p>
-        <form id="cancelForm" method="POST" action="cancel_purchase.php">
-            <input type="hidden" name="purchase_id" id="cancelPurchaseId" />
-            <div class="flex justify-center space-x-4">
-                <button type="button" onclick="closeCancelModal()"
-                        class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
-                    No, Go Back
-                </button>
-                <button type="submit"
-                        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-                    Yes, Cancel
-                </button>
+<!-- Modal -->
+<div id="actionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded shadow-lg text-center">
+        <h2 class="text-xl font-bold mb-4" id="modalTitle">Confirm Action</h2>
+        <p id="modalMessage">Are you sure?</p>
+        <form method="POST" action="asset_aquasition.php">
+            <input type="hidden" name="asset_id" id="modalAssetId">
+            <input type="hidden" name="action" id="modalAction">
+            <div class="mt-4 flex justify-center space-x-4">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded">Yes</button>
+                <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded">Cancel</button>
             </div>
         </form>
     </div>
 </div>
-
 
     <script src="../JS/sidebar.js"> </script>
     <script src="../JS/purchase_modal.js"> </script>
@@ -419,7 +426,9 @@ if (!$result) {
     <script src="../JS/cancel.js"> </script>
     <script src="../JS/notification_pr.js"> </script>
     <script src="../JS/funding.js"> </script>
-        <script src="../JS/add_assets.js"> </script>
+    <script src="../JS/add_assets.js"> </script>
+    <script src="../JS/add_asset_approve.js"> </script>
+
 
 
 
