@@ -10,13 +10,13 @@ if (!isset($connections[$db_name])) {
     die("Database connection not found for $db_name");
 }
 
-$connection = $connections[$db_name]; // Assign the correct connection
-
 $role = $_SESSION['Role'] ?? 'guest';
 $permissions = include '../role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
 
-$result = "SELECT asset_id  , User_ID, asset_name, asset_type, asset_quantity, asset_status, date_created, submitted_by FROM assets";
+$connection = $connections[$db_name]; // Assign the correct connection
+// SQL Query for reservations
+$result = "SELECT asset_id  , User_ID, asset_name, asset_type, asset_quantity, asset_status, date_created, User_ID, submitted_by FROM assets";
 $result_sql = $connection->query($result);
 
 // Error handling for the reservation query
@@ -61,7 +61,7 @@ if (!$result) {
 <head>                                               
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add assets</title>
+    <title>For funding</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
@@ -81,7 +81,7 @@ if (!$result) {
     
 </head>
 <body>
-      <?php include '../sidebar.php'; ?> 
+      <?php include '../sidebar.php'; ?>
 
 
         <!-- Main + Navbar -->
@@ -191,7 +191,14 @@ if (!$result) {
 </div>
 
                         
+<!-- Trigger Button -->
+<button onclick="toggleModal(true)" 
+  class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+  <i class='bx bx-plus'></i> New Purchase Request
+</button>
 
+
+  <br><br>
 
         <table class="styled-table w-full border-collapse">
             <thead class="bg-gray-100">
@@ -315,6 +322,64 @@ if (!$result) {
   </div>
 </div>
 
+<!-- Modal -->
+<div id="assetModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+
+    <!-- Close Button -->
+    <button onclick="toggleModal(false)" class="absolute top-3 right-3 text-gray-500 hover:text-black">
+      <i class='bx bx-x text-2xl'></i>
+    </button>
+
+    <!-- Modal Header -->
+    <h2 class="text-xl font-semibold mb-4 text-gray-800">Add New Asset</h2>
+
+    <!-- Form -->
+    <form action="add_asset_form.php" method="POST" class="space-y-4">
+      <!-- Asset Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Asset Name</label>
+        <input type="text" name="asset_name" required
+               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <!-- Asset Type -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Asset Type</label>
+        <input type="text" name="asset_type" required
+               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <!-- Asset Quantity -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Asset Quantity</label>
+        <input type="number" name="asset_quantity" min="1" required
+               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <!-- Date Added -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Date Added</label>
+        <input type="date" name="date_created" required
+               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end pt-2">
+        <button type="button" onclick="toggleModal(false)"
+                class="mr-2 px-4 py-2 text-sm border border-gray-300 text-gray-700 hover:bg-gray-100 rounded-md">
+          Cancel
+        </button>
+        <button type="submit"
+                class="px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 rounded-md">
+          Add Asset
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
 
 <!-- Cancel Confirmation Modal -->
 <div id="cancelModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -347,6 +412,8 @@ if (!$result) {
     <script src="../JS/cancel.js"> </script>
     <script src="../JS/notification_pr.js"> </script>
     <script src="../JS/funding.js"> </script>
+        <script src="../JS/add_assets.js"> </script>
+
 
 
 
