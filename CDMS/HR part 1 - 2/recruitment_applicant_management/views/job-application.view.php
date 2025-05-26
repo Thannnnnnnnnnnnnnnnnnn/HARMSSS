@@ -144,7 +144,7 @@
                 icon: 'success',
                 confirmButton: 'false',
             })
-            // $('form').submit();
+            $('form').submit();
         } else {
             Swal.fire({
                 icon: "error",
