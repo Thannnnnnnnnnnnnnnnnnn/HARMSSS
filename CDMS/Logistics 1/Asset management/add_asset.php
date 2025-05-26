@@ -246,27 +246,17 @@ if (!$result) {
     <i class="bx bx-show"></i>
 </button>
 <b> | </b>
-<!-- Approve Button -->
-<<<<<<< HEAD
-<button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded"
-        onclick="approveFunding('<?php echo urlencode($row['asset_id']); ?>')">
-=======
+<!-- Approve Button --><!-- Approve Button -->
 <button onclick="openModal('approve', '<?php echo $row['asset_id']; ?>')" 
         class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded">
->>>>>>> f082a7b5e18b68e37e3f435f16d0500f0ea4c9b8
     <i class='bx bx-check-circle'></i>
 </button>
 
 <b> | </b>
 
 <!-- Deny Button -->
-<<<<<<< HEAD
-<button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded"
-        onclick="denyFunding('<?php echo urlencode($row['asset_id']); ?>')">
-=======
 <button onclick="openModal('deny', '<?php echo $row['asset_id']; ?>')" 
         class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded">
->>>>>>> f082a7b5e18b68e37e3f435f16d0500f0ea4c9b8
     <i class='bx bx-x-circle'></i>
 </button>
 
@@ -333,8 +323,7 @@ if (!$result) {
   </div>
 </div>
 
-<<<<<<< HEAD
-=======
+
 <!-- Modal Background -->
 <div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
   <!-- Modal Box -->
@@ -348,7 +337,6 @@ if (!$result) {
     </div>
   </div>
 </div>
->>>>>>> f082a7b5e18b68e37e3f435f16d0500f0ea4c9b8
 <!-- Modal -->
 <div id="assetModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
   <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
@@ -447,11 +435,9 @@ if (!$result) {
     <script src="../JS/notification_pr.js"> </script>
     <script src="../JS/funding.js"> </script>
         <script src="../JS/add_assets.js"> </script>
-<<<<<<< HEAD
-=======
-                <script src="../JS/add_asset_approve.js"> </script>
 
->>>>>>> f082a7b5e18b68e37e3f435f16d0500f0ea4c9b8
+        <script src="../JS/add_asset_approve.js"> </script>
+
 
 
 

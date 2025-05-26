@@ -74,7 +74,7 @@ $notifications = $db->query('SELECT title, message FROM notifications WHERE `for
                         </div>
                         <div class="flex items-center justify-center px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
                             <box-icon name='log-out'></box-icon>
-                            <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <a href="logout.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Log Out
                             </a>
                         </div>

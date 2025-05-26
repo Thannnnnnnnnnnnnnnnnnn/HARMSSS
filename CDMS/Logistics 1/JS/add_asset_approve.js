@@ -9,7 +9,7 @@ function openModal(action, assetId) {
   const title = document.getElementById('modalTitle');
   const message = document.getElementById('modalMessage');
 
-  title.textContent = action === 'approve' ? 'Approve Funding' : 'Deny Funding';
+  title.textContent = action === 'add asset with' ? 'Add asset' : 'Deny Funding';
   message.textContent = `Are you sure you want to ${action} asset ID ${assetId}?`;
 
   modal.classList.remove('hidden');
@@ -23,7 +23,7 @@ function closeModal() {
 }
 
 document.getElementById('confirmActionBtn').addEventListener('click', () => {
-  fetch('../asset_aquasition.php', {
+  fetch('asset_aquasition.php', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
