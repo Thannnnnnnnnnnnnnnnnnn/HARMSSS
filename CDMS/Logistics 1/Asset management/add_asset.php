@@ -4,7 +4,7 @@ session_start();
 include("../../connection.php");
 
 // Define the database name
-$db_name = "logs1_procurement";
+$db_name = "logs1_asset";
 
 if (!isset($connections[$db_name])) {
     die("Database connection not found for $db_name");
@@ -12,7 +12,7 @@ if (!isset($connections[$db_name])) {
 
 $connection = $connections[$db_name]; // Assign the correct connection
 // SQL Query for reservations
-$result = "SELECT funding_id , User_ID, requested_date, status, purpose, type_of_item, estimated_budget, submitted_by, item_name FROM for_funding";
+$result = "SELECT asset_id  , User_ID, asset_name, asset_type, asset_quantity, asset_status, date_created, User_ID, submitted_by FROM assets";
 $result_sql = $connection->query($result);
 
 // Error handling for the reservation query
@@ -22,10 +22,10 @@ if ($result_sql === false) {
 
 // Unified query to count various reservation statuses
 $query = "SELECT 
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Pending for funds request') AS total_request,
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds successfully requested') AS For_clearance_Approval,
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds requisition was cancelled') AS Denied_request,
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds denied') AS Clearance_approve
+        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Pending for funds request') AS total_request,
+        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Funds successfully requested') AS For_clearance_Approval,
+        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Funds requisition was cancelled') AS Denied_request,
+        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Funds denied') AS Clearance_approve
 ";
 
 $result = mysqli_query($connection, $query);
@@ -42,7 +42,7 @@ $DR_count = $row['Denied_request'];
 $CA_count = $row['Clearance_approve'];
 
 // Query to fetch all reservations
-$query = "SELECT * FROM `purchase_request`";
+$query = "SELECT * FROM `assets`";
 $result = mysqli_query($connection, $query);
 
 if (!$result) {
@@ -77,251 +77,7 @@ if (!$result) {
     
 </head>
 <body>
-    <div class="flex min-h-screen w-full">
-        <!-- Overlay -->
-        <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-        <!-- Sidebar -->
-        <div class="sidebar sidebar-expanded fixed z-50 overflow-y-auto overflow-x-hidden h-screen bg-white border-r border-[#F7E6CA] flex flex-col">
-            <div class="h-16 border-b border-[#F7E6CA] flex items-center px-2 space-x-2">
-                <h1 class="text-xl font-bold text-black bg-[#D9D9D9] p-2 rounded-xl">LOGO</h1>
-                <h1 class="text-xl font-bold text-[#4E3B2A]">Logistic 1</h1>
-                <!--Close Button-->
-            </div>
-            <div class="side-menu px-4 py-6">
-                 <ul class="space-y-4">
-                    <!-- Dashboard Item -->
-                   <div class="menu-option">
-                        <a href="finalTemplate.html" class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-server text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Dashboard</span>
-                            </div>
-                        
-                        </a>
-                    </div>
-                    
-
-                     <!--- Procurement --->
-
-                     <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('audit-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-wallet text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Procurement</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="audit-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-                        <li>
-                                <a href="purchase_request" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-shield text-lg"></i> <span>Purchase request</span>
-                                    </a>
-                                </li>
-                                <li>
-                                <a href="For_funding.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                        <i class="bx bx-calendar text-alt text-lg"></i> <span>For funding request</span>
-                                    </a>
-                                </li>
-                                <li>
-                                <a href="purchase_order.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                        <i class="bx bx-list-check text-lg"></i> <span>Purchase order</span>
-                                    </a>
-                                </li>
-
-                                <li>
-                                <a href="procurement_logs.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                        <i class="bx bx-search-alt text-lg"></i> <span>Procuremnt logs</span>
-                                    </a>
-                                </li>
-
-                        </ul>
-                    </div>
-                </div>
-
-                <!---- Document tracking system --->
-                <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('DTS-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-calculator text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Document tracking</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="DTS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-                        <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-check-shield text-lg"></i> <span>Approvals</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-folder text-lg"></i> <span>Document categories</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-file text-lg"></i> <span>Documents</span>
-                                </a>
-                            </li>
-                            
-
-                        </ul>
-                    </div>
-                </div>
-                <!---- Fleet management--->
-
-                <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('fleet-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-car text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Fleet management</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="fleet-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-
-                            <li>
-                                <a href="drivers.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-user text-lg"></i> <span>Drivers</span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="vehicles.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-car text-lg"></i> <span>Vehicles</span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-user-check text-lg"></i> <span>Vehicle assignments</span>
-                                </a>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                </div>
-
-
-                    <!-- VRS  -->
-                    <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('VRS-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-calendar text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Vehicle reservation</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="VRS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-                           
-                            <li>
-                                <a href="reservation.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-calendar-event text-lg"></i> <span>Reservation</span>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </div>
-
-                <!---- Vendor portal---->
-
-                <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('vendor-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-store text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Vendor portal</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="vendor-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-receipt text-lg"></i> <span>Vendor invoices</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-box text-lg"></i> <span>Vendor products</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-star text-lg"></i> <span>Vendor ratings</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-user-check text-lg"></i> <span>Vendors</span>
-                            </a>
-                        </li>
-
-                        
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('USM-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-user-circle text-lg pr-4"></i>
-                                <span class="text-sm font-medium">User management</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="USM-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-                        <li>
-                            <a href="dept_accounts.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-id-card text-lg"></i> <span>Department accounts</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="dept_logs.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-history text-lg"></i> <span>Department log history</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-search-alt-2 text-lg"></i> <span>Department audit trail</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-transfer text-lg"></i> <span>Department transaction</span>
-                            </a>
-                        </li>
-
-                        
-                        </ul>
-                    </div>
-                </div>
-
-
-                   
-
-                    
-                </ul>
-            </div>
-        </div>
+    
 
         <!-- Main + Navbar -->
         <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">
