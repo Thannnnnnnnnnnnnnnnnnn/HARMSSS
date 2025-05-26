@@ -215,12 +215,11 @@ Password: {$password}
                 The HR Team
                 {$applicant['company']}"
                 );
-<<<<<<< HEAD
 
                 break;
             case 2:
-                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate, :JobTitle)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -230,6 +229,7 @@ Password: {$password}
                     ':AddressLine1' => $applicant['address'],
                     ':DepartmentID' => $applicant['department_id'],
                     ':HireDate' => $applicant['updated_at'],
+                    ':JobTitle' => $applicant['job_title'],
                 ]);
                 $nhoes->query("INSERT INTO documents (document_type, employee_id, file_path) VALUES (:DocumentType, :EmployeeID, :FilePath)", [
                     ':DocumentType' => $extension['extension'],
@@ -315,8 +315,6 @@ Sincerely,
 The HR Team
 {$applicant['company']}"
                 );
-=======
->>>>>>> a891b09157d0e0b97c803f622bad7cfa8fd67c4b
                 break;
             case 4:
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate, JobTitle)
