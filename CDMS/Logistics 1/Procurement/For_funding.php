@@ -77,8 +77,9 @@ if (!$result) {
     
 </head>
 <body>
-    <div class="flex min-h-screen w-full">
-        <!-- Overlay -->
+
+  <?php include '../sidebar.php'; ?>
+
        
         <!-- Main + Navbar -->
         <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">

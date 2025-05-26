@@ -3,6 +3,12 @@
 $role = $_SESSION['Role'] ?? 'guest';
 $permissions = include 'role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
+function dd($data) {
+    echo '<pre>';
+    var_dump($data);
+    echo '</pre>';
+    die;
+}
 
 if (in_array('project_management', $allowed_modules)):
 ?>
@@ -126,11 +132,12 @@ if (in_array('asset_management', $allowed_modules)):
 <?php endif; ?>
 
 <?php
-$role = $_SESSION['Role'] ?? 'guest';
+$role = $_SESSION['Role'];
 $permissions = include 'role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
 
 if (in_array('procurement', $allowed_modules)):
+
 ?>
  <div class="flex min-h-screen w-full">
         <!-- Overlay -->

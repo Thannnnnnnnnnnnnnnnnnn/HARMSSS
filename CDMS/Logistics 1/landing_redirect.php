@@ -9,7 +9,7 @@ function dd($data) {
 
 // dd($_SESSION); // Debugging: Check session data
 
-$role = $_SESSION['Role'];
+$role = $_SESSION['Role'];  
 $permissions = include 'role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
 
@@ -25,7 +25,6 @@ $module_to_landing = [
 // Find the first module the role is allowed to access
 foreach ($allowed_modules as $module) {
     if (($module_to_landing[$module])) {
-        // dd('test');
         header("Location: " . $module_to_landing[$module]);
         exit;
     }
