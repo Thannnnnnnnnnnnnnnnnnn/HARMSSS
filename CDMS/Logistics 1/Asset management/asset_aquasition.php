@@ -1,78 +1,46 @@
 <?php
 session_start();
-include("../../connection.php");
+include '../../connection.php'; // adjust path as needed
 
-$conn = $connections["logs1_asset"];
-$usm_conn = $connections["logs1_usm"]; // Connection for notifications
+// Define the database names
+$db_name = "logs1_asset";
+$db_logs1_usm = "logs1_usm";
+$db_logs2_doc = "logs2_document_tracking";
 
-header('Content-Type: application/json');
+if (!isset($connections[$db_name]) || !isset($connections[$db_logs1_usm]) || !isset($connections[$db_logs2_doc])) {
+    die("One or more database connections are missing.");
+}
 
+$conn = $connections[$db_name];
+$logs1_usm_conn = $connections[$db_logs1_usm];
+$logs2_doc_conn = $connections[$db_logs2_doc];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $asset_id = $_POST['asset_id'] ?? '';
-    $action = $_POST['action'] ?? '';
+    $asset_id = $_POST['asset_id'] ?? null;
+    $action = $_POST['action'] ?? null;
 
-    if (!$asset_id || !$action) {
-        echo json_encode(['success' => false, 'message' => 'Missing parameters.']);
-        exit;
+    if (!$asset_id || !in_array($action, ['approve', 'deny'])) {
+        die("Invalid request.");
     }
 
-    $approval = ($action === 'approve') ? "Asset added permitted" : "Asset denied";
-    $status = ($action === 'approve') ? "Asset successfully added" : null;
+    $asset_id = intval($asset_id);
 
-    // Get asset details for notification
-    $check = $conn->prepare("SELECT asset_id, asset_name, submitted_by, User_ID FROM assets WHERE asset_id = ?");
-    $check->bind_param("i", $asset_id);
-    $check->execute();
-    $result = $check->get_result();
+    // Set custom status
+    $status = ($action === 'approve') ? 'Asset successfully added' : 'Denied';
 
-    if ($result->num_rows === 0) {
-        echo json_encode(['success' => false, 'message' => 'Asset not found.']);
-        exit;
-    }
-
-    $asset = $result->fetch_assoc();
-    $name = $asset['asset_name'];
-    $sent_by = $asset['submitted_by'];
-    $user_id = $asset['User_ID'];
-
-    // Update approval and status
-    if ($status) {
-        $stmt = $conn->prepare("UPDATE assets SET Asset successfully added = ?, status = ? WHERE asset_id = ?");
-        $stmt->bind_param("ssi", $approval, $status, $asset_id);
-    } else {
-        $stmt = $conn->prepare("UPDATE assets SET approval = ? WHERE asset_id = ?");
-        $stmt->bind_param("si", $approval, $asset_id);
-    }
+    $stmt = $conn->prepare("UPDATE assets SET asset_status = ? WHERE asset_id = ?");
+    $stmt->bind_param("si", $status, $asset_id);
 
     if ($stmt->execute()) {
-        // Only send notification if approved
-        if ($action === 'approve') {
-            $notification_title = "New Asset Approved";
-            $notification_message = "<strong>{$sent_by}</strong>'s asset <strong>\"$name\"</strong> has been approved.";
-            $notification_status = "Unread";
-            $date_sent = date("Y-m-d H:i:s");
-            $module = "Asset Management";
-            $recipient_role = "Asset Requester"; // optional — adjust this if you have roles
-
-            $notifStmt = $usm_conn->prepare("
-                INSERT INTO notification_at (title, message, status, date_sent, sent_by, User_ID, recipient_role, module)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ");
-            $notifStmt->bind_param("ssssssss", $notification_title, $notification_message, $notification_status, $date_sent, $sent_by, $user_id, $recipient_role, $module);
-
-            if (!$notifStmt->execute()) {
-                echo json_encode(['success' => false, 'message' => 'Notification insert failed.']);
-                exit;
-            }
-
-            $notifStmt->close();
-        }
-
-        echo json_encode(['success' => true, 'message' => "Asset $approval successfully."]);
+        // Optional redirect
+        header("Location: add_asset.php?success=1");
+        exit();
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update status.']);
+        echo "Error updating asset: " . $conn->error;
     }
 
     $stmt->close();
+    $conn->close();
+} else {
+    echo "Invalid access method.";
 }
 ?>
