@@ -1,7 +1,10 @@
 <?php
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 include('../includes/config.php');
-
+ var_dump($_POST);
 // Connect to the databases //minanual ko nagloloko yung include sa taas
 $conn = new mysqli($host, $username, $password, "fin_accounts_payable");
 $conn_general_ledger = new mysqli($host, $username, $password, "fin_general_ledger");
