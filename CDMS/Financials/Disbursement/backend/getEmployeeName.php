@@ -8,7 +8,7 @@ $conn = $db->connect('fin_disbursement');
 
 $employeeId = $_GET['employeeId'];
 
-$stmt = $conn->prepare("SELECT FirstName , Types FROM employees WHERE EmployeeID = ?");
+$stmt = $conn->prepare("SELECT FirstName, Types FROM employees WHERE EmployeeID = ?");
 $stmt->bind_param("i", $employeeId);
 $stmt->execute();
 $result = $stmt->get_result();
