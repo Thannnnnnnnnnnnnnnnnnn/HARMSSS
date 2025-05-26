@@ -1,5 +1,12 @@
 <?php
 
+function dd($value){
+    echo "<pre>";
+    var_dump($value);
+    echo "</pre>";
+    die();
+}
+
 include('../includes/config.php');
  //ahahahahha
 // Connect to the databases //minanual ko nagloloko yung include sa taas
@@ -35,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $payment_status = "Completed";  
         $stmt->bind_param("isss", $invoice_id, $payment_status, $amount_paid, $payment_method);
-
+// dd('testolet');
         if (!$stmt->execute()) {
             throw new Exception("Error inserting into vendorpayments: " . $stmt->error);
         }
@@ -69,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $stmt_ledger->close();
         }
-
+// dd('test');
         // Commit transaction
         $conn->commit();
 
