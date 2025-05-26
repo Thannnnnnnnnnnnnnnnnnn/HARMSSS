@@ -306,7 +306,7 @@ if (!$result) {
     <i class="bx bx-x"></i>
   </button>
   <div id="notifList" class="max-h-64 overflow-y-auto space-y-2 text-sm text-gray-700">
-    <p class="text-center text-gray-400">Loading...</p>
+    <p class="text-center text-gray-400">Loading..</p>
   </div>
 </div>
 
