@@ -37,7 +37,7 @@ $notifications = $db->query('SELECT
         </nav>
     </div>
 
-    <div class="flex flex-col md:flex-row justify-between items-center px-2 py-2 md:py-0">
+    <div class="text-center md:py-3z">
 
         <h1 class="text-xl md:text-2xl font-semibold text-[#594423] mb-2 md:mb-0 text-center"><?= $heading ?></h1>
 
