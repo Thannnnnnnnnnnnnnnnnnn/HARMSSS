@@ -1,7 +1,7 @@
-<?php 
-include('includes/config.php'); 
+<?php
+include('includes/config.php'); // Loads $conn, $conn_budget, $conn_disbursement, $conn_general_ledger
 
-// Update payment status based on due dates and payment completion
+// Update payment status
 $statusUpdateQuery = "
     UPDATE fin_accounts_payable.payableinvoices pi
     LEFT JOIN fin_accounts_payable.paymentschedules ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
@@ -12,33 +12,30 @@ $statusUpdateQuery = "
         ELSE 'Pending'
     END;
 ";
-
-if (!$conn_budget->query($statusUpdateQuery)) {
-    die("Error updating payment status: " . $conn_budget->error);
+if (!$conn->query($statusUpdateQuery)) {
+    die("Error updating payment status: " . $conn->error);
 }
 
-// Fetch invoice data with payment schedule and payment status
+// Fetch invoice data
 $sql = "
- SELECT 
-    pi.PayableInvoiceID, 
-    MAX(pi.AccountID) AS AccountID, 
-    MAX(pi.BudgetName) AS BudgetName, 
-    MAX(pi.Department) AS Department, 
-    MAX(pi.Amount) AS Amount, 
-    MAX(pi.StartDate) AS StartDate, 
-    MAX(vp.PaymentStatus) AS PaymentStatus, 
-    MAX(ps.PaymentSchedule) AS PaymentSchedule,
-    MAX(vp.PaymentMethod) AS PaymentMethod
-FROM fin_accounts_payable.payableinvoices pi
-LEFT JOIN fin_accounts_payable.paymentschedules ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
-LEFT JOIN fin_accounts_payable.vendorpayments vp ON pi.PayableInvoiceID = vp.PayableInvoiceID
-GROUP BY pi.PayableInvoiceID;
-
+    SELECT 
+        pi.PayableInvoiceID, 
+        MAX(pi.AccountID) AS AccountID, 
+        MAX(pi.BudgetName) AS BudgetName, 
+        MAX(pi.Department) AS Department, 
+        MAX(pi.Amount) AS Amount, 
+        MAX(pi.StartDate) AS StartDate, 
+        MAX(pi.Status) AS PaymentStatus, -- Use pi.Status instead of vp.PaymentStatus
+        MAX(ps.PaymentSchedule) AS PaymentSchedule,
+        MAX(vp.PaymentMethod) AS PaymentMethod
+    FROM fin_accounts_payable.payableinvoices pi
+    LEFT JOIN fin_accounts_payable.paymentschedules ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
+    LEFT JOIN fin_accounts_payable.vendorpayments vp ON pi.PayableInvoiceID = vp.PayableInvoiceID
+    GROUP BY pi.PayableInvoiceID;
 ";
-$result = $conn_budget->query($sql);
-
+$result = $conn->query($sql);
 if (!$result) {
-    die("Error retrieving data: " . $conn_budget->error);
+    die("Error retrieving data: " . $conn->error);
 }
 ?>
 <?php include('../includes/head.php'); ?>
@@ -131,7 +128,7 @@ if (!$result) {
                                 </button>
                             </div>
                             <div class="modal-body-viewAdjust">
-                                <form id="recordPaymentForm" action="backend/AddPayments.php" method="POST" class="flex flex-col gap-4">
+                                <form id="recordPaymentForm" action="backend/payments.php" method="POST" class="flex flex-col gap-4">
                                     <input type="hidden" name="invoice_id" id="payment_invoice_id">
                                     <div class="flex flex-col gap-2">
                                         <label class="block">
