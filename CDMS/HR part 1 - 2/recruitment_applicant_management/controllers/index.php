@@ -4,7 +4,7 @@ $config = require '../config.php';
 require '../Database.php';
 require '../functions.php';
 $db = new Database($config['database']);
-$usm = new Database($config['usm']);
+// $usm = new Database($config['usm']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($_POST['login'] ?? '' == true) {
