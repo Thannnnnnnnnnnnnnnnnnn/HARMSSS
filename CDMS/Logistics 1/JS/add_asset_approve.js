@@ -1,44 +1,19 @@
-let selectedAssetId = null;
-let selectedAction = null;
+ function openModal(action, assetId) {
+        const modal = document.getElementById('actionModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalAssetId = document.getElementById('modalAssetId');
+        const modalAction = document.getElementById('modalAction');
 
-function openModal(action, assetId) {
-  selectedAssetId = assetId;
-  selectedAction = action;
+        modalAssetId.value = assetId;
+        modalAction.value = action;
 
-  const modal = document.getElementById('confirmModal');
-  const title = document.getElementById('modalTitle');
-  const message = document.getElementById('modalMessage');
+        modalTitle.textContent = (action === 'approve' ? 'Approve Asset' : 'Deny Asset');
+        modalMessage.textContent = `Are you sure you want to ${action} this asset?`;
 
-  title.textContent = action === 'approve' ? 'Approve Funding' : 'Deny Funding';
-  message.textContent = `Are you sure you want to ${action} asset ID ${assetId}?`;
+        modal.classList.remove('hidden');
+    }
 
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-}
-
-function closeModal() {
-  const modal = document.getElementById('confirmModal');
-  modal.classList.remove('flex');
-  modal.classList.add('hidden');
-}
-
-document.getElementById('confirmActionBtn').addEventListener('click', () => {
-  fetch('../asset_aquasition.php', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: `asset_id=${encodeURIComponent(selectedAssetId)}&action=${selectedAction}`
-  })
-  .then(res => res.json())
-  .then(data => {
-    closeModal();
-    alert(data.message); // Swap with SweetAlert if needed
-    if (data.success) location.reload();
-  })
-  .catch(err => {
-    closeModal();
-    alert('Something went wrong.');
-    console.error(err);
-  });
-});
+    function closeModal() {
+        document.getElementById('actionModal').classList.add('hidden');
+    }

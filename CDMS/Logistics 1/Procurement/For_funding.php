@@ -11,7 +11,11 @@ if (!isset($connections[$db_name])) {
 }
 
 $connection = $connections[$db_name]; // Assign the correct connection
-// SQL Query for reservations
+
+$role = $_SESSION['role'] ?? 'guest';
+$permissions = include '../role_permissions.php';
+$allowed_modules = $permissions[$role] ?? [];
+
 $result = "SELECT funding_id , User_ID, requested_date, status, purpose, type_of_item, estimated_budget, submitted_by, item_name FROM for_funding";
 $result_sql = $connection->query($result);
 
@@ -77,8 +81,9 @@ if (!$result) {
     
 </head>
 <body>
-    <div class="flex min-h-screen w-full">
-        <!-- Overlay -->
+
+  <?php include '../sidebar.php'; ?>
+
        
         <!-- Main + Navbar -->
         <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">
