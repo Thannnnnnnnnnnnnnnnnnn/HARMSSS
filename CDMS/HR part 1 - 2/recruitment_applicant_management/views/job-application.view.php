@@ -67,8 +67,8 @@
 
             <div>
                 <label class="block text-[#4E3B2A] text-md">Email</label>
-                <input type="email" name="email" value="<?= htmlspecialchars($user_info['email'] ?? '') ?>" placeholder="juanDelaCruz@gmail.com"
-                    class="w-full max-w-md px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#594423] focus:outline-none">
+                <input type="email" name="email" value="<?= htmlspecialchars($_SESSION['email'] ?? '') ?>"
+                    class="w-full max-w-md px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#594423] focus:outline-none" readonly>
                 <?php if ($errors['email'] ?? '') : ?>
                     <p class="w-full max-w-md text-red-500">
                         <?= $errors['email'] ?>
@@ -121,14 +121,22 @@
                 $(this).removeClass('border-red-500');
             }
         });
-        if ($('#age').val() < 18) {
+
+        const ageValue = parseInt($('#age').val());
+
+        if (isNaN(ageValue) || ageValue < 18 || ageValue > 60) {
+            console.log("Invalid age detected: " + ageValue);
             isValid = false;
-            $('#age').removeClass('hidden');
             $('#age').addClass('border-red-500');
-            $('#ageError').removeClass('hidden');
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Age',
+                text: 'Age must be between 18 and 60.',
+            });
         } else {
             $('#age').removeClass('border-red-500');
         }
+
         if (isValid) {
             swal.fire({
                 title: 'Application Submitted!',

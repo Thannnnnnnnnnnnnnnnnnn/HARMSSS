@@ -7,6 +7,7 @@ require '../Database.php';
 $db = new Database($config['database']);
 // $usm = new Database($config['usm']);
 $updated = false;
+// dd($_SESSION);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   dd($_POST);
   $errors = [];
@@ -63,8 +64,10 @@ FROM applicants a
 LEFT JOIN applicationstatus s ON a.applicant_id = s.applicant_id
 INNER JOIN jobpostings j ON a.posting_id = j.posting_id
 AND status != :status
+WHERE a.email = :email
 ORDER BY created_at desc', [
   ':status' => 'rejected',
+  ':email' => $_SESSION['email'] ?? '',
 ])->fetchAll();
 
 $h_applications = $db->query('SELECT
@@ -85,8 +88,10 @@ FROM applicants a
 LEFT JOIN applicationstatus s ON a.applicant_id = s.applicant_id
 INNER JOIN jobpostings j ON a.posting_id = j.posting_id
 AND status = :status
+WHERE a.email = :email
 ORDER BY created_at desc', [
   ':status' => 'rejected',
+  ':email' => $_SESSION['email'] ?? '',
 ])->fetchAll();
 
 $interview = $db->query("SELECT 
