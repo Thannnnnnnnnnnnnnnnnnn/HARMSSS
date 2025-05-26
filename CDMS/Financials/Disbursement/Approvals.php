@@ -84,7 +84,7 @@
                                     <tr>
                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider rounded-tl-lg" ">Approval ID</th>
                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" ">Request ID</th>
-                                        <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" ">AllocationID</th>
+
                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" ">Amount</th>
                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" ">Status</th>
                                         <th class="px-6 py-4 text-left text-sm font-bold text-gray-100 uppercase tracking-wider" ">Date of Approval</th>
@@ -113,7 +113,7 @@
                                             echo "<tr class='hover:bg-gray-50'>
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['ApprovalID']}</td>
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['RequestID']}</td>
-                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['AllocationID']}</td>
+                                                   
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>₱" . number_format($row['Amount'], 2) . "</td>
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm font-medium {$statusColor}'>{$row['Status']}</td>
                                                     <td class='px-6 py-4 whitespace-nowrap text-sm text-gray-800'>{$row['DateOfApproval']}</td>
