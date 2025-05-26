@@ -183,6 +183,35 @@ if (!$result) {
         </div>
       </div>
     </a>
+     <!-- Pending request -->
+    <a href="sub-modules/reservation_pending.php?" class="dashboard-card hover:shadow-lg transition duration-300 cursor-pointer block w-72">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center gap-2">
+            <i class='bx bx-time-five text-xl text-green-600'></i>
+            <h2 class="dashboard-title">Digital assets</h2>
+          </div>
+          <p class="dashboard-number text-black-500 font-semibold">
+            <?php echo isset($DR_count) ? $DR_count : '0'; ?>
+          </p>
+        </div>
+      </div>
+    </a>
+         <!-- Pending request -->
+    <a href="sub-modules/reservation_pending.php?" class="dashboard-card hover:shadow-lg transition duration-300 cursor-pointer block w-72">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center gap-2">
+            <i class='bx bx-time-five text-xl text-green-600'></i>
+            <h2 class="dashboard-title">Digital assets</h2>
+          </div>
+          <p class="dashboard-number text-black-500 font-semibold">
+            <?php echo isset($DR_count) ? $DR_count : '0'; ?>
+          </p>
+        </div>
+      </div>
+    </a>
+
 
 
   </div>
