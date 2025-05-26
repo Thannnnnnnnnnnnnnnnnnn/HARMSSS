@@ -43,22 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['funding_id'])) {
         die("Invalid or incomplete funding record.");
     }
 
-    // 🔍 Get user info
-    $userStmt = $usm_conn->prepare("SELECT Name, Role FROM department_accounts WHERE User_ID = ?");
-    if (!$userStmt) {
-        die("User prepare failed: " . $usm_conn->error);
-    }
-
-    $userStmt->bind_param("s", $user_id);
-    $userStmt->execute();
-    $userStmt->bind_result($name, $Role);
-    $userStmt->fetch();
-    $userStmt->close();
-
-    if (!$name || !$Role) {
-        die("User details not found.");
-    }
-
     // ✅ Update status in for_funding
     $updateStmt = $conn->prepare("UPDATE for_funding SET status = 'Funds successfully requested' WHERE funding_id = ?");
     $updateStmt->bind_param("s", $funding_id);
@@ -68,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['funding_id'])) {
     // ✅ Clean and prepare amount
     $estimated_budget = floatval(str_replace(',', '', $estimated_budget));
 
-    // ✅ Insert into disbursementrequests table first
+    // ✅ Insert into disbursementrequests table
     $disbStmt = $fin_conn->prepare("
         INSERT INTO disbursementrequests (funding_id, Amount, DateOfRequest) 
         VALUES (?, ?, ?)
@@ -88,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['funding_id'])) {
     $request_id = $fin_conn->insert_id;
     $disbStmt->close();
 
-    // ✅ Get a valid AllocationID from the budgetallocations table to satisfy FK constraint
+    // ✅ Get AllocationID (FK from budgetallocations table)
     $allocQuery = $fin_conn->query("SELECT AllocationID FROM fin_budget_management.budgetallocations ORDER BY RAND() LIMIT 1");
 
     if ($allocQuery && $allocQuery->num_rows > 0) {
@@ -132,6 +116,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['funding_id'])) {
     }
 
     $approvalStmt->close();
+
+    // ✅ Fetch user's name and role from department_accounts (logs1_usm)
+    $userDetailsStmt = $usm_conn->prepare("SELECT Name, Role FROM department_accounts WHERE User_ID = ?");
+    $userDetailsStmt->bind_param("s", $user_id);
+    $userDetailsStmt->execute();
+    $userDetailsStmt->bind_result($name, $Role);
+    $userDetailsStmt->fetch();
+    $userDetailsStmt->close();
+
+    if (!$name || !$Role) {
+        die("User details not found in department_accounts.");
+    }
 
     // ✅ Create notification
     $notification_title = "Funds requisition was requested";

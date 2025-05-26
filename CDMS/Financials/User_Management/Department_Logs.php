@@ -12,7 +12,7 @@ $connection = $db->connect($db_name);
 if (!$connection) {
     die("Database connection not found for $db_name");
 }
-
+~
 $query = "SELECT Dept_Log_ID, Department_ID, User_ID, Name, Role, Log_Status, Log_Date_Time FROM `department_log_history` ORDER BY Log_Date_Time DESC"; 
 $result = mysqli_query($connection, $query);
 
