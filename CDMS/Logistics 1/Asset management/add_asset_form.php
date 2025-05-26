@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INSERT INTO assets (asset_name, asset_type, asset_quantity, date_created, asset_status, User_ID, submitted_by)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
-    $stmt->bind_param("ssissis", $name, $type, $quantity, $date_added, $asset_status, $user_id, $sent_by);
+    $stmt->bind_param("ssissss", $name, $type, $quantity, $date_added, $asset_status, $user_id, $sent_by);
 
     if ($stmt->execute()) {
         $asset_id = $stmt->insert_id;
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             INSERT INTO permits_approval (asset_id, item_name, type_of_item, purpose, status, submitted_by, requested_date, User_ID)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $insert_permit->bind_param("isssissi", $asset_id, $name, $type, $type, $permit_status, $sent_by, $date_sent, $user_id);
+        $insert_permit->bind_param("issssssi", $asset_id, $name, $type_1, $type, $permit_status, $sent_by, $date_sent, $user_id);
 
         if (!$insert_permit->execute()) {
             die("Permit approval insert failed: " . $insert_permit->error);

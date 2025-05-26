@@ -343,12 +343,19 @@ if (!$result) {
                class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
 
-      <!-- Asset Type -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Asset Type</label>
-        <input type="text" name="asset_type" required
-               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      </div>
+        <!-- Asset Type -->
+        <div>
+    <label class="block text-sm font-medium text-gray-700">Asset Type</label>
+    <select name="asset_type" required
+            class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="" disabled selected>Select asset type</option>
+        <option value="Tangible assets">Tangible assets</option>
+        <option value="Non-tangible assets">Non-tangible assets</option>
+        <option value="Cash assets">Cash assets</option>
+        <option value="Digital assets">Digital assets</option>
+    </select>
+    </div>
+
 
       <!-- Asset Quantity -->
       <div>
