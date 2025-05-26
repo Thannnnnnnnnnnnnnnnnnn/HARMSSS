@@ -2,7 +2,6 @@
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tite'])) {
     require_once('../includes/config.php');
 
-    $invoice_id = (int) ($_POST['invoice_id'] ?? 0);
     $payment_date = $_POST['payment_date'] ?? '';
     $amount_paid = floatval($_POST['amount_paid'] ?? 0);
     $payment_method = $_POST['payment_method'] ?? '';
@@ -25,10 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tite'])) {
         // Insert payment record
         $stmt = $conn->prepare("
             INSERT INTO vendorpayments 
-            (PayableInvoiceID, PaymentStatus, PaymentDate, AmountPaid, PaymentMethod) 
-            VALUES (?, 'Completed', ?, ?, ?)
+            ( PaymentStatus, PaymentDate, AmountPaid, PaymentMethod) 
+            VALUES (1, 'Completed', ?, ?, ?)
         ");
-        $stmt->bind_param("isds", $invoice_id, $payment_date, $amount_paid, $payment_method);
+        $stmt->bind_param("sds", $payment_date, $amount_paid, $payment_method);
         $stmt->execute();
         $payment_id = $stmt->insert_id;
         $stmt->close();
