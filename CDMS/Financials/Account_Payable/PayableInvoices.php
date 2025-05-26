@@ -26,7 +26,7 @@ $sql = "
         pi.Department, 
         pi.Amount, 
         pi.StartDate, 
-        MAX(vp.PaymentStatus) AS PaymentStatus,
+     MAX(vp.PaymentStatus) AS PaymentStatus,
         MAX(ps.PaymentSchedule) AS PaymentSchedule,
         MAX(vp.PaymentMethod) AS PaymentMethod
       
@@ -131,9 +131,9 @@ if (!$result) {
                                 </button>
                             </div>
                             <div class="modal-body-viewAdjust">
-                                <form id="recordPaymentForm" action="backend/payments.php" method="POST" class="flex flex-col gap-4">
+                                <form id="recordPaymentForm" action="backend/Addpayments.php" method="POST" class="flex flex-col gap-4">
                                     <input type="hidden" name="invoice_id" id="payment_invoice_id">
-                                    <div class="flex flex-col gap-2">
+                                    <div class="flex flex-col gap-2"> 
                                         <label class="block">
                                             <span class="text-gray-700">Payment Date:</span>
                                             <input type="date" name="payment_date" required class="w-full border p-2 rounded">

@@ -81,8 +81,12 @@ if (!$result) {
     
 </head>
 <body>
+<<<<<<< HEAD
       <?php include '../sidebar.php'; ?>
 
+=======
+    
+>>>>>>> a891b09157d0e0b97c803f622bad7cfa8fd67c4b
 
         <!-- Main + Navbar -->
         <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">

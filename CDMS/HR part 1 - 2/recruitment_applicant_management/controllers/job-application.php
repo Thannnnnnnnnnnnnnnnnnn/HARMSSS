@@ -9,6 +9,10 @@ require '../Database.php';
 $heading = 'JOB-APPLICATION';
 $db = new Database($config['database']);
 
+if (!isset($_SESSION['user_id'])) {
+    header('location: register.php');
+    $_SESSION['error'] = 'true';
+}
 $postingId = $_GET['id'] ?? null;
 if (!$postingId) {
     die('Job posting ID is required.');
