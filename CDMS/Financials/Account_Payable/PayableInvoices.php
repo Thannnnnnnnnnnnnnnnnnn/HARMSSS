@@ -1,6 +1,11 @@
 <?php
 include('includes/config.php'); // Loads $conn, $conn_budget, $conn_disbursement, $conn_general_ledger
-
+function dd($value){
+    echo "<pre>";
+    var_dump($value);
+    echo "</pre>";
+    die();
+}
 // Update payment status
 $statusUpdateQuery = "
     UPDATE fin_accounts_payable.payableinvoices pi
@@ -25,7 +30,7 @@ $sql = "
         MAX(pi.Department) AS Department, 
         MAX(pi.Amount) AS Amount, 
         MAX(pi.StartDate) AS StartDate, 
-        MAX(pi.Status) AS PaymentStatus, -- Use pi.Status instead of vp.PaymentStatus
+        MAX(vp.PaymentStatus) AS PaymentStatus, -- Use pi.Status instead of vp.PaymentStatus
         MAX(ps.PaymentSchedule) AS PaymentSchedule,
         MAX(vp.PaymentMethod) AS PaymentMethod
     FROM fin_accounts_payable.payableinvoices pi
@@ -34,6 +39,7 @@ $sql = "
     GROUP BY pi.PayableInvoiceID;
 ";
 $result = $conn->query($sql);
+// dd($result->fetch_assoc());
 if (!$result) {
     die("Error retrieving data: " . $conn->error);
 }
