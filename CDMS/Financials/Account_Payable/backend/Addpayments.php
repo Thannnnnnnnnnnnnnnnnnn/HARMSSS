@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tite'])) {
     $amount_paid = floatval($_POST['amount_paid'] ?? 0);
     $payment_method = $_POST['payment_method'] ?? '';
 
-    if (!$invoice_id || !$payment_date || !$amount_paid || !$payment_method) {
+    if (!$payment_date || !$amount_paid || !$payment_method) {
         header('Location: ../PayableInvoices.php?error=missing_fields');
         exit();
     }
