@@ -1,9 +1,12 @@
 <?php
 // Database connection
-$host = "127.0.0.1";
+$host = "localhost";
 $username = "3206_CENTRALIZED_DATABASE";
 $password = "4562526";
 $database = "fin_accounts_payable";
+// $host = "localhost:3307";  
+// $username = "root";   
+// $password = "";       
 
 $conn = new mysqli($host, $username, $password, $database);
 

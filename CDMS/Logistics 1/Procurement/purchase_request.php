@@ -10,6 +10,14 @@ if (!isset($connections[$db_name])) {
     die("Database connection not found for $db_name");
 }
 
+$role = $_SESSION['role'] ?? 'guest';
+$permissions = include '../role_permissions.php';
+$allowed_modules = $permissions[$role] ?? [];
+
+// if (!in_array('procurement', $allowed_modules)) {
+//     header('Location: purchase_request.php');
+//     exit;
+//  }
 $connection = $connections[$db_name]; // Assign the correct connection
 // SQL Query for reservations
 $result = "SELECT purchase_id, User_ID, requested_date, status, purpose, type_of_item, quantity, estimated_budget, submitted_by, item_name FROM purchase_request ORDER BY requested_date ";
@@ -77,6 +85,9 @@ if (!$result) {
     
 </head>
 <body>
+
+  <?php include '../sidebar.php'; ?>
+
     <div class="flex min-h-screen w-full">
         <!-- Overlay -->
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -142,181 +153,9 @@ if (!$result) {
                     </div>
                 </div>
 
-                <!---- Document tracking system --->
-                <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('DTS-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-calculator text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Document tracking</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="DTS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-                        <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-check-shield text-lg"></i> <span>Approvals</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-folder text-lg"></i> <span>Document categories</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-file text-lg"></i> <span>Documents</span>
-                                </a>
-                            </li>
-                            
-
-                        </ul>
-                    </div>
-                </div>
-                <!---- Fleet management--->
-
-                <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('fleet-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-car text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Fleet management</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="fleet-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-
-                            <li>
-                                <a href="drivers.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-user text-lg"></i> <span>Drivers</span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="vehicles.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-car text-lg"></i> <span>Vehicles</span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-user-check text-lg"></i> <span>Vehicle assignments</span>
-                                </a>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                </div>
 
 
-                    <!-- VRS  -->
-                    <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('VRS-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-calendar text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Vehicle reservation</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="VRS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-                           
-                            <li>
-                                <a href="reservation.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                    <i class="bx bx-calendar-event text-lg"></i> <span>Reservation</span>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </div>
-
-                <!---- Vendor portal---->
-
-                <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('vendor-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-store text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Vendor portal</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="vendor-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-receipt text-lg"></i> <span>Vendor invoices</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-box text-lg"></i> <span>Vendor products</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-star text-lg"></i> <span>Vendor ratings</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-user-check text-lg"></i> <span>Vendors</span>
-                            </a>
-                        </li>
-
-                        
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="menu-option">
-                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('USM-dropdown', this)">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-user-circle text-lg pr-4"></i>
-                                <span class="text-sm font-medium">User management</span>
-                            </div>
-                            <div class="arrow">
-                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-                            </div>
-                        </div>
-                    <div id="USM-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-                        <ul class="space-y-1">
-                        <li>
-                            <a href="dept_accounts.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-id-card text-lg"></i> <span>Department accounts</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="dept_logs.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-history text-lg"></i> <span>Department log history</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-search-alt-2 text-lg"></i> <span>Department audit trail</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                                <i class="bx bx-transfer text-lg"></i> <span>Department transaction</span>
-                            </a>
-                        </li>
-
-                        
-                        </ul>
-                    </div>
-                </div>
-
-
-                   
+            
 
                     
                 </ul>
