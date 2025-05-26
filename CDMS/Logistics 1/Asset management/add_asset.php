@@ -247,18 +247,19 @@ if (!$result) {
 </button>
 <b> | </b>
 <!-- Approve Button -->
-<button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded"
-        onclick="approveFunding('<?php echo urlencode($row['asset_id']); ?>')">
+<button onclick="openModal('approve', '<?php echo $row['asset_id']; ?>')" 
+        class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded">
     <i class='bx bx-check-circle'></i>
 </button>
 
 <b> | </b>
 
 <!-- Deny Button -->
-<button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded"
-        onclick="denyFunding('<?php echo urlencode($row['asset_id']); ?>')">
+<button onclick="openModal('deny', '<?php echo $row['asset_id']; ?>')" 
+        class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded">
     <i class='bx bx-x-circle'></i>
 </button>
+
 
 
 
@@ -322,6 +323,19 @@ if (!$result) {
   </div>
 </div>
 
+<!-- Modal Background -->
+<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+  <!-- Modal Box -->
+  <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+    <h2 class="text-lg font-semibold mb-4" id="modalTitle">Confirm Action</h2>
+    <p class="text-gray-700 mb-6" id="modalMessage">Are you sure you want to proceed?</p>
+
+    <div class="flex justify-end gap-4">
+      <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md">Cancel</button>
+      <button id="confirmActionBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded-md">Yes, Confirm</button>
+    </div>
+  </div>
+</div>
 <!-- Modal -->
 <div id="assetModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
   <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
@@ -420,6 +434,8 @@ if (!$result) {
     <script src="../JS/notification_pr.js"> </script>
     <script src="../JS/funding.js"> </script>
         <script src="../JS/add_assets.js"> </script>
+                <script src="../JS/add_asset_approve.js"> </script>
+
 
 
 
