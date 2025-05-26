@@ -56,17 +56,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $job = $nhoes->query("SELECT department_name FROM departments WHERE dept_id = :dept_id", [
             ':dept_id' => $applicant['department_id'],
         ])->fetch();
-        // dd($applicant);
+
         $fiveRandom = randomize();
         $employee_id = "S225{$fiveRandom}0204";
         $surname = firstTwo($applicant['last_name']);
         $password = "#{$surname}2258080";
         $uri = "{$_SERVER['HTTP_HOST']}HARMS/CDMS/USM/login.php";
         $extension = pathinfo($applicant['resume']);
-        $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
-            ':status' => 'hired',
-            ':applicant_id' => $_POST['applicant_id'],
-        ]);
+
         switch ($applicant['department_id']) {
             case 1:
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
@@ -116,7 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 The HR Team
                 {$applicant['company']}"
                 );
-
                 break;
             case 2:
                 $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
@@ -137,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $hr34_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "HR220303",
+                    ':Department_ID' => "HR120302",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -150,26 +146,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     "Welcome to {$applicant['company']}! Your Employee Credentials",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
+                Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
 
-To help you get started, here are your initial login credentials for our internal systems:
+                To help you get started, here are your initial login credentials for our internal systems:
 
-Employee ID: {$employee_id}
-Temporary Password: {$password}
+                Employee ID: {$employee_id}
+                Temporary Password: {$password}
 
-You can log in to your account at {$uri}.
+                You can log in to your account at {$uri}.
 
-We are excited for you to begin your journey with us!
+                We are excited for you to begin your journey with us!
 
-Sincerely,
+                Sincerely,
 
-The HR Team
-{$applicant['company']}"
+                The HR Team
+                {$applicant['company']}"
                 );
                 break;
             case 3:
-                $nhoes->query("INSERT INTO employees (EmployeeID FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],
@@ -186,7 +182,7 @@ The HR Team
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $logs1_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "L120304",
+                    ':Department_ID' => "HR120302",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -199,21 +195,21 @@ The HR Team
                     "Welcome to {$applicant['company']}! Your Employee Credentials",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
+                Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
 
-To help you get started, here are your initial login credentials for our internal systems:
+                To help you get started, here are your initial login credentials for our internal systems:
 
-Employee ID: {$employee_id}
-Temporary Password: {$password}
+                Employee ID: {$employee_id}
+                Temporary Password: {$password}
 
-You can log in to your account at {$uri}.
+                You can log in to your account at {$uri}.
 
-We are excited for you to begin your journey with us!
+                We are excited for you to begin your journey with us!
 
-Sincerely,
+                Sincerely,
 
-The HR Team
-{$applicant['company']}"
+                The HR Team
+                {$applicant['company']}"
                 );
                 break;
             case 4:
@@ -235,7 +231,7 @@ The HR Team
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $logs2_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "L220305",
+                    ':Department_ID' => "HR120302",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -248,21 +244,21 @@ The HR Team
                     "Welcome to {$applicant['company']}! Your Employee Credentials",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
+                Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
 
-To help you get started, here are your initial login credentials for our internal systems:
+                To help you get started, here are your initial login credentials for our internal systems:
 
-Employee ID: {$employee_id}
-Temporary Password: {$password}
+                Employee ID: {$employee_id}
+                Temporary Password: {$password}
 
-You can log in to your account at {$uri}.
+                You can log in to your account at {$uri}.
 
-We are excited for you to begin your journey with us!
+                We are excited for you to begin your journey with us!
 
-Sincerely,
+                Sincerely,
 
-The HR Team
-{$applicant['company']}"
+                The HR Team
+                {$applicant['company']}"
                 );
                 break;
             case 5:
@@ -284,7 +280,7 @@ The HR Team
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $cr1_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "C120306",
+                    ':Department_ID' => "HR120302",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -297,21 +293,21 @@ The HR Team
                     "Welcome to {$applicant['company']}! Your Employee Credentials",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
+                Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
 
-To help you get started, here are your initial login credentials for our internal systems:
+                To help you get started, here are your initial login credentials for our internal systems:
 
-Employee ID: {$employee_id}
-Temporary Password: {$password}
+                Employee ID: {$employee_id}
+                Temporary Password: {$password}
 
-You can log in to your account at {$uri}.
+                You can log in to your account at {$uri}.
 
-We are excited for you to begin your journey with us!
+                We are excited for you to begin your journey with us!
 
-Sincerely,
+                Sincerely,
 
-The HR Team
-{$applicant['company']}"
+                The HR Team
+                {$applicant['company']}"
                 );
                 break;
             case 6:
@@ -333,7 +329,7 @@ The HR Team
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $cr2_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "C220307",
+                    ':Department_ID' => "HR120302",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -346,21 +342,21 @@ The HR Team
                     "Welcome to {$applicant['company']}! Your Employee Credentials",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
+                Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
 
-To help you get started, here are your initial login credentials for our internal systems:
+                To help you get started, here are your initial login credentials for our internal systems:
 
-Employee ID: {$employee_id}
-Temporary Password: {$password}
+                Employee ID: {$employee_id}
+                Temporary Password: {$password}
 
-You can log in to your account at {$uri}.
+                You can log in to your account at {$uri}.
 
-We are excited for you to begin your journey with us!
+                We are excited for you to begin your journey with us!
 
-Sincerely,
+                Sincerely,
 
-The HR Team
-{$applicant['company']}"
+                The HR Team
+                {$applicant['company']}"
                 );
                 break;
             case 7:
@@ -382,7 +378,7 @@ The HR Team
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $cr3_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "C320308",
+                    ':Department_ID' => "HR120302",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -395,21 +391,21 @@ The HR Team
                     "Welcome to {$applicant['company']}! Your Employee Credentials",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
+                Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
 
-To help you get started, here are your initial login credentials for our internal systems:
+                To help you get started, here are your initial login credentials for our internal systems:
 
-Employee ID: {$employee_id}
-Temporary Password: {$password}
+                Employee ID: {$employee_id}
+                Temporary Password: {$password}
 
-You can log in to your account at {$uri}.
+                You can log in to your account at {$uri}.
 
-We are excited for you to begin your journey with us!
+                We are excited for you to begin your journey with us!
 
-Sincerely,
+                Sincerely,
 
-The HR Team
-{$applicant['company']}"
+                The HR Team
+                {$applicant['company']}"
                 );
                 break;
             case 8:
@@ -431,7 +427,7 @@ The HR Team
                     ':FilePath' => $applicant['resume'],
                 ]);
                 $fin_usm->query("INSERT INTO department_accounts (Department_ID, User_ID, Name, Password, Role, Status, Email) VALUES (:Department_ID, :User_ID, :Name, :Password, :Role, :Status, :Email)", [
-                    ':Department_ID' => "F20309",
+                    ':Department_ID' => "HR120302",
                     ':User_ID' => "{$employee_id}",
                     ':Name' => $applicant['first_name'] . ' ' . $applicant['last_name'],
                     ':Password' => $password,
@@ -444,30 +440,30 @@ The HR Team
                     "Welcome to {$applicant['company']}! Your Employee Credentials",
                     "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
+                Welcome to the team at {$applicant['company']}! We are thrilled to have you join us as a {$applicant['job_title']}.
 
-To help you get started, here are your initial login credentials for our internal systems:
+                To help you get started, here are your initial login credentials for our internal systems:
 
-Employee ID: {$employee_id}
-Temporary Password: {$password}
+                Employee ID: {$employee_id}
+                Temporary Password: {$password}
 
-You can log in to your account at {$uri}.
+                You can log in to your account at {$uri}.
 
-We are excited for you to begin your journey with us!
+                We are excited for you to begin your journey with us!
 
-Sincerely,
+                Sincerely,
 
-The HR Team
-{$applicant['company']}"
+                The HR Team
+                {$applicant['company']}"
                 );
                 break;
+
             default:
-                dd("Unknown Department");
+                $errors[] = "Invalid department ID: {$applicant['department_id']}. Unable to insert employee data.";
                 break;
         }
     }
 }
-
 $applicants = $db->query("SELECT
 a.*,
 s.status,
