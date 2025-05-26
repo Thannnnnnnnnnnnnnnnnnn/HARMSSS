@@ -10,7 +10,7 @@ $employeeId = $_GET['employeeId'];
 
 $stmt = $conn->prepare("SELECT FirstName , Types FROM employees WHERE EmployeeID = ?");
 $stmt->bind_param("i", $employeeId);
-$stmt->execute();~
+$stmt->execute();
 $result = $stmt->get_result();
 $employee = $result->fetch_assoc();
 

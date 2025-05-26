@@ -90,10 +90,10 @@
                                 <tbody class="divide-y divide-gray-200">
                                     <?php
                                     // Database connection
-                                    $host = '127.0.0.1';
+                                     $host = '127.0.0.1';
                                     $db = 'fin_disbursement';
                                     $user = '3206_CENTRALIZED_DATABASE';
-                                    $pass = '4562526';
+                                    $pass = '4562526';`
                                     $conn = new mysqli($host, $user, $pass, $db);
                                     if ($conn->connect_error) {
                                         die("Connection failed: " . $conn->connect_error);
