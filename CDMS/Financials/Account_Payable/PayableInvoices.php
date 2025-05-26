@@ -141,8 +141,8 @@ if (!$result) {
                             </div>
                             <div class="modal-body-viewAdjust">
                                 <form id="recordPaymentForm" action="backend/Addpayments.php" method="POST" class="flex flex-col gap-4">
-                                    <input type="hidden" name="invoice_id" id="payment_invoice_id">
-                                    <div class="flex flex-col gap-2"> 
+                                    <input type="hidden" name="invoice_id" value='12' id="payment_invoice_id">
+                                    <div class="flex flex-col gap-2">
                                         <label class="block">
                                             <span class="text-gray-700">Payment Date:</span>
                                             <input type="date" name="payment_date" required class="w-full border p-2 rounded">
@@ -160,7 +160,7 @@ if (!$result) {
                                             </select>
                                         </label>
                                     </div>
-                                    <button type="submit" name="tite" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Record Payment</button>
+                                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Record Payment</button>
                                 </form>
                             </div>
                         </div>
