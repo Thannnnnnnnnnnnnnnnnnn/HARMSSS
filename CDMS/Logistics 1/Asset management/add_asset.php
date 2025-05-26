@@ -4,7 +4,7 @@ session_start();
 include("../../connection.php");
 
 // Define the database name
-$db_name = "logs1_procurement";
+$db_name = "logs1_asset";
 
 if (!isset($connections[$db_name])) {
     die("Database connection not found for $db_name");
@@ -12,11 +12,11 @@ if (!isset($connections[$db_name])) {
 
 $connection = $connections[$db_name]; // Assign the correct connection
 
-$role = $_SESSION['role'] ?? 'guest';
+$role = $_SESSION['Role'] ?? 'guest';
 $permissions = include '../role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
 
-$result = "SELECT funding_id , User_ID, requested_date, status, purpose, type_of_item, estimated_budget, submitted_by, item_name FROM for_funding";
+$result = "SELECT asset_id  , User_ID, asset_name, asset_type, asset_quantity, asset_status, date_created, submitted_by FROM assets";
 $result_sql = $connection->query($result);
 
 // Error handling for the reservation query
@@ -26,10 +26,10 @@ if ($result_sql === false) {
 
 // Unified query to count various reservation statuses
 $query = "SELECT 
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Pending for funds request') AS total_request,
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds successfully requested') AS For_clearance_Approval,
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds requisition was cancelled') AS Denied_request,
-        (SELECT COUNT(*) FROM for_funding WHERE status = 'Funds denied') AS Clearance_approve
+        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Pending for funds request') AS total_request,
+        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Funds successfully requested') AS For_clearance_Approval,
+        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Funds requisition was cancelled') AS Denied_request,
+        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Funds denied') AS Clearance_approve
 ";
 
 $result = mysqli_query($connection, $query);
@@ -46,7 +46,7 @@ $DR_count = $row['Denied_request'];
 $CA_count = $row['Clearance_approve'];
 
 // Query to fetch all reservations
-$query = "SELECT * FROM `purchase_request`";
+$query = "SELECT * FROM `assets`";
 $result = mysqli_query($connection, $query);
 
 if (!$result) {
@@ -61,7 +61,7 @@ if (!$result) {
 <head>                                               
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For funding</title>
+    <title>Add assets</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>

@@ -10,7 +10,7 @@ if (!isset($connections[$db_name])) {
     die("Database connection not found for $db_name");
 }
 
-$role = $_SESSION['role'] ?? 'guest';
+$role = $_SESSION['Role'] ?? 'guest';
 $permissions = include '../role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
 

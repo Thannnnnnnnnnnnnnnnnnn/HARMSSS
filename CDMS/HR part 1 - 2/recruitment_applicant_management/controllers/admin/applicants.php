@@ -168,8 +168,8 @@ The HR Team
                 );
                 break;
             case 3:
-                $nhoes->query("INSERT INTO employees (EmployeeID FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
-                                VALUES (:EmployeeID :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
+                $nhoes->query("INSERT INTO employees (EmployeeID, FirstName, LastName, Email, PhoneNumber, DateOfBirth, AddressLine1, DepartmentID, HireDate)
+                                VALUES (:EmployeeID, :FirstName, :LastName, :Email, :PhoneNumber, :DateOfBirth, :AddressLine1, :DepartmentID, :HireDate)", [
                     ':EmployeeID' => $applicant['applicant_id'],
                     ':FirstName' => $applicant['first_name'],
                     ':LastName' => $applicant['last_name'],

@@ -99,47 +99,65 @@ $allowed_modules = $permissions[$role] ?? [];
 if (in_array('asset_management', $allowed_modules)):
 ?>
 
+
+<?php
+dd($role);
+?>
  <div class="flex min-h-screen w-full">
         <!-- Overlay -->
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-<div class="menu-option">
-    <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('DTS-dropdown', this)">
-        <div class="flex items-center space-x-2">
-            <i class="bx bx-calculator text-lg pr-4"></i>
-            <span class="text-sm font-medium">Asset management</span>
-        </div>
-        <div class="arrow">
-            <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
-        </div>
-    </div>
+            <div class="sidebar sidebar-expanded fixed z-50 overflow-y-auto overflow-x-hidden h-screen bg-white border-r border-[#F7E6CA] flex flex-col">
+            <div class="h-16 border-b border-[#F7E6CA] flex items-center px-2 space-x-2">
+                <h1 class="text-xl font-bold text-black bg-[#D9D9D9] p-2 rounded-xl">LOGO</h1>
+                <h1 class="text-xl font-bold text-[#4E3B2A]">Logistic 1</h1>
+                <!--Close Button-->
+            </div>
+            <div class="side-menu px-4 py-6"></div>
 
-    <div id="DTS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
-        <ul class="space-y-1">
-            <li>
-                <a href="../Asset management/add_asset.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                    <i class="bx bx-check-shield text-lg"></i> <span>Assets</span>
-                </a>
-            </li>
-            <li>
-                <a href="../Asset management/Transfer_assets.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                    <i class="bx bx-folder text-lg"></i> <span>Transfer assets</span>
-                </a>
-            </li>
-            <li>
-                <a href="../Asset management/Assets_logs.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                    <i class="bx bx-file text-lg"></i> <span>Assets logs</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
+        <div class="menu-option">
+            <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('DTS-dropdown', this)">
+                <div class="flex items-center space-x-2">
+                    <i class="bx bx-calculator text-lg pr-4"></i>
+                    <span class="text-sm font-medium">Asset management</span>
+                </div>
+                <div class="arrow">
+                    <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
+                </div>
+            </div>
 
-             
+            <div id="DTS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="../Asset management/add_asset.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                            <i class="bx bx-check-shield text-lg"></i> <span>Assets</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../Asset management/Transfer_assets.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                            <i class="bx bx-folder text-lg"></i> <span>Transfer assets</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../Asset management/Assets_logs.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                            <i class="bx bx-file text-lg"></i> <span>Assets logs</span>
+                        </a>
+                    </li>
+   
+                        </ul>
+                    </div>
+                </div>
+
+
+
+            
+
+                    
                 </ul>
             </div>
         </div>
 <?php endif; ?>
+<script src="JS/sidebar.js"></script>
 
 <?php
 $role = $_SESSION['Role'];
@@ -148,6 +166,10 @@ $allowed_modules = $permissions[$role] ?? [];
 
 if (in_array('procurement', $allowed_modules)):
 
+?>
+
+<?php
+dd($role);
 ?>
  <div class="flex min-h-screen w-full">
         <!-- Overlay -->
@@ -161,19 +183,6 @@ if (in_array('procurement', $allowed_modules)):
                 <!--Close Button-->
             </div>
             <div class="side-menu px-4 py-6">
-                 <ul class="space-y-4">
-                    <!-- Dashboard Item -->
-                   <div class="menu-option">
-                        <a href="finalTemplate.html" class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer">
-                            <div class="flex items-center space-x-2">
-                                <i class="bx bx-server text-lg pr-4"></i>
-                                <span class="text-sm font-medium">Dashboard</span>
-                            </div>
-                        
-                        </a>
-                    </div>
-                    
-
                      <!--- Procurement --->
 
                      <div class="menu-option">
@@ -223,5 +232,6 @@ if (in_array('procurement', $allowed_modules)):
             </div>
         </div>
 <?php endif; ?>
+
 
 <script src="JS/sidebar.js"></script>
