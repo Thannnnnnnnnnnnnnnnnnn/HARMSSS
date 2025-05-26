@@ -368,7 +368,7 @@ if (!$result) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
             <i class='bx bxs-file-doc text-xl text-blue-600'></i>
-            <h2 class="dashboard-title">Pending for funds request</h2>
+            <h2 class="dashboard-title">Total assets</h2>
           </div>
           <p class="dashboard-number text-black-600 font-semibold">
             <?php echo isset($total_request_count) ? $total_request_count : '0'; ?>
@@ -383,7 +383,7 @@ if (!$result) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
             <i class='bx bxs-file-doc text-xl text-blue-600'></i>
-            <h2 class="dashboard-title">No. Funds requested</h2>
+            <h2 class="dashboard-title">Tangible assets</h2>
           </div>
           <p class="dashboard-number text-black-600 font-semibold">
             <?php echo isset($FRA_count) ? $FRA_count : '0'; ?>
@@ -398,7 +398,7 @@ if (!$result) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
             <i class='bx bxs-check-circle text-xl text-purple-600'></i>
-            <h2 class="dashboard-title">Funds approved</h2>
+            <h2 class="dashboard-title">Non - Tangible assets</h2>
           </div>
           <p class="dashboard-number text-black-600 font-semibold">
             <?php echo isset($CA_count) ? $CA_count : '0'; ?>
@@ -414,7 +414,7 @@ if (!$result) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
             <i class='bx bx-time-five text-xl text-green-600'></i>
-            <h2 class="dashboard-title">Funds denied</h2>
+            <h2 class="dashboard-title">Digital assets</h2>
           </div>
           <p class="dashboard-number text-black-500 font-semibold">
             <?php echo isset($DR_count) ? $DR_count : '0'; ?>
