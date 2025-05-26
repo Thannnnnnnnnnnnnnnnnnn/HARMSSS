@@ -19,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tite'])) {
     }
 
     $conn->begin_transaction();
-
     try {
         // Insert payment record
         $stmt = $conn->prepare("

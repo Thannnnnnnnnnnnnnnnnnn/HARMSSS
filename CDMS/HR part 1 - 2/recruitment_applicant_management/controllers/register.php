@@ -1,20 +1,24 @@
 <?php
-require 'vendor/autoload.php';
+// require 'vendor/autoload.php';
 session_start();
 $heading = 'HOME';
-$config = require 'config.php';
+require 'function.php';
+$config = require '../config.php';
+require '../Database.php';
 $db = new Database($config['database']);
-$usm = new Database($config['usm']);
+// $usm = new Database($config['usm']);
 
+// dd($_SESSION);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $users = $usm->query('SELECT username,email FROM user_account')->fetchAll();
+    // dd($_POST);
+    $users = $db->query('SELECT email FROM user_account')->fetchAll();
     $errors = [];
     $success = false;
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $username = $_POST['username'];
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
+    // $username = $_POST['username'];
+    // $first_name = $_POST['first_name'];
+    // $last_name = $_POST['last_name'];
 
     validate('email', $errors);
     if ($email) {
@@ -25,45 +29,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
     validate('password', $errors);
-    validate('username', $errors);
-    validate('first_name', $errors);
-    validate('last_name', $errors);
+    // validate('username', $errors);
+    // validate('first_name', $errors);
+    // validate('last_name', $errors);
     foreach ($users as $user) {
-        if ($user['username'] == $_POST['username']) {
-            $errors['username'] = 'username already taken.';
-        } elseif ($user['email'] == $_POST['email']) {
+        if ($user['email'] == $_POST['email']) {
             $errors['email'] = 'email already taken.';
         }
     }
+    // dd($errors);
     if (empty($errors)) {
-        if ($email && $password && $username) {
+        if ($email && $password) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $usm->query("INSERT INTO user_account (department_id, first_name, last_name, username, email, password, role, register_type) VALUES (:department_id, :first_name, :last_name, :username, :email, :password ,:role ,:register_type)", [
-                'department_id' => 1,
-                'first_name' => $first_name,
-                'last_name' => $last_name,
-                'username' => $username,
+            $db->query("INSERT INTO user_account (email, password, role) VALUES (:email, :password ,:role)", [
                 'email' => $email,
                 'password' => $hashedPassword,
                 'role' => 'applicant',
-                'register_type' => 'standard',
             ]);
 
-            $user_id = $usm->pdo->lastInsertId();
-            $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-                ':department_id' => 1,
-                ':user_id' => $user_id,
-                ':action' => 'create',
-                ':description' => "Mr/mrs $first_name $last_name has registered as an applicant.",
-                ':department_affected' => 'HR part 1&2',
-                ':module_affected' => 'recruitment and applicant management'
-            ]);
-
-            $success = true;
-            header('Location: /');
+            sendMail(
+                $_POST['email'],
+                'Registration Successful',
+                "Great news! Your registration is complete. Welcome to our team! You're all set to log in and begin exploring career opportunities."
+            );
+            // dd('test');
+            header('Location: index.php');
+            exit();
         }
     }
 }
 
-require 'views/register.view.php';
+require '../views/register.view.php';
