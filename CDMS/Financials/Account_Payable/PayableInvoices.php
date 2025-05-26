@@ -3,14 +3,23 @@ include('includes/config.php');
 
 // Update payment status based on due dates and payment completion
 $statusUpdateQuery = "
-    UPDATE fin_accounts_payable.payableinvoices pi
-    LEFT JOIN fin_accounts_payable.paymentschedules ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
-    LEFT JOIN fin_accounts_payable.vendorpayments vp ON pi.PayableInvoiceID = vp.PayableInvoiceID
-    SET pi.Status = CASE 
-        WHEN vp.PayablePaymentID IS NOT NULL THEN 'Paid'
-        WHEN ps.PaymentSchedule < CURDATE() AND vp.PayablePaymentID IS NULL THEN 'Overdue'
-        ELSE 'Pending'
-    END;
+UPDATE fin_accounts_payable.payableinvoices pi
+LEFT JOIN (
+    SELECT PayableInvoiceID, MAX(PaymentStatus) AS MaxStatus
+    FROM fin_accounts_payable.vendorpayments
+    GROUP BY PayableInvoiceID
+) vp ON pi.PayableInvoiceID = vp.PayableInvoiceID
+LEFT JOIN (
+    SELECT PayableInvoiceID, MAX(PaymentSchedule) AS LatestSchedule
+    FROM fin_accounts_payable.paymentschedules
+    GROUP BY PayableInvoiceID
+) ps ON pi.PayableInvoiceID = ps.PayableInvoiceID
+SET pi.Status = CASE
+    WHEN vp.MaxStatus = 'Completed' THEN 'Paid'
+    WHEN ps.LatestSchedule < CURDATE() THEN 'Overdue'
+    ELSE 'Pending'
+END;
+
 ";
 
 if (!$conn_budget->query($statusUpdateQuery)) {
