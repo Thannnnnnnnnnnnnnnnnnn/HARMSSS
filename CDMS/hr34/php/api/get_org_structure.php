@@ -1,8 +1,7 @@
 <?php
 /**
- * API Endpoint: Get Organizational Structure
- * Retrieves the hierarchical organizational structure (departments and their modules/sub-departments).
- * v2.0 - Updated to fetch hierarchical data including ParentDepartmentID.
+ * API Endpoint: Get Departments (from HR 1-2)
+ * Retrieves a flat list of departments from the HR 1-2 database.
  */
 
 error_reporting(E_ALL);
@@ -13,59 +12,42 @@ ini_set('log_errors', 1);
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-require_once '../db_connect.php';
-
-if (!isset($pdo)) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed.']);
+// --- Database Connection (Uses the main $pdo from db_connect.php) ---
+$pdo = null;
+try {
+    require_once '../db_connect.php'; // This now connects to the unified HR 1-2 database
+    if (!isset($pdo) || !$pdo instanceof PDO) {
+        throw new Exception('Database connection object ($pdo) not properly created by db_connect.php.');
+    }
+} catch (Throwable $e) {
+    error_log("PHP Error in get_org_structure.php (db_connect include): " . $e->getMessage());
+    if (!headers_sent()) { http_response_code(500); }
+    echo json_encode(['error' => 'Server configuration error: Could not connect to the database. DB Name expected: hr_1_2_new_hire_onboarding_and_employee_self-service']);
     exit;
 }
+// --- End Database Connection ---
 
 try {
-    // Fetch all departments/modules, including their parent ID to reconstruct hierarchy on frontend
-    // Also fetching manager name if ManagerID is set
+    // Fetch all departments from the HR 1-2 'departments' table
     $sql = "SELECT 
-                os.DepartmentID, 
-                os.DepartmentName, 
-                os.ParentDepartmentID,
-                os.Description,
-                os.Icon,
-                os.SortOrder,
-                e.FirstName AS ManagerFirstName,
-                e.LastName AS ManagerLastName,
-                (SELECT COUNT(*) FROM Employees emp WHERE emp.DepartmentID = os.DepartmentID) AS EmployeeCount,
-                parent_os.DepartmentName AS ParentDepartmentName
+                d.dept_id AS DepartmentID,  -- Alias to match expected frontend if necessary
+                d.department_name AS DepartmentName
             FROM 
-                OrganizationalStructure os
-            LEFT JOIN 
-                Employees e ON os.ManagerID = e.EmployeeID
-            LEFT JOIN
-                OrganizationalStructure parent_os ON os.ParentDepartmentID = parent_os.DepartmentID
+                departments d -- This is the HR 1-2 departments table
             ORDER BY 
-                os.ParentDepartmentID ASC, os.SortOrder ASC, os.DepartmentName ASC";
+                d.department_name ASC";
     
     $stmt = $pdo->query($sql);
     $departments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $formatted_departments = [];
-    foreach($departments as $dept) {
-        $dept['ManagerName'] = null;
-        if (!empty($dept['ManagerFirstName']) || !empty($dept['ManagerLastName'])) {
-            $dept['ManagerName'] = trim(($dept['ManagerFirstName'] ?? '') . ' ' . ($dept['ManagerLastName'] ?? ''));
-        }
-        // Unset individual name parts if you only want ManagerName
-        unset($dept['ManagerFirstName'], $dept['ManagerLastName']);
-        $formatted_departments[] = $dept;
-    }
-
-    if (headers_sent()) { exit; } // Avoid "headers already sent"
+    if (headers_sent()) { exit; } 
     http_response_code(200);
-    echo json_encode($formatted_departments);
+    echo json_encode($departments); // This will be a flat list
 
 } catch (PDOException $e) {
-    error_log("API Error (get_org_structure): " . $e->getMessage());
+    error_log("API Error (get_org_structure from HR 1-2 departments): " . $e->getMessage());
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Failed to retrieve organizational structure. Details: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Failed to retrieve department list. Details: ' . $e->getMessage()]);
 } catch (Throwable $e) {
     error_log("PHP Throwable in get_org_structure.php: " . $e->getMessage());
     if (!headers_sent()) { http_response_code(500); }
