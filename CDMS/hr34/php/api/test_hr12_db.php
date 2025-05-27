@@ -11,10 +11,10 @@ echo "<h1>Testing HR 1-2 Database Connection</h1>";
 // --- HR 1-2 Database Connection Details ---
 // !! IMPORTANT !!
 // REPLACE these with your actual HR 1-2 Database credentials.
-$db_host_hr12 = '127.0.0.1'; // Your HR 1-2 DB host (often 'localhost' or '127.0.0.1')
-$db_name_hr12 = 'hr_1&2_new_hire_onboarding_and_employee_self-service'; // The target database name
-$db_user_hr12 = '3206_CENTRALIZED_DATABASE'; // REPLACE with your HR 1-2 DB username
-$db_pass_hr12 = '4562526'; // REPLACE with your HR 1-2 DB password
+$db_host_hr12 = 'localhost'; // Your HR 1-2 DB host (often 'localhost' or '127.0.0.1')
+$db_name_hr12 = 'hr_1_2_new_hire_onboarding_and_employee_self-service'; // The target database name
+$db_user_hr12 = 'root'; // REPLACE with your HR 1-2 DB username
+$db_pass_hr12 = ''; // REPLACE with your HR 1-2 DB password
 $charset_hr12 = 'utf8mb4';
 
 echo "<p>Attempting to connect to database: <strong>" . htmlspecialchars($db_name_hr12) . "</strong> on host <strong>" . htmlspecialchars($db_host_hr12) . "</strong> with user <strong>" . htmlspecialchars($db_user_hr12) . "</strong>.</p>";

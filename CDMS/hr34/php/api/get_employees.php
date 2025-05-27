@@ -1,8 +1,8 @@
 <?php
 /**
  * API Endpoint: Get Employees
- * Retrieves a list of employees with detailed information from the HR 1-2 Database.
- * v3.1 - Corrected database name for HR 1-2 connection.
+ * Retrieves a list of employees with detailed information from the unified HR 1-2 Database.
+ * (The HR 1-2 database now contains both HR 1-2 and HR 3-4 tables).
  */
 
 // --- Error Reporting & Headers ---
@@ -14,39 +14,23 @@ ini_set('log_errors', 1);
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // Adjust for production
 
-// --- Database Connection for HR 1-2 System ---
-// !! IMPORTANT !!
-// Ensure these credentials are correct for your HR 1-2 Database.
-// The database name below MUST match the one from your hr_1_2_*.sql file.
-
-$db_host_hr12 = getenv('DB_HOST_HR12') ?: '127.0.0.1'; // Your HR 1-2 DB host
-// Corrected Database Name:
-$db_host_hr12 = '127.0.0.1'; // Your HR 1-2 DB host (often 'localhost' or '127.0.0.1')
-$db_name_hr12 = 'hr_1&2_new_hire_onboarding_and_employee_self-service'; // The target database name
-$db_user_hr12 = '3206_CENTRALIZED_DATABASE'; // REPLACE with your HR 1-2 DB username
-$db_pass_hr12 = '456252'; // REPLACE with your HR 1-2 DB password
-$charset_hr12 = 'utf8mb4';
-
-$dsn_hr12 = "mysql:host={$db_host_hr12};dbname={$db_name_hr12};charset={$charset_hr12}";
-$options_hr12 = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-
-$pdo_hr12 = null;
+// --- Database Connection (Uses the main $pdo from db_connect.php) ---
+$pdo = null;
 try {
-    $pdo_hr12 = new PDO($dsn_hr12, $db_user_hr12, $db_pass_hr12, $options_hr12);
-} catch (PDOException $e) {
-    error_log("PHP Error in get_employees.php (HR 1-2 DB Connection): " . $e->getMessage() . " | Attempted DB: " . $db_name_hr12);
+    require_once '../db_connect.php'; // This now connects to the unified HR 1-2 database
+    if (!isset($pdo) || !$pdo instanceof PDO) {
+        throw new Exception('Database connection object ($pdo) not properly created by db_connect.php.');
+    }
+} catch (Throwable $e) {
+    error_log("PHP Error in get_employees.php (db_connect include): " . $e->getMessage());
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Server configuration error: Could not connect to the HR 1-2 database. Check connection details and database name. Expected: ' . $db_name_hr12]);
+    echo json_encode(['error' => 'Server configuration error: Could not connect to the database. DB Name expected: hr_1_2_new_hire_onboarding_and_employee_self-service']);
     exit;
 }
 // --- End Database Connection ---
 
 try {
-    // SQL query remains the same as previous correct version
+    // SQL query to fetch from the existing 'employees' and 'departments' tables in HR 1-2 DB
     $sql = "SELECT
                 e.EmployeeID,
                 e.FirstName,
@@ -71,25 +55,30 @@ try {
                 e.EmergencyContactPhone,
                 e.HireDate,
                 e.JobTitle,
-                e.DepartmentID,
-                d.department_name AS DepartmentName,
-                e.ManagerID,
+                e.DepartmentID AS HR12_DepartmentID, /* Original DepartmentID from HR1-2 employees table */
+                d.department_name AS DepartmentName, /* Name from HR 1-2 departments table */
+                e.ManagerID, /* This ManagerID refers to an EmployeeID within the HR 1-2 employees table */
                 CONCAT(m.FirstName, ' ', m.LastName) AS ManagerName,
                 e.IsActive,
                 e.TerminationDate,
                 e.TerminationReason,
                 e.EmployeePhotoPath,
-                NULL AS UserID
+                u.UserID AS HR34_UserID, /* UserID from the Users table (HR 3-4 specific) */
+                r.RoleName AS HR34_RoleName /* RoleName from the Roles table (HR 3-4 specific) */
             FROM
-                employees e
+                employees e /* This is the HR 1-2 employees table */
             LEFT JOIN
-                departments d ON e.DepartmentID = d.dept_id
+                departments d ON e.DepartmentID = d.dept_id /* HR 1-2 departments table */
             LEFT JOIN
-                employees m ON e.ManagerID = m.EmployeeID
+                employees m ON e.ManagerID = m.EmployeeID /* Manager from HR 1-2 employees table */
+            LEFT JOIN
+                Users u ON e.EmployeeID = u.EmployeeID /* HR 3-4 Users table (now in the same DB) */
+            LEFT JOIN
+                Roles r ON u.RoleID = r.RoleID /* HR 3-4 Roles table (now in the same DB) */
             ORDER BY
                 e.LastName, e.FirstName";
 
-    $stmt = $pdo_hr12->query($sql);
+    $stmt = $pdo->query($sql); // Use the $pdo from db_connect.php
     $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($employees as &$employee) {
@@ -103,6 +92,9 @@ try {
             $employee['TerminationDateFormatted'] = date('M d, Y', strtotime($employee['TerminationDate']));
         }
         $employee['Status'] = ($employee['IsActive'] == 1) ? 'Active' : 'Inactive';
+        // Ensure HR34_UserID and HR34_RoleName are null if no matching user/role exists
+        $employee['HR34_UserID'] = $employee['HR34_UserID'] ?? null;
+        $employee['HR34_RoleName'] = $employee['HR34_RoleName'] ?? null;
     }
     unset($employee);
 
@@ -111,13 +103,13 @@ try {
     echo json_encode($employees);
 
 } catch (PDOException $e) {
-    error_log("API Error (get_employees from HR 1-2): " . $e->getMessage() . " | SQL: " . $sql);
+    error_log("API Error (get_employees from unified DB): " . $e->getMessage() . " | SQL: " . $sql);
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Failed to retrieve employee data from HR 1-2 database. SQL error.']);
+    echo json_encode(['error' => 'Failed to retrieve employee data from the database. SQL error.']);
 } catch (Throwable $e) {
-    error_log("PHP Throwable in get_employees.php (HR 1-2): " . $e->getMessage());
+    error_log("PHP Throwable in get_employees.php (unified DB): " . $e->getMessage());
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Unexpected server error retrieving employee data from HR 1-2.']);
+    echo json_encode(['error' => 'Unexpected server error retrieving employee data.']);
 }
 exit;
 ?>
