@@ -24,7 +24,7 @@ $db_host_hr12 = getenv('DB_HOST_HR12') ?: '127.0.0.1'; // Your HR 1-2 DB host
 $db_host_hr12 = '127.0.0.1'; // Your HR 1-2 DB host (often 'localhost' or '127.0.0.1')
 $db_name_hr12 = 'hr_1&2_new_hire_onboarding_and_employee_self-service'; // The target database name
 $db_user_hr12 = '3206_CENTRALIZED_DATABASE'; // REPLACE with your HR 1-2 DB username
-$db_pass_hr12 = '4562526'; // REPLACE with your HR 1-2 DB password
+$db_pass_hr12 = '456252'; // REPLACE with your HR 1-2 DB password
 $charset_hr12 = 'utf8mb4';
 
 $dsn_hr12 = "mysql:host={$db_host_hr12};dbname={$db_name_hr12};charset={$charset_hr12}";
