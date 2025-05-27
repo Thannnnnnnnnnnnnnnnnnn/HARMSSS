@@ -1,7 +1,12 @@
 <?php
+function dd($data) {
+    echo '<pre>';
+    print_r($data);
+    echo '</pre>';
+    exit;
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once('../includes/config.php');
-
     // Sanitize and validate inputs
     $amount_paid = filter_input(INPUT_POST, 'amount_paid', FILTER_VALIDATE_FLOAT);
     $payment_method = filter_input(INPUT_POST, 'payment_method', FILTER_SANITIZE_STRING);
@@ -40,10 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, 'Completed', ?, ?)
         ");
         if (!$stmt) {
+            dd('test1');
             throw new Exception("Prepare failed: " . $conn->error);
         }
         $stmt->bind_param("ids", $invoice_id, $amount_paid, $payment_method);
         if (!$stmt->execute()) {
+            dd('test2');
             throw new Exception("Insert vendor payment failed: " . $stmt->error);
         }
         $payment_id = $stmt->insert_id;
@@ -56,10 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE PayableInvoiceID = ?
         ");
         if (!$stmt_amount) {
+            dd('test3');
             throw new Exception("Prepare failed: " . $conn->error);
         }
         $stmt_amount->bind_param("i", $invoice_id);
         if (!$stmt_amount->execute()) {
+            dd('test4');
             throw new Exception("Fetch invoice details failed: " . $stmt_amount->error);
         }
         $result = $stmt_amount->get_result();
@@ -81,10 +90,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE PayableInvoiceID = ?
         ");
         if (!$total_paid_stmt) {
+            dd('test5');
             throw new Exception("Prepare failed: " . $conn->error);
         }
         $total_paid_stmt->bind_param("i", $invoice_id);
         if (!$total_paid_stmt->execute()) {
+            dd('test6');
             throw new Exception("Fetch total paid failed: " . $total_paid_stmt->error);
         }
         $total_paid = $total_paid_stmt->get_result()->fetch_assoc()['TotalPaid'];
@@ -99,14 +110,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?, ?, ?, ?, ?)
         ");
         if (!$stmt_gl) {
+            dd('test7');
             throw new Exception("Prepare failed: " . $conn_gl->error);
         }
         $stmt_gl->bind_param("isssds", $payment_id, $types, $budget_name, $department, $amount_paid, $payment_method);
         if (!$stmt_gl->execute()) {
+            dd('test8');
             throw new Exception("Insert general ledger transaction failed: " . $stmt_gl->error);
         }
         $stmt_gl->close();
-
+        dd('this is d end');
         // Update invoice status
         $update = $conn->prepare("
             UPDATE payableinvoices 
@@ -114,10 +127,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE PayableInvoiceID = ?
         ");
         if (!$update) {
+            dd('test9');
             throw new Exception("Prepare failed: " . $conn->error);
         }
         $update->bind_param("si", $status, $invoice_id);
         if (!$update->execute()) {
+            dd('test10');
             throw new Exception("Update invoice status failed: " . $update->error);
         }
         $update->close();
