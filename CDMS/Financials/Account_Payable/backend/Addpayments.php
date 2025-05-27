@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $payment_id = $stmt->insert_id;
         $stmt->close();
 
-        // Get invoice details
+        // Fetch invoice details
         $stmt_amount = $conn->prepare("
             SELECT Amount, Types, BudgetName, Department 
             FROM payableinvoices 
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $stmt_amount->close();
 
-        // Check total payments for this invoice
+        // Check total payments
         $total_paid_stmt = $conn->prepare("
             SELECT SUM(AmountPaid) as TotalPaid 
             FROM vendorpayments 
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Commit transaction
         $conn->commit();
 
-        // Redirect with success message
+        // Redirect with success
         header('Location: ../PayableInvoices.php');
         exit();
 
@@ -98,12 +98,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Log error
         error_log("Payment Insertion Error: " . $e->getMessage());
 
-        // Optional: redirect with error message
+        // Redirect with error
         header('Location: ../PayableInvoices.php?error=payment_failed');
         exit();
     }
 
-    // Close database connections
+    // Close connections
     $conn->close();
     $conn_gl->close();
 }
