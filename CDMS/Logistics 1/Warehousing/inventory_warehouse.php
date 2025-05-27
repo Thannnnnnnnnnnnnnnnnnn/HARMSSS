@@ -16,7 +16,7 @@ $allowed_modules = $permissions[$role] ?? [];
 
 $connection = $connections[$db_name]; // Assign the correct connection
 // SQL Query for reservations
-$result = "SELECT warehouse_id, User_ID, warehouse_name, warehouse_status, warehouse_location, warehouse_for, date_created, submitted_by FROM warehouse";
+$result = "SELECT warehouse_id, User_ID, warehouse_name, warehouse_location, warehouse_for, date_created, submitted_by FROM warehouse";
 $result_sql = $connection->query($result);
 
 // Error handling for the reservation query
@@ -61,7 +61,7 @@ if (!$result) {
 <head>                                               
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouses</title>
+    <title>Inventory</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
@@ -228,52 +228,7 @@ if (!$result) {
 
 
 
-<!-- ✅ Modal -->
-<div id="warehouseModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden">
-  <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
-    <h2 class="text-xl font-semibold mb-4">Construct New Warehouse</h2>
-    
-    <form action="construct_warehouse.php" method="POST" class="space-y-4">
-      <!-- Warehouse Name -->
-      <div>
-        <label for="warehouse_name" class="block text-sm font-medium text-gray-700">Warehouse Name</label>
-        <input type="text" name="warehouse_name" id="warehouse_name" required
-               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
-      </div>
 
-      <!-- Warehouse Location -->
-      <div>
-        <label for="warehouse_location" class="block text-sm font-medium text-gray-700">Location</label>
-        <input type="text" name="warehouse_location" id="warehouse_location" required
-               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
-      </div>
-
-      <!-- Warehouse For -->
-      <div>
-        <label for="warehouse_for" class="block text-sm font-medium text-gray-700">Warehouse For</label>
-        <input type="text" name="warehouse_for" id="warehouse_for" required
-               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
-      </div>
-
-      <!-- Buttons -->
-      <div class="flex justify-end space-x-3 mt-6">
-        <button type="button" onclick="toggleModal(false)" 
-                class="px-4 py-2 border border-gray-400 text-gray-700 rounded hover:bg-gray-100">
-          Cancel
-        </button>
-        <button type="submit" 
-                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          Submit
-        </button>
-      </div>
-    </form>
-
-    <!-- ❌ Close Button Top-Right -->
-    <button onclick="toggleModal(false)" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
-      <i class='bx bx-x text-2xl'></i>
-    </button>
-  </div>
-</div>
 
             </tr>
 
@@ -440,8 +395,6 @@ if (!$result) {
     <script src="../JS/funding.js"> </script>
     <script src="../JS/add_assets.js"> </script>
     <script src="../JS/add_asset_approve.js"> </script>
-    <script src="../JS/construct_warehouse.js"> </script>
-
 
 
 
