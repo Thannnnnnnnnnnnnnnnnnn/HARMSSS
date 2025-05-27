@@ -19,11 +19,11 @@ return [
         'asset_management',
     ],
 
-    'warehouse_staff' => [
+    'Warehouse manager' => [
         'warehousing',
     ],
 
-    'project_manager' => [
+    'Project manager' => [
         'project_management',
     ],
 

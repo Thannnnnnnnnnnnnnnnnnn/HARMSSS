@@ -4,13 +4,14 @@ include("../../connection.php");
 
 $db_name = "logs1_procurement";
 $log2_dt = "logs2_document_tracking";
-
+$log1_pm = "logs1_project_management";
 $usm_db = "logs1_usm";
 
 $conn = $connections[$db_name];
 $log2_conn = $connections[$log2_dt];
-$usm_conn = $connections[$usm_db];
+$log1_pm_conn = $connections[$log1_pm];
 
+$usm_conn = $connections[$usm_db];
 
 // Enable error reporting for debugging (disable in production)
 ini_set('display_errors', 1);
@@ -99,6 +100,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['permit_id'])) {
         $updateAsset->close();
     }
     $checkAssetStmt->close();
+
+    // ✅ Step 3.6: Update project status if project_id is present
+    $checkProjectStmt = $log2_conn->prepare("
+        SELECT project_id FROM permits_approval WHERE permit_id = ? AND project_id IS NOT NULL
+    ");
+    $checkProjectStmt->bind_param("s", $permit_id);
+    $checkProjectStmt->execute();
+    $checkProjectResult = $checkProjectStmt->get_result();
+
+    if ($checkProjectResult->num_rows > 0) {
+        $projectRow = $checkProjectResult->fetch_assoc();
+        $project_id = $projectRow['project_id'];
+
+        // Update project status in logs1_project_management
+        $projectConn = $connections['logs1_project_management'];
+        $updateProject = $projectConn->prepare("
+            UPDATE project SET project_status = 'Project creation permitted' WHERE project_id = ?
+        ");
+        $updateProject->bind_param("i", $project_id);
+        $updateProject->execute();
+        $updateProject->close();
+    }
+    $checkProjectStmt->close();
 
     // ✅ Step 4: Update purchase_request and insert into for_funding
     $findPurchase = $conn->prepare("
