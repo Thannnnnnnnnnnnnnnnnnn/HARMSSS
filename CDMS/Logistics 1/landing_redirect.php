@@ -17,7 +17,7 @@ $allowed_modules = $permissions[$role] ?? [];
 $module_to_landing = [
     'procurement' => '../Logistics 1/Procurement/purchase_request.php',
     'warehousing' => '../Logistics 1/Warehousing/warehouses.php',
-    'project_management' => '../Logistics 1/PM/projects.php',
+    'project_management' => '../Logistics 1/Project management/project.php',
     'asset_management' => '../Logistics 1/Asset management/add_asset.php',
     // Add more mappings as needed
 ];
