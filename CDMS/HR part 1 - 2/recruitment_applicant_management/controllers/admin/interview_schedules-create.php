@@ -47,9 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 "Interview Invitation: {$job['job_title']} at {$job['company']}",
                 "Dear {$email['first_name']},
     
-                Thank you for your interest in the {$job['job_title']} position at {$job['company']}. We were very impressed with your application and would like to invite you for an initial interview to discuss your qualifications further.
-    
-                Your interview will be conducted virtually via Google Meet. Please find the details below:
+Thank you for your interest in the {$job['job_title']} position at {$job['company']}. We were very impressed with your application and would like to invite you for an initial interview to discuss your qualifications further.
+
+Your interview will be conducted virtually via Google Meet. Please find the details below:
                 
 Date: {$_POST['date']}
 Time: {$_POST['time']}
@@ -66,15 +66,15 @@ Sincerely,
                 "Invitation for Final Interview: {$job['job_title']} at {$job['company']}",
                 "Dear , {$email['first_name']}
 
-                Following your successful previous interview(s) for the {$job['job_title']} position at {$job['company']}, we are delighted to invite you for a final interview to discuss your candidacy further.
+Following your successful previous interview(s) for the {$job['job_title']} position at {$job['company']}, we are delighted to invite you for a final interview to discuss your candidacy further.
 
-                We have been very impressed with your qualifications and believe you could be a great fit for our team. This final interview will provide an opportunity for you to meet with [mention who they will meet, e.g., senior leadership, the hiring manager and a team member, key stakeholders] and delve deeper into [mention key areas, e.g., the strategic vision for the role, specific project challenges, your long-term career aspirations].
+We have been very impressed with your qualifications and believe you could be a great fit for our team. This final interview will provide an opportunity for you to meet with [mention who they will meet, e.g., senior leadership, the hiring manager and a team member, key stakeholders] and delve deeper into [mention key areas, e.g., the strategic vision for the role, specific project challenges, your long-term career aspirations].
 
-                The interview will be conducted in-person.  Please find the details below:
+The interview will be conducted in-person.  Please find the details below:
 
 Date: {$_POST['date']}
 Time: {$_POST['time']}
-Link: {$_POST['location']}
+Location: {$_POST['location']}
 
 We look forward to this final conversation and potentially welcoming you to our team!
 
