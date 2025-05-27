@@ -16,7 +16,7 @@ $allowed_modules = $permissions[$role] ?? [];
 
 $connection = $connections[$db_name]; // Assign the correct connection
 // SQL Query for reservations
-$result = "SELECT warehouse_id   , User_ID, warehouse_name, warehouse_location, warehouse_for, date_created, submitted_by FROM warehouse";
+$result = "SELECT warehouse_id, User_ID, warehouse_name, warehouse_location, warehouse_for, date_created, submitted_by FROM warehouse";
 $result_sql = $connection->query($result);
 
 // Error handling for the reservation query
@@ -26,10 +26,10 @@ if ($result_sql === false) {
 
 // Unified query to count various reservation statuses
 $query = "SELECT 
-        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Pending for funds request') AS total_request,
-        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Funds successfully requested') AS For_clearance_Approval,
-        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Funds requisition was cancelled') AS Denied_request,
-        (SELECT COUNT(*) FROM assets WHERE asset_status = 'Funds denied') AS Clearance_approve
+        (SELECT COUNT(*) FROM warehouse WHERE warehouse_status = 'Pending for funds request') AS total_request,
+        (SELECT COUNT(*) FROM warehouse WHERE warehouse_status = 'Funds successfully requested') AS For_clearance_Approval,
+        (SELECT COUNT(*) FROM warehouse WHERE warehouse_status = 'Funds requisition was cancelled') AS Denied_request,
+        (SELECT COUNT(*) FROM warehouse WHERE warehouse_status = 'Funds denied') AS Clearance_approve
 ";
 
 $result = mysqli_query($connection, $query);
@@ -46,7 +46,7 @@ $DR_count = $row['Denied_request'];
 $CA_count = $row['Clearance_approve'];
 
 // Query to fetch all reservations
-$query = "SELECT * FROM `assets`";
+$query = "SELECT * FROM `warehouse`";
 $result = mysqli_query($connection, $query);
 
 if (!$result) {
@@ -227,14 +227,14 @@ if (!$result) {
 </button>
 <b> | </b>
 <!-- Buttons -->
-<button onclick="openModal('approve', '<?php echo $row['asset_id']; ?>')" 
+<button onclick="openModal('approve', '<?php echo $row['warehouse_id']; ?>')" 
         class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded">
     <i class='bx bx-check-circle'></i>
 </button>
 
 <b> | </b>
 
-<button onclick="openModal('deny', '<?php echo $row['asset_id']; ?>')" 
+<button onclick="openModal('deny', '<?php echo $row['warehouse_id']; ?>')" 
         class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded">
     <i class='bx bx-x-circle'></i>
 </button>
