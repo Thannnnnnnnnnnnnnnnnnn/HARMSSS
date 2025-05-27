@@ -130,16 +130,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $stmt_gl->bind_param("isssds", $payment_id, $types, $budget_name, $department, $amount_paid, $payment_method);
     // dd('test 123');
-    dd('test 456');
+    // dd('test 456');
         
-        if (!$stmt_gl->execute()) {
-            dd('test8');
-            throw new Exception("Insert general ledger transaction failed: " . $stmt_gl->error);
-        }
+        // if ($stmt_gl->execute()) {
+        //     dd('$stmt_gl');
+        //     throw new Exception("Insert general ledger transaction failed: " . $stmt_gl->error);
+        // }
     // dd('test 456');
 
         $stmt_gl->close();
-        dd('this is d end');
+        // dd('this is d end');
         // Update invoice status
         $update = $conn->prepare("
             UPDATE payableinvoices 
