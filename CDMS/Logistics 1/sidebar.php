@@ -12,6 +12,20 @@ function dd($data) {
 
 if (in_array('project_management', $allowed_modules)):
 ?>
+
+ <div class="flex min-h-screen w-full">
+        <!-- Overlay -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-expanded fixed z-50 overflow-y-auto overflow-x-hidden h-screen bg-white border-r border-[#F7E6CA] flex flex-col">
+            <div class="h-16 border-b border-[#F7E6CA] flex items-center px-2 space-x-2">
+                <h1 class="text-xl font-bold text-black bg-[#D9D9D9] p-2 rounded-xl">LOGO</h1>
+                <h1 class="text-xl font-bold text-[#4E3B2A]">Logistic 1</h1>
+                <!--Close Button-->
+            </div>
+            <div class="side-menu px-4 py-6">
+                     <!--- Procurement --->
 <div class="menu-option">
     <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('vendor-dropdown', this)">
         <div class="flex items-center space-x-2">
@@ -36,10 +50,9 @@ if (in_array('project_management', $allowed_modules)):
                 </a>
             </li>
             <li>
-                <a href="../PM/supplier.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                    <i class="bx bx-star text-lg"></i> <span>Project supplier</span>
+                <a href="../PM/pm_inventory.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                    <i class="bx bx-package text-lg"></i> <span>Project inventory</span>
                 </a>
-            </li>
             <li>
                 <a href="../PM/pm_logs.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
                     <i class="bx bx-user-check text-lg"></i> <span>Project logs</span>
@@ -58,6 +71,11 @@ if (in_array('project_management', $allowed_modules)):
         </ul>
     </div>
 </div>
+
+                
+                </ul>
+            </div>
+        </div>
 <?php endif; ?>
 
 
@@ -68,6 +86,19 @@ $allowed_modules = $permissions[$role] ?? [];
 
 if (in_array('warehousing', $allowed_modules)):
 ?>
+ <div class="flex min-h-screen w-full">
+        <!-- Overlay -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-expanded fixed z-50 overflow-y-auto overflow-x-hidden h-screen bg-white border-r border-[#F7E6CA] flex flex-col">
+            <div class="h-16 border-b border-[#F7E6CA] flex items-center px-2 space-x-2">
+                <h1 class="text-xl font-bold text-black bg-[#D9D9D9] p-2 rounded-xl">LOGO</h1>
+                <h1 class="text-xl font-bold text-[#4E3B2A]">Logistic 1</h1>
+                <!--Close Button-->
+            </div>
+            <div class="side-menu px-4 py-6">
+                     <!--- Procurement --->
 <div class="menu-option">
     <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('fleet-dropdown', this)">
         <div class="flex items-center space-x-2">
@@ -108,6 +139,12 @@ if (in_array('warehousing', $allowed_modules)):
         </ul>
     </div>
 </div>
+
+
+                    
+                </ul>
+            </div>
+        </div>
 <?php endif; ?>
 
 <?php

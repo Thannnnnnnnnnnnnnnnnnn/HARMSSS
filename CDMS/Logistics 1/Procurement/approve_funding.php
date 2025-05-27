@@ -14,14 +14,14 @@ $log2_dt = "logs2_document_tracking";
 $usm_db = "logs1_usm";
 
 // ✅ Validate DB connections
-if (!isset($connections[$db_name]) || !isset($connections[$usm_db]) || !isset($connections[$fin_ds])) {
+if (!isset($connections[$db_name]) || !isset($connections[$usm_db]) || !isset($connections[$fin_ds]) || !isset($connections[$log2_dt])) {
     die("One or more database connections are missing.");
 }
 
 $conn = $connections[$db_name];
 $usm_conn = $connections[$usm_db];
 $fin_conn = $connections[$fin_ds];
-$log2_conn = $connections[$log2_dt]; // Optional
+$log2_conn = $connections[$log2_dt];
 
 // ✅ Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['funding_id'])) {
@@ -52,17 +52,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['funding_id'])) {
     // ✅ Clean and prepare amount
     $estimated_budget = floatval(str_replace(',', '', $estimated_budget));
 
-    // ✅ Insert into disbursementrequests table
+    // ✅ Insert into disbursementrequests table with Status and EmployeeID
+    $disbursement_status = "Pending for funds approval";
     $disbStmt = $fin_conn->prepare("
-        INSERT INTO disbursementrequests (funding_id, Amount, DateOfRequest) 
-        VALUES (?, ?, ?)
+        INSERT INTO disbursementrequests 
+        (funding_id, Amount, Status, DateOfRequest, EmployeeID) 
+        VALUES (?, ?, ?, ?, ?)
     ");
-
     if (!$disbStmt) {
         die("Disbursement prepare failed: " . $fin_conn->error);
     }
 
-    $disbStmt->bind_param("sds", $funding_id, $estimated_budget, $requested_date);
+    $disbStmt->bind_param("sdsss", $funding_id, $estimated_budget, $disbursement_status, $requested_date, $user_id);
 
     if (!$disbStmt->execute()) {
         error_log("Insert Error (disbursementrequests): " . $disbStmt->error);
