@@ -4,7 +4,7 @@ session_start();
 include("../../connection.php");
 
 // Define the database name
-$db_name = "logs1_asset";
+$db_name = "logs1_warehousing";
 
 if (!isset($connections[$db_name])) {
     die("Database connection not found for $db_name");
@@ -16,7 +16,7 @@ $allowed_modules = $permissions[$role] ?? [];
 
 $connection = $connections[$db_name]; // Assign the correct connection
 // SQL Query for reservations
-$result = "SELECT asset_id  , User_ID, asset_name, asset_type, asset_quantity, asset_status, date_created, User_ID, submitted_by FROM assets";
+$result = "SELECT warehouse_id   , User_ID, warehouse_name, warehouse_location, warehouse_for, date_created, submitted_by FROM warehouse";
 $result_sql = $connection->query($result);
 
 // Error handling for the reservation query
@@ -190,11 +190,9 @@ if (!$result) {
             <thead class="bg-gray-100">
                 <tr>
                     <th class="p-2">ID</th>
-                    <th class="p-2">Asset name</th>
-                    <th class="p-2">Asset type</th>
-                    <th class="p-2">Asset quantity</th>
-                    <th class="p-2">Asset status</th>
-                    <th class="p-2">Date added</th>
+                    <th class="p-2">Name</th>
+                    <th class="p-2">Location</th>
+                    <th class="p-2">Assigned to</th>
                     <th class="p-2">Operation</th>
 
                     
@@ -207,13 +205,10 @@ if (!$result) {
 
 
                     <tr>
-                <td class="p-2"><?php echo htmlspecialchars($row['asset_id']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['asset_name']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['asset_type']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['asset_quantity']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['asset_status']); ?></td>
-                <td class="p-2"><?php echo htmlspecialchars($row['date_created']); ?></td>
-
+                <td class="p-2"><?php echo htmlspecialchars($row['warehouse_id']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['warehouse_name']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['warehouse_location']); ?></td>
+                <td class="p-2"><?php echo htmlspecialchars($row['warehouse_for']); ?></td>
                 
                 <td class="p-2">
                            <!-- View Button -->
@@ -221,11 +216,10 @@ if (!$result) {
    <!-- View Button -->
 <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
         onclick="showViewModal(
-            '<?php echo addslashes($row['asset_id']); ?>',
-            '<?php echo addslashes($row['asset_name']); ?>',
-            '<?php echo addslashes($row['asset_type']); ?>',
-            '<?php echo addslashes($row['asset_quantity']); ?>',
-            '<?php echo addslashes($row['asset_status']); ?>',
+            '<?php echo addslashes($row['warehouse_id']); ?>',
+            '<?php echo addslashes($row['warehouse_name']); ?>',
+            '<?php echo addslashes($row['warehouse_location']); ?>',
+            '<?php echo addslashes($row['warehouse_for']); ?>',
             '<?php echo addslashes($row['date_created']); ?>',
             '<?php echo addslashes($row['submitted_by']); ?>',
         )">
