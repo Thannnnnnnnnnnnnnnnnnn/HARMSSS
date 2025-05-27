@@ -1,5 +1,5 @@
 <?php
-$connections = mysqli_connect("127.0.0.1","3206_CENTRALIZED_DATABASE","4562526","fin_general_ledger");
+$connections = mysqli_connect("localhost","3206_CENTRALIZED_DATABASE","4562526","fin_general_ledger");
  if(mysqli_connect_error()){
     echo "Failed to connect to mysql: ".mysqli_connect_error();
  

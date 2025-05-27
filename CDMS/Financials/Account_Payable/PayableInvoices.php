@@ -119,7 +119,7 @@ if (!$result) {
                             </div>
                             <div class="modal-body-viewAdjust">
                                 <form id="paymentForm" action="backend/payment_schedule.php" method="POST" class="flex flex-col gap-4">
-                                    <!-- <input type="hidden" name="invoice_id" id="schedule_invoice_id"> -->
+                                    <input type="hidden" name="invoice_id" id="schedule_invoice_id">
                                     <label class="block">
                                         <span class="text-gray-700">Due Date:</span>
                                         <input type="date" name="due_date" required class="w-full border p-2 rounded">
@@ -140,29 +140,26 @@ if (!$result) {
                                 </button>
                             </div>
                             <div class="modal-body-viewAdjust">
-                                <form id="recordPaymentForm" action="backend/Addpayments.php" method="POST" class="flex flex-col gap-4">
-                                    <input type="hidden" name="invoice_id" id="payment_invoice_id">
-                                    <div class="flex flex-col gap-2"> 
-                                        <label class="block">
-                                            <span class="text-gray-700">Payment Date:</span>
-                                            <input type="date" name="payment_date" required class="w-full border p-2 rounded">
-                                        </label>
-                                        <label class="block">
-                                            <span class="text-gray-700">Amount Paid:</span>
-                                            <input type="number" step="0.01" name="amount_paid" required class="w-full border p-2 rounded">
-                                        </label>
-                                        <label class="block">
-                                            <span class="text-gray-700">Payment Method:</span>
-                                            <select name="payment_method" class="w-full border p-2 rounded">
-                                                <option value="Cash">Cash</option>
-                                                <option value="Bank Transfer">Bank Transfer</option>
-                                                <option value="Check">Check</option>
-                                            </select>
-                                        </label>
+                                        <form id="recordPaymentForm" action="backend/Addpayments.php" method="POST" class="flex flex-col gap-4">
+                                            <input type="hidden" name="invoice_id" id="payment_invoice_id">
+                                            <div class="flex flex-col gap-2"> 
+     
+                                                <label class="block">
+                                                    <span class="text-gray-700">Amount Paid:</span>
+                                                    <input type="number" step="0.01" name="amount_paid" required class="w-full border p-2 rounded">
+                                                </label>
+                                                <label class="block">
+                                                    <span class="text-gray-700">Payment Method:</span>
+                                                    <select name="payment_method" class="w-full border p-2 rounded">
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="Bank Transfer">Bank Transfer</option>
+                                                        <option value="Check">Check</option>
+                                                    </select>
+                                                </label>
+                                            </div>
+                                            <button type="submit"  class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Record Payment</button>
+                                        </form>
                                     </div>
-                                    <button type="submit" name="tite" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Record Payment</button>
-                                </form>
-                            </div>
                         </div>
                     </div>
                 </div>

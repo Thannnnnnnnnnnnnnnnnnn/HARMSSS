@@ -1,12 +1,20 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tite'])) {
-    require_once('../includes/config.php');
+// function dd($data) {
+//     echo '<pre>';
+//     var_dump($data);
+//     echo '</pre>';
+//     die;
+// }
 
-    $payment_date = $_POST['payment_date'] ?? '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once('../includes/config.php');
+   
     $amount_paid = floatval($_POST['amount_paid'] ?? 0);
     $payment_method = $_POST['payment_method'] ?? '';
+    $invoice_id = intval($_POST['invoice_id'] ?? 0);
 
-    if (!$payment_date || !$amount_paid || !$payment_method) {
+    if (!$amount_paid || !$payment_method || !$invoice_id) {
         header('Location: ../PayableInvoices.php?error=missing_fields');
         exit();
     }
@@ -14,19 +22,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tite'])) {
     $conn = new mysqli($host, $username, $password, "fin_accounts_payable");
     $conn_gl = new mysqli($host, $username, $password, "fin_general_ledger");
 
-    if ($conn->connect_error || $conn_gl->connect_error) {
-        die("Connection error: " . $conn->connect_error . $conn_gl->connect_error);
+    if ($conn->connect_error) {
+        die("Accounts Payable DB Connection Error: " . $conn->connect_error);
+    }
+    if ($conn_gl->connect_error) {
+        die("General Ledger DB Connection Error: " . $conn_gl->connect_error);
     }
 
     $conn->begin_transaction();
     try {
-        // Insert payment record
+        // Insert payment record (no PaymentDate)
         $stmt = $conn->prepare("
             INSERT INTO vendorpayments 
-            ( PaymentStatus, PaymentDate, AmountPaid, PaymentMethod) 
-            VALUES (1, 'Completed', ?, ?, ?)
+            (PayableInvoiceID, PaymentStatus, AmountPaid, PaymentMethod) 
+            VALUES (?, 'Completed', ?, ?)
         ");
-        $stmt->bind_param("sds", $payment_date, $amount_paid, $payment_method);
+        $stmt->bind_param("ids", $invoice_id, $amount_paid, $payment_method);
         $stmt->execute();
         $payment_id = $stmt->insert_id;
         $stmt->close();
@@ -43,6 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tite'])) {
         $stmt->fetch();
         $stmt->close();
 
+        // Check total payments for this invoice
+        $total_paid_stmt = $conn->prepare("
+            SELECT SUM(AmountPaid) as TotalPaid 
+            FROM vendorpayments 
+            WHERE PayableInvoiceID = ?
+        ");
+        $total_paid_stmt->bind_param("i", $invoice_id);
+        $total_paid_stmt->execute();
+        $total_paid_stmt->bind_result($total_paid);
+        $total_paid_stmt->fetch();
+        $total_paid_stmt->close();
+
+        $status = ($total_paid >= $invoice_amount) ? 'Paid' : 'Partially Paid';
+
         // Insert into general ledger
         $stmt_gl = $conn_gl->prepare("
             INSERT INTO transactions 
@@ -53,13 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tite'])) {
         $stmt_gl->execute();
         $stmt_gl->close();
 
-        // Update invoice status (optional redundancy)
+        // Update invoice status
         $update = $conn->prepare("
             UPDATE payableinvoices 
-            SET Status = 'Paid' 
+            SET Status = ? 
             WHERE PayableInvoiceID = ?
         ");
-        $update->bind_param("i", $invoice_id);
+        $update->bind_param("si", $status, $invoice_id);
         $update->execute();
         $update->close();
 
