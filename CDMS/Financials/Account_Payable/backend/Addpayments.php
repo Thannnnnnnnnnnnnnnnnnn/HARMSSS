@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("General Ledger DB Connection Error: " . $conn_gl->connect_error);
     }
 
+    // Start transaction
     $conn->begin_transaction();
     try {
         // Insert payment record (no PaymentDate)
@@ -42,17 +43,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $payment_id = $stmt->insert_id;
         $stmt->close();
 
-        // Get invoice details
-        $stmt = $conn->prepare("
-            SELECT Amount, Types, BudgetName, Department 
-            FROM payableinvoices 
+        $stmt_amount = $conn->prepare("
+            SELECT Amount, Types, BudgetName,Department FROM payableinvoices 
             WHERE PayableInvoiceID = ?
         ");
-        $stmt->bind_param("i", $invoice_id);
-        $stmt->execute();
-        $stmt->bind_result($invoice_amount, $types, $budget_name, $department);
-        $stmt->fetch();
-        $stmt->close();
+        $stmt_amount->bind_param("i", $invoice_id);
+        $stmt_amount->execute();
+        $stmt_amount->bind_result($invoice_amount, $types, $budget_name,$department);
+        
+        if (!$stmt_amount->fetch()) {
+            throw new Exception("Error: Invoice not found.");
+        }
+        $stmt_amount->close();
+       //if the status is completed , insert into the general ledger the trabsaction
+        if ($payment_status === "Completed") {
+            $stmt_ledger = $conn_general_ledger->prepare("
+                INSERT INTO transactions 
+                (PayablePaymentID, TransactionFrom, BudgetName,Allocated_Department ,BudgetAllocated, PaymentMethod) 
+                VALUES (?, ?, ?, ?, ?,?)
+            ");
+            $stmt_ledger->bind_param("isssds", $payment_id, $types, $budget_name,$department,$amount_paid, $payment_method);
 
         // Check total payments for this invoice
         $total_paid_stmt = $conn->prepare("
@@ -88,20 +98,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update->execute();
         $update->close();
 
+        // Commit transaction
         $conn->commit();
-        header('Location: ../PayableInvoices.php?payment_success=1');
+
+        // Redirect with success message
+        header('Location: ../PayableInvoices.php');
         exit();
     } catch (Exception $e) {
+        // Rollback transaction
         $conn->rollback();
-        error_log("Payment Error: " . $e->getMessage());
-        header('Location: ../PayableInvoices.php?error=payment_failed&message=' . urlencode($e->getMessage()));
-        exit();
-    } finally {
-        $conn->close();
-        $conn_gl->close();
+
+        // Log error
+        error_log("Payment Insertion Error: " . $e->getMessage());
+
     }
-} else {
-    header('Location: ../PayableInvoices.php');
-    exit();
+
+    // Close database connections
+    $conn->close();
+    $conn_general_ledger->close();
+    
+}
 }
 ?>
