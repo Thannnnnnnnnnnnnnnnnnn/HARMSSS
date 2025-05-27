@@ -15,15 +15,15 @@ return [
         'procurement',
     ],
 
-    'asset_manager' => [
+    'Asset facilitator' => [
         'asset_management',
     ],
 
-    'warehouse_staff' => [
+    'Warehouse manager' => [
         'warehousing',
     ],
 
-    'project_manager' => [
+    'Project manager' => [
         'project_management',
     ],
 

@@ -9,7 +9,7 @@ function dd($data) {
 
 // dd($_SESSION); // Debugging: Check session data
 
-$role = $_SESSION['Role'];
+$role = $_SESSION['Role'];  
 $permissions = include 'role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
 
@@ -17,7 +17,7 @@ $allowed_modules = $permissions[$role] ?? [];
 $module_to_landing = [
     'procurement' => '../Logistics 1/Procurement/purchase_request.php',
     'warehousing' => '../Logistics 1/Warehousing/warehouses.php',
-    'project_management' => '../Logistics 1/PM/projects.php',
+    'project_management' => '../Logistics 1/Project management/project.php',
     'asset_management' => '../Logistics 1/Asset management/add_asset.php',
     // Add more mappings as needed
 ];
@@ -25,7 +25,6 @@ $module_to_landing = [
 // Find the first module the role is allowed to access
 foreach ($allowed_modules as $module) {
     if (($module_to_landing[$module])) {
-        // dd('test');
         header("Location: " . $module_to_landing[$module]);
         exit;
     }
