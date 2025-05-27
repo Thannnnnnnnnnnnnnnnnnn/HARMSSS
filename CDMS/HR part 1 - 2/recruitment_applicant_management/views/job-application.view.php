@@ -113,6 +113,8 @@
 <script>
     $('#submitBtn').on('click', function() {
         let isValid = true;
+        $(this).prop('disabled', true);
+        $(this).text('Submitting...');
         $('input[required]').each(function() {
             if ($(this).val() === '') {
                 isValid = false;
