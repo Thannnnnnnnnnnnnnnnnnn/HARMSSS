@@ -5,7 +5,7 @@ $config = require '../../config.php';
 require '../../Database.php';
 require '../../functions.php';
 $db = new Database($config['database']);
-
+// dd($_SESSION);xcv
 $applicants = $db->query(" SELECT applicant_id, first_name, last_name FROM applicants ")->fetchAll();
 // dd($applicants);
 $errors = [];
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'interview_type' => $_POST['interview_type'],
             'interview_status' => 'pending',
             'applicant_id' => $_POST['applicant_id'],
-            'interviewer_id' => $_SESSION['User_ID']
+            'interviewer_id' => $_SESSION['user_id']
         ]);
         if ($_POST['interview_type'] === 'initial') {
             sendMail(

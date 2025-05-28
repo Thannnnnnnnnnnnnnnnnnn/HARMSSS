@@ -27,7 +27,7 @@
     <?php endif ?>
     <div class="flex flex-col justify-center items-center ">
         <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-            <table class="table table-xs text-center">
+            <table class="table text-center">
                 <thead class="bg-[#594423] text-white">
                     <tr>
                         <th class="px-2 py-2">Applicant ID</th>
@@ -41,7 +41,7 @@
                         <th class="px-2 py-2">Status</th>
                         <th class="px-4 py-2">Resume</th>
                         <th class="px-4 py-2">Job applying for</th>
-                        <th class="px-2 py-2">Action</th>
+                        <!-- <th class="px-2 py-2">Action</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -70,12 +70,12 @@
                                     <?php endif ?>
                                 </td>
                                 <td class="px-4 py-2"><?= htmlspecialchars($application['job_title']) ?></td>
-                                <td class="px-2 py-2">
+                                <!-- <td class="px-2 py-2">
                                     <button type="button" id="updateBtnShow" class="block font-medium border border-[#594423] text-sm  text-center hover:bg-[#594423] hover:text-white transition py-2 px-4 text-black cursor-pointer rounded-xl">
                                         Update
                                     </button>
                                     </form>
-                                </td>
+                                </td> -->
                             </tr>
                         <?php endif ?>
                     <?php endforeach ?>
@@ -136,7 +136,7 @@
         <div class="<?= count($applications) < 1 ? '' : 'hidden' ?> text-red-500 text-center pt-10 text-lg">
             <p>No Applications data found.</p>
         </div>
-        <div id="updateForm" class="bg-white rounded-lg shadow-xl hidden">
+        <!-- <div id="updateForm" class="bg-white rounded-lg shadow-xl hidden">
             <h1 class="py-3 px-2.5 bg-[#594423] mx-3 my-3 text-white font-semibold rounded-lg shadow-md">Update Information</h1>
             <form class="p-4 md:p-5" method="POST" enctype="multipart/form-data" id="updateFormSubmit">
                 <input type="hidden" name="update" value="1">
@@ -182,7 +182,7 @@
                     </button>
                 </div>
             </form>
-        </div>
+        </div> -->
     </div>
 </main>
 

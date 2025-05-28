@@ -143,7 +143,6 @@ if (!$result) {
                                         <form id="recordPaymentForm" action="backend/Addpayments.php" method="POST" class="flex flex-col gap-4">
                                             <input type="hidden" name="invoice_id" id="payment_invoice_id">
                                             <div class="flex flex-col gap-2"> 
-     
                                                 <label class="block">
                                                     <span class="text-gray-700">Amount Paid:</span>
                                                     <input type="number" step="0.01" name="amount_paid" required class="w-full border p-2 rounded">

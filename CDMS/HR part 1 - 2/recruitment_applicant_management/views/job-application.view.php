@@ -113,6 +113,7 @@
 <script>
     $('#submitBtn').on('click', function() {
         let isValid = true;
+
         $('input[required]').each(function() {
             if ($(this).val() === '') {
                 isValid = false;
@@ -138,6 +139,8 @@
         }
 
         if (isValid) {
+            $(this).prop('disabled', true);
+            $(this).text('Submitting...');
             swal.fire({
                 title: 'Application Submitted!',
                 text: 'Your application has been submitted successfully.',

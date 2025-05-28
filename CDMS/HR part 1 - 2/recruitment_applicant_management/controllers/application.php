@@ -8,43 +8,42 @@ $db = new Database($config['database']);
 // $usm = new Database($config['usm']);
 $updated = false;
 // dd($_SESSION);
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  dd($_POST);
-  $errors = [];
-  $resume = $_POST['old_resume'];
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//   $errors = [];
+//   $resume = $_POST['old_resume'];
 
-  if (isset($_FILES['resume']) && $_FILES['resume']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = 'uploads/changed_documents/';
-    $resume =  $_SESSION['user_id'] . '_alt_' . time() . '_' . basename($_FILES['resume']['name']);
-    $resumefile = $uploadDir . $resume;
-    if (move_uploaded_file($_FILES['resume']['tmp_name'], $resumefile)) {
-      $resumePath = $resumefile;
-    }
-  }
+//   if (isset($_FILES['resume']) && $_FILES['resume']['error'] === UPLOAD_ERR_OK) {
+//     $uploadDir = 'uploads/changed_documents/';
+//     $resume =  $_SESSION['user_id'] . '_alt_' . time() . '_' . basename($_FILES['resume']['name']);
+//     $resumefile = $uploadDir . $resume;
+//     if (move_uploaded_file($_FILES['resume']['tmp_name'], $resumefile)) {
+//       $resumePath = $resumefile;
+//     }
+//   }
 
-  validate('first_name', $errors);
-  validate('last_name', $errors);
-  validate('contact_number', $errors);
-  validate('address', $errors);
-  validate('email', $errors);
-  if (empty($errors)) {
-    $db->query("UPDATE applicants SET first_name = :first_name, last_name = :last_name, contact_number = :contact_number, address = :address, email = :email WHERE applicant_id = :applicant_id", [
-      ':first_name' => $_POST['first_name'],
-      ':last_name' => $_POST['last_name'],
-      ':contact_number' => $_POST['contact_number'],
-      ':address' => $_POST['address'],
-      ':email' => $_POST['email'],
-      ':applicant_id' => $_POST['applicant_id'],
-    ]);
-    if (!empty($_FILES['resume']['name'] ?? '')) {
-      $db->query("UPDATE applicants SET resume = :resume WHERE applicant_id = :applicant_id", [
-        ':resume' => $resumePath,
-        ':applicant_id' => $_POST['applicant_id'],
-      ]);
-    }
-    $updated = true;
-  }
-}
+//   validate('first_name', $errors);
+//   validate('last_name', $errors);
+//   validate('contact_number', $errors);
+//   validate('address', $errors);
+//   validate('email', $errors);
+//   if (empty($errors)) {
+//     $db->query("UPDATE applicants SET first_name = :first_name, last_name = :last_name, contact_number = :contact_number, address = :address, email = :email WHERE applicant_id = :applicant_id", [
+//       ':first_name' => $_POST['first_name'],
+//       ':last_name' => $_POST['last_name'],
+//       ':contact_number' => $_POST['contact_number'],
+//       ':address' => $_POST['address'],
+//       ':email' => $_POST['email'],
+//       ':applicant_id' => $_POST['applicant_id'],
+//     ]);
+//     if (!empty($_FILES['resume']['name'] ?? '')) {
+//       $db->query("UPDATE applicants SET resume = :resume WHERE applicant_id = :applicant_id", [
+//         ':resume' => $resumePath,
+//         ':applicant_id' => $_POST['applicant_id'],
+//       ]);
+//     }
+//     $updated = true;
+//   }
+// }
 
 $applications = $db->query('SELECT
 a.applicant_id,
