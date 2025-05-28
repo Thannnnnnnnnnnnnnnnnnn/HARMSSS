@@ -15,10 +15,10 @@ $allowed_modules = $permissions[$role] ?? [];
 
 // Choose default landing page based on first allowed module
 $module_to_landing = [
-    'vendor portal' => '../Logistics 2/vendor portal/vendors.php',
-    'audit management' => '../Logistics 2/Audit management/Audit.php',
-    'vehicle reservation' => '../Logistics 2/Vehicle reservation/reservation.php',
-    'fleet management' => '../Logistics 2/Fleet management/fleet.php',
+    'vendor_portal' => '../Logistics 2/vendor portal/vendors.php',
+    'audit_management' => '../Logistics 2/Audit management/Audit.php',
+    'vehicle_reservation' => '../Logistics 2/Vehicle reservation/reservation.php',
+    'fleet_management' => '../Logistics 2/Fleet management/fleet.php',
     // Add more mappings as needed
 ];
 

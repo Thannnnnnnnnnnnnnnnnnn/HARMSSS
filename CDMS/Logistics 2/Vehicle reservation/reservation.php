@@ -15,7 +15,7 @@ $role = $_SESSION['Role'];
 $permissions = include '../role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
 
-$result = "SELECT ReservationID , purpose, destination_from, destination_to, vehicle_type, departure, arrival, schedule, cargo, bill, status, VehicleID ,  DriverID , License plate, Make, Modell, Employee name, EmployeeID , User_ID, contact, Vehicle_color, Vehicle_brand, Plate_no, driver_name FROM reservation";
+$result = "SELECT ReservationID , purpose, destination_from, destination_to, vehicle_type, departure, arrival, schedule, cargo, bill, status, VehicleID ,  DriverID, Make, Modell, EmployeeID , User_ID, contact, Vehicle_color, Vehicle_brand, Plate_no, driver_name FROM reservation";
 $result_sql = $connection->query($result);
 
 
