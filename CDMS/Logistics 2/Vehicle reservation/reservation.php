@@ -1,6 +1,6 @@
 <?php
 include("../../connection.php");
-
+session_start();
 // Define the database name
 $db_name = "logs2_vehicle_reservation_system";
 
