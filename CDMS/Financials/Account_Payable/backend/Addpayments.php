@@ -88,13 +88,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 UPDATE for_funding 
                 SET status = 'Funds Successfully Allocated' 
                 WHERE funding_id = ?
+<<<<<<< HEAD
             "); 
+=======
+            ");
+>>>>>>> f489520f4938798655c10a90084dafaca08d44b9
             $stmt_funding->bind_param("s", $funding_id);
 
             if (!$stmt_funding->execute()) {
                 throw new Exception("Error updating logs_procurement: " . $stmt_funding->error);
             }
-            $stmt_project->close();
+            $stmt_funding->close();
                 // Update funding status in project management
             $stmt_project = $conn_projectManage->prepare("
                 UPDATE project 
