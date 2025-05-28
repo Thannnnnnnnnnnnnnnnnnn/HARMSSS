@@ -77,9 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
             $stmt_ledger->bind_param("isssds", $payment_id, $types, $budget_name, $department, $amount_paid, $payment_method);
 
-            if (!$stmt_ledger->execute()) {
-                throw new Exception("Error inserting into transactions: " . $stmt_ledger->error);
-            }
+            // if (!$stmt_ledger->execute()) {
+            //     throw new Exception("Error inserting into transactions: " . $stmt_ledger->error);
+            // }
             $stmt_ledger->close();
            
             // Update funding status in logs_procurement
