@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_project->close();
         }
 
-        // Commit transaction
+        // Commit transactiong
         $conn->commit();
 
         // Redirect with success message
