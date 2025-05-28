@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (!in_array($fileExtension, $allowedExtensions)) {
             $errors[$field] = "Resume must be a PDF, DOC, or DOCX file.";
         }
-        if ($file["size"] > 2 * 1024 * 1024) {
+        if ($file["size"] > 5 * 1024 * 1024) {
             $errors[$field] = "Resume must be less than 2MB.";
         }
         if (empty($errors)) {
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if (move_uploaded_file($file["tmp_name"], $filePath)) {
                 $filePaths[$field] = $filePath;
             } else {
-                $errors[$field] = "Error uploading Resume.";
+                $errors[$field] = "Error uploadiang Resume.";
             }
         }
     } else {
