@@ -76,7 +76,7 @@ try {
                 ps.PayslipID,
                 ps.PayrollID,
                 CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName,
-                os.DepartmentName,
+                d.department_name AS DepartmentName, -- MODIFIED: Changed from OrganizationalStructure
                 ps.PayPeriodStartDate,
                 ps.PayPeriodEndDate,
                 ps.PaymentDate,
@@ -86,7 +86,7 @@ try {
             FROM Payslips ps
             JOIN Employees e ON ps.EmployeeID = e.EmployeeID
             JOIN PayrollRuns pr ON ps.PayrollID = pr.PayrollID
-            LEFT JOIN OrganizationalStructure os ON e.DepartmentID = os.DepartmentID";
+            LEFT JOIN departments d ON e.DepartmentID = d.dept_id";
 
     $conditions = [];
     $params = [];

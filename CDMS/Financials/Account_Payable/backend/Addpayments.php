@@ -78,9 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
             $stmt_ledger->bind_param("isssds", $payment_id, $types, $budget_name, $department, $amount_paid, $payment_method);
 
-            if (!$stmt_ledger->execute()) {
-                throw new Exception("Error inserting into transactions: " . $stmt_ledger->error);
-            }
+            // if (!$stmt_ledger->execute()) {
+            //     throw new Exception("Error inserting into transactions: " . $stmt_ledger->error);
+            // }
             $stmt_ledger->close();
            
             // Update funding status in logs_procurement
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 UPDATE for_funding 
                 SET status = 'Funds Successfully Allocated' 
                 WHERE funding_id = ?
-            ");
+            "); 
             $stmt_funding->bind_param("s", $funding_id);
 
             if (!$stmt_funding->execute()) {
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_project->close();
         }
 
-        // Commit transaction
+        // Commit transactiong
         $conn->commit();
 
         // Redirect with success message
