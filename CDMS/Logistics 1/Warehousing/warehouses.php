@@ -228,35 +228,54 @@ if (!$result) {
 
 
 
+
+
+            </tr>
+
+    <?php endwhile; ?>
+<?php else: ?>
+    <tr>
+        <td colspan="7" class="text-center p-4">No request records found.</td>
+    </tr>
+<?php endif; ?>
+</tbody>
+
+     
 <!-- ✅ Modal -->
 <div id="warehouseModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden">
   <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
     <h2 class="text-xl font-semibold mb-4">Construct New Warehouse</h2>
-    
+
     <form action="construct_warehouse.php" method="POST" class="space-y-4">
       <!-- Warehouse Name -->
       <div>
         <label for="warehouse_name" class="block text-sm font-medium text-gray-700">Warehouse Name</label>
         <input type="text" name="warehouse_name" id="warehouse_name" required
-               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+               class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" />
       </div>
 
       <!-- Warehouse Location -->
       <div>
         <label for="warehouse_location" class="block text-sm font-medium text-gray-700">Location</label>
         <input type="text" name="warehouse_location" id="warehouse_location" required
-               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+               class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" />
       </div>
 
       <!-- Warehouse For -->
       <div>
         <label for="warehouse_for" class="block text-sm font-medium text-gray-700">Warehouse For</label>
-        <input type="text" name="warehouse_for" id="warehouse_for" required
-               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+        <select id="warehouse_for" name="warehouse_for" required
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="" disabled selected>Select department</option>
+          <option value="Logistics department">Logistics department</option>
+          <option value="Human resource department">Human resource department</option>
+          <option value="Core department">Core department</option>
+          <option value="Financial department">Financial department</option>
+        </select>
       </div>
 
       <!-- Buttons -->
-      <div class="flex justify-end space-x-3 mt-6">
+      <div class="flex justify-end space-x-3 pt-4">
         <button type="button" onclick="toggleModal(false)" 
                 class="px-4 py-2 border border-gray-400 text-gray-700 rounded hover:bg-gray-100">
           Cancel
@@ -274,18 +293,6 @@ if (!$result) {
     </button>
   </div>
 </div>
-
-            </tr>
-
-    <?php endwhile; ?>
-<?php else: ?>
-    <tr>
-        <td colspan="7" class="text-center p-4">No request records found.</td>
-    </tr>
-<?php endif; ?>
-</tbody>
-
-            
             
         </table>
     </div>
@@ -335,85 +342,61 @@ if (!$result) {
   </div>
 </div>
 
-
-<!-- Modal Background -->
-<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
-  <!-- Modal Box -->
-  <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-    <h2 class="text-lg font-semibold mb-4" id="modalTitle">Confirm Action</h2>
-    <p class="text-gray-700 mb-6" id="modalMessage">Are you sure you want to proceed?</p>
-
-    <div class="flex justify-end gap-4">
-      <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md">Cancel</button>
-      <button id="confirmActionBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded-md">Yes, Confirm</button>
-    </div>
-  </div>
-</div>
-<!-- Modal -->
-<div id="assetModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
-  <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
-
-    <!-- Close Button -->
-    <button onclick="toggleModal(false)" class="absolute top-3 right-3 text-gray-500 hover:text-black">
-      <i class='bx bx-x text-2xl'></i>
-    </button>
-
+<<!-- ✅ Modal -->
+<div id="warehouseModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden">
+  <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
     <!-- Modal Header -->
-    <h2 class="text-xl font-semibold mb-4 text-gray-800">Add New Asset</h2>
-
-    <!-- Form -->
-    <form action="add_asset_form.php" method="POST" class="space-y-4">
-      <!-- Asset Name -->
+    <h2 class="text-xl font-semibold mb-4">Construct New Warehouse</h2>
+    
+    <!-- Modal Form -->
+    <form action="construct_warehouse.php" method="POST" class="space-y-4">
+      <!-- Warehouse Name -->
       <div>
-        <label class="block text-sm font-medium text-gray-700">Asset Name</label>
-        <input type="text" name="asset_name" required
-               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <label for="warehouse_name" class="block text-sm font-medium text-gray-700">Warehouse Name</label>
+        <input type="text" name="warehouse_name" id="warehouse_name" required
+               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
       </div>
 
-        <!-- Asset Type -->
-        <div>
-    <label class="block text-sm font-medium text-gray-700">Asset Type</label>
-    <select name="asset_type" required
-            class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <option value="" disabled selected>Select asset type</option>
-        <option value="Tangible assets">Tangible assets</option>
-        <option value="Non-tangible assets">Non-tangible assets</option>
-        <option value="Cash assets">Cash assets</option>
-        <option value="Digital assets">Digital assets</option>
-    </select>
-    </div>
-
-
-      <!-- Asset Quantity -->
+      <!-- Warehouse Location -->
       <div>
-        <label class="block text-sm font-medium text-gray-700">Asset Quantity</label>
-        <input type="number" name="asset_quantity" min="1" required
-               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <label for="warehouse_location" class="block text-sm font-medium text-gray-700">Location</label>
+        <input type="text" name="warehouse_location" id="warehouse_location" required
+               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
       </div>
 
-      <!-- Date Added -->
+      <!-- Warehouse For -->
       <div>
-        <label class="block text-sm font-medium text-gray-700">Date Added</label>
-        <input type="date" name="date_created" required
-               class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <label for="warehouse_for" class="block text-sm font-medium text-gray-700">Warehouse For</label>
+        <select id="warehouse_for" name="warehouse_for" required 
+                class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200">
+          <option value="" disabled selected>Select department</option>
+          <option value="Logistics department">Logistics department</option>
+          <option value="Human resource department">Human resource department</option>
+          <option value="Core department">Core department</option>
+          <option value="Financial department">Financial department</option>
+        </select>
       </div>
 
-      <!-- Actions -->
-      <div class="flex justify-end pt-2">
-        <button type="button" onclick="toggleModal(false)"
-                class="mr-2 px-4 py-2 text-sm border border-gray-300 text-gray-700 hover:bg-gray-100 rounded-md">
+
+      <!-- Buttons -->
+      <div class="flex justify-end space-x-3 pt-4">
+        <button type="button" onclick="toggleModal(false)" 
+                class="px-4 py-2 border border-gray-400 text-gray-700 rounded hover:bg-gray-100">
           Cancel
         </button>
-        <button type="submit"
-                class="px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 rounded-md">
-          Add Asset
+        <button type="submit" 
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Submit
         </button>
       </div>
     </form>
 
+    <!-- ❌ Close Button Top-Right -->
+    <button onclick="toggleModal(false)" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+      <i class='bx bx-x text-2xl'></i>
+    </button>
   </div>
 </div>
-
 
 <!-- Modal -->
 <div id="actionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
