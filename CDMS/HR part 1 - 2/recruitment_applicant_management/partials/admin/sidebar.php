@@ -5,7 +5,7 @@
         <!-- <h1 class="text-xl font-bold text-black bg-[#D9D9D9] p-2 rounded-xl"></h1> -->
         <div class="py-2">
             <a href="">
-                <img src="/img/Logo-Name.png" alt="Avalon-logo">
+                <img src="../../img/Logo-Name.png" alt="Avalon-logo">
             </a>
         </div>
         <!--Close Button-->
