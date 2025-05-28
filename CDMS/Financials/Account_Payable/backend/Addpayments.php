@@ -6,6 +6,7 @@ function dd($data) {
     exit;
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // dd('test 123');
     require_once('../includes/config.php');
     // Sanitize and validate inputs
     $amount_paid = filter_input(INPUT_POST, 'amount_paid', FILTER_VALIDATE_FLOAT);
@@ -14,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check for valid inputs
     if ($amount_paid === false || $amount_paid <= 0 || empty($payment_method) || $invoice_id === false || $invoice_id <= 0) {
+    // dd('test 123');
+        
         error_log("Validation failed: amount_paid=$amount_paid, payment_method=$payment_method, invoice_id=$invoice_id");
         header('Location: ../PayableInvoices.php?error=invalid_input');
         exit();
@@ -25,10 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check connection errors
     if ($conn->connect_error) {
+    // dd('test 123');
+
         error_log("Accounts Payable DB Connection Error: " . $conn->connect_error);
         die("Connection failed. Please try again later.");
     }
     if ($conn_gl->connect_error) {
+    // dd('test 123');
+
         error_log("General Ledger DB Connection Error: " . $conn_gl->connect_error);
         die("Connection failed. Please try again later.");
     }
@@ -39,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         // Insert payment record
+    // dd('test 123');
+
         $stmt = $conn->prepare("
             INSERT INTO vendorpayments 
             (PayableInvoiceID, PaymentStatus, AmountPaid, PaymentMethod) 
@@ -55,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $payment_id = $stmt->insert_id;
         $stmt->close();
+    // dd('test 123');
 
         // Fetch invoice details
         $stmt_amount = $conn->prepare("
@@ -73,6 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $result = $stmt_amount->get_result();
         if ($result->num_rows === 0) {
+    // dd('test 123');
+
             throw new Exception("Invoice not found for ID: $invoice_id");
         }
         $invoice = $result->fetch_assoc();
@@ -102,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $total_paid_stmt->close();
 
         $status = ($total_paid >= $invoice_amount) ? 'Paid' : 'Partially Paid';
+    // dd('test 123');
 
         // Insert into general ledger
         $stmt_gl = $conn_gl->prepare("
@@ -109,23 +122,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             (PayablePaymentID, TransactionFrom, BudgetName, Allocated_Department, BudgetAllocated, PaymentMethod) 
             VALUES (?, ?, ?, ?, ?, ?)
         ");
+    // dd('test 123');
+
         if (!$stmt_gl) {
             dd('test7');
             throw new Exception("Prepare failed: " . $conn_gl->error);
         }
         $stmt_gl->bind_param("isssds", $payment_id, $types, $budget_name, $department, $amount_paid, $payment_method);
-        if (!$stmt_gl->execute()) {
-            dd('test8');
-            throw new Exception("Insert general ledger transaction failed: " . $stmt_gl->error);
-        }
+    // dd('test 123');
+    // dd('test 456');
+        
+        // if ($stmt_gl->execute()) {
+        //     dd('$stmt_gl');
+        //     throw new Exception("Insert general ledger transaction failed: " . $stmt_gl->error);
+        // }
+    // dd('test 456');
+
         $stmt_gl->close();
-        dd('this is d end');
+        // dd('this is d end');
         // Update invoice status
         $update = $conn->prepare("
             UPDATE payableinvoices 
             SET Status = ? 
             WHERE PayableInvoiceID = ?
         ");
+    // dd('test 456');
+
         if (!$update) {
             dd('test9');
             throw new Exception("Prepare failed: " . $conn->error);

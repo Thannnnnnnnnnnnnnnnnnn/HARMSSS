@@ -118,7 +118,7 @@ if (in_array('warehousing', $allowed_modules)):
                 </a>
             </li>
             <li>
-                <a href="../Warehousing/warehouse_inv.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                <a href="../Warehousing/inventory_warehouse.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
                     <i class="bx bx-car text-lg"></i> <span>Warehouse inventory</span>
                 </a>
             </li>
