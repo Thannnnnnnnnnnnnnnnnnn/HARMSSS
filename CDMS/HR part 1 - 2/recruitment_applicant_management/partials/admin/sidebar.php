@@ -142,7 +142,7 @@
                     <ul class="space-y-1">
                         <li>
                             <a
-                                href="lmtm/employees"
+                                href="lmtm/employees.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Employees</a>
                         </li>
                         <li>
