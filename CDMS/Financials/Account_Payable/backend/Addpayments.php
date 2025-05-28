@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 UPDATE for_funding 
                 SET status = 'Funds Successfully Allocated' 
                 WHERE funding_id = ?
-            "); $project_id
+            "); 
             $stmt_funding->bind_param("s", $funding_id);
 
             if (!$stmt_funding->execute()) {
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_project->close();
         }
 
-        // Commit transaction
+        // Commit transactiong
         $conn->commit();
 
         // Redirect with success message

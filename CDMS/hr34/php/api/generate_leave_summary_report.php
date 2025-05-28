@@ -78,7 +78,7 @@ try {
     $sql = "SELECT
                 lr.RequestID,
                 CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeName,
-                os.DepartmentName,
+                d.department_name AS DepartmentName, -- MODIFIED: Changed from OrganizationalStructure
                 lt.TypeName AS LeaveTypeName,
                 lr.StartDate,
                 lr.EndDate,
@@ -90,7 +90,7 @@ try {
             FROM LeaveRequests lr
             JOIN Employees e ON lr.EmployeeID = e.EmployeeID
             JOIN LeaveTypes lt ON lr.LeaveTypeID = lt.LeaveTypeID
-            LEFT JOIN OrganizationalStructure os ON e.DepartmentID = os.DepartmentID
+            LEFT JOIN departments d ON e.DepartmentID = d.dept_id -- MODIFIED: Changed from OrganizationalStructure
             LEFT JOIN Employees app_e ON lr.ApproverID = app_e.EmployeeID";
 
     $conditions = [];

@@ -1,4 +1,9 @@
 <?php
+
+// require 'connection.php';
+
+session_start();
+require 'Database.php';
 // Check your directoryyyyyyyyyyyyyyyyyyyyyyy
 include("connection.php");
 
@@ -20,12 +25,18 @@ $result = mysqli_query($connection, $query);
 if (!$result) {
     die("Query failed: " . mysqli_error($connection));
 }
+<<<<<<< HEAD
 $logs1 = $connection->query("SELECT * FROM assets");
 $logs2 = $connection->query("SELECT * FROM logs");
 $core1 = $connection->query("SELECT * FROM #");
 $core2 = $connection->query("SELECT * FROM #");
 $hr1 = $connection->query("SELECT * FROM #");
 $hr2 = $connection->query("SELECT * FROM #");
+=======
+
+$logs = $connection->query("SELECT * FROM `logs1`")->fetchAll();
+
+>>>>>>> f945dd8d49e227e145845e4e848592d5b63b9faf
 ?>
 
 
@@ -35,7 +46,7 @@ $hr2 = $connection->query("SELECT * FROM #");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Databases</title>
+    <title>Centralized</title>
     <link rel="shortcut icon" href="emsaa.png" type="image/x-icon">
 
     <!-- Stylesheets -->
@@ -57,7 +68,8 @@ $hr2 = $connection->query("SELECT * FROM #");
 </head>
 
 <body>
-    <div class="flex min-h-screen w-full">
+
+    <div class="fix min-h-screen w-full">
         <!--Sidebar-->
         <aside class="sidebar sidebar-expanded sidebar-transition h-screen bg-white border-r border-[#F7E6CA] flex flex-col hidden lg:flex">
             <div class="h-16 border-b border-[#F7E6CA] flex items-center px-2 space-x-2">
@@ -68,7 +80,11 @@ $hr2 = $connection->query("SELECT * FROM #");
                 <ul class="space-y-4">
                     <!-- Dashboard Item -->
                     <div class="menu-option">
+<<<<<<< HEAD
                         <a href="#" class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer">
+=======
+                        <a href="HARMS/CDMS/Dashboard.php" class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer">
+>>>>>>> f945dd8d49e227e145845e4e848592d5b63b9faf
                             <div class="flex items-center space-x-2">
                                 <i class="bx bxs-dashboard"></i>
                                 <span class="text-sm font-medium">Dashboard</span>
@@ -2007,6 +2023,7 @@ $hr2 = $connection->query("SELECT * FROM #");
                     <a href="#">
                         <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Need a help in Claim?</h5>
                     </a>
+<<<<<<< HEAD
                     <p class="mb-3 font-normal text-gray-500 dark:text-gray-400"><?= count($logs1) ?></p>
                     <a href="#" class="inline-flex font-medium items-center text-blue-600 hover:underline">
                         See our guideline
@@ -2037,6 +2054,8 @@ $hr2 = $connection->query("SELECT * FROM #");
                     <a href="#">
                         <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Need a help in Claim?</h5>
                     </a>
+=======
+>>>>>>> f945dd8d49e227e145845e4e848592d5b63b9faf
                     <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Go to this step by step guideline process on how to certify for your weekly benefits:</p>
                     <a href="#" class="inline-flex font-medium items-center text-blue-600 hover:underline">
                         See our guideline
@@ -2050,6 +2069,11 @@ $hr2 = $connection->query("SELECT * FROM #");
 
                 <br>
 
+<<<<<<< HEAD
+=======
+                <br>
+
+>>>>>>> f945dd8d49e227e145845e4e848592d5b63b9faf
                 <!-- Insert Button -->
                 <button type="button" id="openModal"
                     class="text-[#4E3B2A] bg-[#EBD8B6] hover:bg-[#DFC5A6] focus:ring-4 focus:ring-[#EBD8B6] 

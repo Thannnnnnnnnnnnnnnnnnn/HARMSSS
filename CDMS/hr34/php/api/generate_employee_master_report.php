@@ -78,11 +78,11 @@ try {
                 e.Email,
                 e.PhoneNumber,
                 e.JobTitle,
-                os.DepartmentName,
+                d.department_name AS DepartmentName, -- MODIFIED: Changed from OrganizationalStructure
                 e.HireDate,
                 CASE WHEN e.IsActive = 1 THEN 'Active' ELSE 'Inactive' END AS Status
             FROM Employees e
-            LEFT JOIN OrganizationalStructure os ON e.DepartmentID = os.DepartmentID
+            LEFT JOIN departments d ON e.DepartmentID = d.dept_id -- MODIFIED: Changed from OrganizationalStructure
             ORDER BY e.LastName, e.FirstName";
     
     $stmt = $pdo->query($sql);

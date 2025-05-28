@@ -28,6 +28,10 @@ return [
         'vehicle_reservation',
     ],
 
+    'Document approvals' => [
+        'Document_tracking',
+    ],
+
     // Add more roles below if needed
     // 'new_role' => ['module_name'],
 ];

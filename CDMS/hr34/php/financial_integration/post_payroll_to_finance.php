@@ -25,7 +25,7 @@ header('Content-Type: application/json');
 // !! IMPORTANT !! REPLACE WITH YOUR ACTUAL DATABASE CREDENTIALS AND HOSTS
 $db_configs = [
     'hr' => [
-        'dsn' => 'mysql:host=127.0.0.1;dbname=hr_integrated_db;charset=utf8mb4',
+        'dsn' => 'mysql:host=127.0.0.1;dbname=hr_1_2_new_hire_onboarding_and_employee_self-service;charset=utf8mb4',
         'username' => '3206_CENTRALIZED_DATABASE', // REPLACE
         'password' => '4562526'       // REPLACE
     ],
@@ -344,4 +344,3 @@ try {
         'logs' => $log_messages // Include logs even on failure for debugging
     ]);
 }
-?>
