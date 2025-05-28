@@ -57,4 +57,30 @@ try {
 }
 
 // The $pdo variable is now available for use in the script that includes this file.
+
+// --- START: Simplified Default Admin Session (FOR DEVELOPMENT/SIMPLIFIED NO-LOGIN MODE ONLY) ---
+// Ensure session is started before trying to access/modify $_SESSION.
+// Most API scripts call session_start() themselves, but this makes it robust.
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// If no user_id in session, and we are in this simplified mode, set default admin.
+// THIS IS A SECURITY RISK IN A PRODUCTION SYSTEM and is only for the bypassed login setup.
+if (!isset($_SESSION['user_id'])) {
+    // These values should correspond to your default admin user in the database
+    // Assuming EmployeeID 1 ('System Administrator' from Employees table) maps to UserID 5 ('sysadmin' from Users table) 
+    // and RoleID 1 ('System Admin' from Roles table)
+    $_SESSION['user_id'] = 5;     // UserID of your default System Admin from the 'Users' table
+    $_SESSION['employee_id'] = 1; // EmployeeID of your default System Admin from the 'Employees' table
+    $_SESSION['username'] = 'sysadmin';  // Username of your default System Admin
+    $_SESSION['full_name'] = 'System Administrator (Default)'; // Full name
+    $_SESSION['role_id'] = 1;     // RoleID for 'System Admin'
+    $_SESSION['role_name'] = 'System Admin'; // RoleName for 'System Admin'
+    
+    // Log that the default session was initialized (optional, for debugging)
+    // error_log("Simplified Mode: Default admin session initialized in db_connect.php for UserID: " . $_SESSION['user_id']);
+}
+// --- END: Simplified Default Admin Session ---
+
 ?>

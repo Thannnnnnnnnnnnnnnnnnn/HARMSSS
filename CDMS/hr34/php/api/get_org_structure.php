@@ -1,57 +1,68 @@
 <?php
 /**
- * API Endpoint: Get Departments (from HR 1-2)
- * Retrieves a flat list of departments from the HR 1-2 database.
+ * API Endpoint: Get Departments
+ * Retrieves a list of departments from the 'departments' table
+ * and includes a count of active employees in each department.
+ * v2.0 - Added EmployeeCount.
  */
 
 error_reporting(E_ALL);
 ini_set('display_errors', 0); 
 ini_set('log_errors', 1);
-// ini_set('error_log', __DIR__ . '/../../php-error.log');
+// ini_set('error_log', __DIR__ . '/../../php-error.log'); // Ensure this path is writable
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: *'); // Adjust for production
 
-// --- Database Connection (Uses the main $pdo from db_connect.php) ---
 $pdo = null;
 try {
-    require_once '../db_connect.php'; // This now connects to the unified HR 1-2 database
+    require_once '../db_connect.php'; // Path relative to this api script
     if (!isset($pdo) || !$pdo instanceof PDO) {
         throw new Exception('Database connection object ($pdo) not properly created by db_connect.php.');
     }
 } catch (Throwable $e) {
     error_log("PHP Error in get_org_structure.php (db_connect include): " . $e->getMessage());
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Server configuration error: Could not connect to the database. DB Name expected: hr_1_2_new_hire_onboarding_and_employee_self-service']);
+    echo json_encode(['error' => 'Server configuration error: Could not connect to the database.']);
     exit;
 }
-// --- End Database Connection ---
 
 try {
-    // Fetch all departments from the HR 1-2 'departments' table
+    // Fetch departments and count of active employees in each
+    // The Employees table uses DepartmentID which links to departments.dept_id
     $sql = "SELECT 
-                d.dept_id AS DepartmentID,  -- Alias to match expected frontend if necessary
-                d.department_name AS DepartmentName
+                d.dept_id AS DepartmentID,
+                d.department_name AS DepartmentName,
+                (SELECT COUNT(e.EmployeeID) FROM Employees e WHERE e.DepartmentID = d.dept_id AND e.IsActive = TRUE) AS EmployeeCount
             FROM 
-                departments d -- This is the HR 1-2 departments table
+                departments d
             ORDER BY 
                 d.department_name ASC";
     
     $stmt = $pdo->query($sql);
     $departments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (headers_sent()) { exit; } 
+    // Ensure EmployeeCount is an integer
+    foreach ($departments as &$dept) {
+        $dept['EmployeeCount'] = (int)$dept['EmployeeCount'];
+    }
+    unset($dept);
+
+    if (headers_sent()) { 
+        error_log("Headers already sent before JSON output in get_org_structure.php");
+        exit; 
+    } 
     http_response_code(200);
-    echo json_encode($departments); // This will be a flat list
+    echo json_encode($departments);
 
 } catch (PDOException $e) {
-    error_log("API Error (get_org_structure from HR 1-2 departments): " . $e->getMessage());
+    error_log("API Error (get_org_structure with employee count): " . $e->getMessage() . " SQL: " . $sql);
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Failed to retrieve department list. Details: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Failed to retrieve department list with employee counts. Details: ' . $e->getMessage()]);
 } catch (Throwable $e) {
     error_log("PHP Throwable in get_org_structure.php: " . $e->getMessage());
     if (!headers_sent()) { http_response_code(500); }
-    echo json_encode(['error' => 'Unexpected server error.']);
+    echo json_encode(['error' => 'Unexpected server error while fetching department data.']);
 }
 exit;
 ?>

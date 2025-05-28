@@ -1,6 +1,6 @@
 /**
  * HR Management System - Main JavaScript Entry Point
- * Version: 1.23 (Simplified for default admin access)
+ * Version: 1.24 (Added Transfer Employee Submodule to Core HR)
  */
 
 // --- Import display functions from module files ---
@@ -48,11 +48,15 @@ import {
     displayAnalyticsMetricsSection
  } from './analytics/analytics.js';
  // Admin
-import { displayUserManagementSection } from './admin/user_management.js';
+ // MODIFIED: Import populateDepartmentDropdownAdmin from user_management.js.
+ // Consider moving populateDepartmentDropdownAdmin to utils.js if used by more modules.
+import { displayUserManagementSection, populateDepartmentDropdownAdmin } from './admin/user_management.js';
 // User Profile
 import { displayUserProfileSection } from './profile/profile.js';
 // --- Import Notification Functions ---
 import { initializeNotificationSystem, stopNotificationFetching, onNotificationDropdownOpen, onNotificationDropdownClose } from './notifications/notifications.js';
+// --- Import Utility Functions ---
+import { populateEmployeeDropdown } from './utils.js';
 
 
 // --- Global Variables ---
@@ -63,14 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed. Initializing HR System JS (Simplified Admin)...");
 
     // --- DOM Elements ---
-    // const loginContainer = document.getElementById('login-container'); // No longer needed for initial display
     const appContainer = document.getElementById('app-container');
-    // const loginForm = document.getElementById('login-form'); // Login form related elements removed
-    // const loginStatus = document.getElementById('login-status');
-    // const twoFaForm = document.getElementById('2fa-form');
-    // const twoFaStatus = document.getElementById('2fa-status');
-    // const twoFaMessage = document.getElementById('2fa-message');
-    // const twoFaUserIdInput = document.getElementById('2fa-user-id');
     const mainContentArea = document.getElementById('main-content-area');
     const pageTitleElement = document.getElementById('page-title');
     const timesheetModal = document.getElementById('timesheet-detail-modal');
@@ -84,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const userProfileDropdown = document.getElementById('user-profile-dropdown');
     const userProfileArrow = document.getElementById('user-profile-arrow');
     const viewProfileLink = document.getElementById('view-profile-link');
-    // const logoutLinkNav = document.getElementById('logout-link-nav'); // Logout link removed
     const notificationBellButton = document.getElementById('notification-bell-button');
     const notificationDropdown = document.getElementById('notification-dropdown');
     const notificationDot = document.getElementById('notification-dot');
@@ -97,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         employees: document.getElementById('employees-link')?.closest('li'),
         documents: document.getElementById('documents-link')?.closest('li'),
         orgStructure: document.getElementById('org-structure-link')?.closest('li'),
+        transferEmployee: document.getElementById('transfer-employee-link')?.closest('li'), // ADDED
         timeAttendance: document.querySelector('[onclick*="time-attendance-dropdown"]')?.closest('.menu-option'),
         attendance: document.getElementById('attendance-link')?.closest('li'),
         timesheets: document.getElementById('timesheets-link')?.closest('li'),
@@ -165,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             userProfileArrow.classList.toggle('bx-chevron-up');
             if (notificationDropdown && !notificationDropdown.classList.contains('hidden')) {
                 notificationDropdown.classList.add('hidden');
-                onNotificationDropdownClose(); 
+                onNotificationDropdownClose();
             }
         });
     }
@@ -187,8 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Logout link event listener removed as logout functionality is removed.
-
     // --- Event Listeners for Notification Bell ---
     if (notificationBellButton && notificationDropdown) {
         notificationBellButton.addEventListener('click', (event) => {
@@ -202,10 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            if (!isNowHidden) { 
-                onNotificationDropdownOpen(); 
-            } else { 
-                onNotificationDropdownClose(); 
+            if (!isNowHidden) {
+                onNotificationDropdownOpen();
+            } else {
+                onNotificationDropdownClose();
             }
         });
     }
@@ -224,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (notificationDropdown && notificationBellButton && !notificationBellButton.contains(event.target) && !notificationDropdown.contains(event.target)) {
             if (!notificationDropdown.classList.contains('hidden')) {
                 notificationDropdown.classList.add('hidden');
-                onNotificationDropdownClose(); 
+                onNotificationDropdownClose();
             }
         }
     });
@@ -236,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             targetElement.addEventListener('click', (e) => {
                 e.preventDefault();
                 const sidebar = document.querySelector('.sidebar');
-                if(sidebar && sidebar.classList.contains('mobile-active')) { closeSidebar(); }
+                if(sidebar && sidebar.classList.contains('mobile-active')) { closeSidebar(); } // Assuming closeSidebar is defined globally or in scope
                 if (typeof handler === 'function') {
                     try { handler(); } catch (error) {
                          console.error(`Error executing handler for ${targetElement.id || 'sidebar link'}:`, error);
@@ -264,6 +259,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (sidebarItems.orgStructure && !sidebarItems.orgStructure.classList.contains('hidden')) {
              addClickListenerOnce(sidebarItems.orgStructure, displayOrgStructureSection);
+        }
+        if (sidebarItems.transferEmployee && !sidebarItems.transferEmployee.classList.contains('hidden')) { // ADDED
+             addClickListenerOnce(sidebarItems.transferEmployee, displayTransferEmployeeSection);
         }
         if (sidebarItems.attendance && !sidebarItems.attendance.classList.contains('hidden')) {
              addClickListenerOnce(sidebarItems.attendance, displayAttendanceSection);
@@ -337,22 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Sidebar listeners attached/reattached.");
     }
 
-    // --- Login, 2FA, Logout Handlers Removed ---
-
     // --- UI Visibility Functions ---
-    function showLoginUI() { // This function will no longer be called in the simplified version
-        const loginContainer = document.getElementById('login-container');
-        if(loginContainer) loginContainer.style.display = 'flex';
-        if(appContainer) appContainer.style.display = 'none';
-        if(userDisplayName) userDisplayName.textContent = 'Guest';
-        if(userDisplayRole) userDisplayRole.textContent = '';
-        if(mainContentArea) mainContentArea.innerHTML = '';
-        document.querySelectorAll('.menu-drop').forEach(d => d.classList.add('hidden'));
-        document.querySelectorAll('.arrow-icon').forEach(i => {
-            i.classList.remove('bx-chevron-down');
-            i.classList.add('bx-chevron-right');
-        });
-    }
     function showAppUI() {
         const loginContainer = document.getElementById('login-container');
         if(loginContainer) loginContainer.style.display = 'none';
@@ -376,49 +359,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const allMenuItems = document.querySelectorAll('.sidebar .menu-option');
         const allSubMenuItems = document.querySelectorAll('.sidebar .menu-drop li');
 
-        // For simplified admin, show all relevant admin/HR sections
-        // Hide sections that were specific to 'Employee' or 'Manager' roles if they aren't relevant for a single admin view.
-        
-        allMenuItems.forEach(item => item?.classList.remove('hidden')); // Show all top-level by default
-        allSubMenuItems.forEach(item => item?.classList.remove('hidden')); // Show all sub-items by default
+        allMenuItems.forEach(item => item?.classList.remove('hidden'));
+        allSubMenuItems.forEach(item => item?.classList.remove('hidden'));
 
-        const show = (element, elementName = 'Unknown') => {
-            if (element) {
-                element.classList.remove('hidden');
-                element.style.display = ''; 
-                const parentMenuOption = element.closest('.menu-option');
-                if(parentMenuOption) {
-                    parentMenuOption.classList.remove('hidden');
-                    parentMenuOption.style.display = '';
-                }
-            } else {
-                 console.warn(`Attempted to show a non-existent sidebar element: ${elementName}`);
-            }
-        };
-         const hide = (element, elementName = 'Unknown') => {
-             if (element) {
-                element.classList.add('hidden');
-             }
-        };
-
-        if (roleName === 'System Admin') { // This will be the only role now
+        if (roleName === 'System Admin') {
             console.log(`Executing System Admin access rules (default).`);
-            // All items are shown by default, so no specific 'show' calls needed here
-            // unless you want to be explicit.
-            // Hide items that are purely for other roles if they exist and are not relevant for an admin.
-            // For example, if 'My Claims' or 'Submit Claim' were strictly employee-only:
-            // hide(sidebarItems.submitClaim, 'Submit Claim (Hiding for Admin)');
-            // hide(sidebarItems.myClaims, 'My Claims (Hiding for Admin)');
-            // However, an admin might still want to see these for testing or overview.
-            // For now, we'll assume an admin can see everything.
+            // All items are shown by default for System Admin
         } else {
-            // Fallback if roleName is somehow not 'System Admin' (should not happen)
             console.warn("Unknown role or no role for sidebar access, hiding most items.");
             allMenuItems.forEach(item => {
                 if (item !== sidebarItems.dashboard) item?.classList.add('hidden');
             });
             allSubMenuItems.forEach(item => item?.classList.add('hidden'));
-            show(sidebarItems.dashboard, 'Dashboard');
+            if(sidebarItems.dashboard) sidebarItems.dashboard.classList.remove('hidden');
         }
         console.log("Sidebar access update complete.");
     }
@@ -426,13 +379,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Simplified Initial Load ---
     function initializeDefaultAdminView() {
         console.log("Initializing default admin view...");
-        // Simulate a logged-in admin user
         window.currentUser = {
-            user_id: 5, // Default Admin UserID
-            employee_id: 1, // Default Admin EmployeeID (e.g., Maria Santos)
-            username: 'sysadmin', // Default Admin username
-            full_name: 'System Administrator', // Or fetch actual name if desired later
-            role_id: 1, // System Admin RoleID
+            user_id: 5,
+            employee_id: 1,
+            username: 'sysadmin',
+            full_name: 'System Administrator',
+            role_id: 1,
             role_name: 'System Admin'
         };
 
@@ -441,12 +393,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSidebarAccess(window.currentUser.role_name);
         attachSidebarListeners();
 
-        // Load the default section for admin (e.g., User Management or Dashboard)
         const defaultAdminSection = window.DESIGNATED_DEFAULT_SECTION || 'dashboard';
         console.log(`Loading default admin section: ${defaultAdminSection}`);
         if (typeof window.navigateToSectionById === 'function') {
             window.navigateToSectionById(defaultAdminSection);
-             // Highlight the default section in the sidebar
             const defaultLink = document.getElementById(`${defaultAdminSection}-link`) || sidebarItems.dashboard.querySelector('a');
             updateActiveSidebarLink(defaultLink);
         } else {
@@ -454,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(mainContentArea) mainContentArea.innerHTML = `<p class="text-red-500 p-4">Error: Could not load default admin section.</p>`;
         }
         
-        initializeNotificationSystem(); // Keep notifications if desired
+        initializeNotificationSystem();
     }
 
 
@@ -464,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'employees': displayEmployeeSection,
         'documents': displayDocumentsSection,
         'org-structure': displayOrgStructureSection,
+        'transfer-employee': displayTransferEmployeeSection, // ADDED
         'attendance': displayAttendanceSection,
         'timesheets': displayTimesheetsSection,
         'schedules': displaySchedulesSection,
@@ -473,8 +424,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'bonuses': displayBonusesSection,
         'deductions': displayDeductionsSection,
         'payslips': displayPayslipsSection,
-        'submit-claim': displaySubmitClaimSection, // Admin might still want to see this form
-        'my-claims': displayMyClaimsSection,       // Admin might view all claims via approval, but keep for structure
+        'submit-claim': displaySubmitClaimSection,
+        'my-claims': displayMyClaimsSection,
         'claims-approval': displayClaimsApprovalSection,
         'claim-types-admin': displayClaimTypesAdminSection,
         'leave-requests': displayLeaveRequestsSection,
@@ -487,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'analytics-reports': displayAnalyticsReportsSection,
         'analytics-metrics': displayAnalyticsMetricsSection,
         'user-management': displayUserManagementSection,
-        'profile': displayUserProfileSection // Admin can view their own profile
+        'profile': displayUserProfileSection
     };
 
     window.navigateToSectionById = function(sectionId) {
@@ -566,3 +517,164 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("HR System JS Initialized (Simplified Admin).");
 
 }); // End DOMContentLoaded
+
+
+// --- NEW: Transfer Employee Submodule Section ---
+/**
+ * Displays the Transfer Employee section.
+ */
+async function displayTransferEmployeeSection() {
+    console.log("[Display] Displaying Transfer Employee Section...");
+    const pageTitleElement = document.getElementById('page-title');
+    const mainContentArea = document.getElementById('main-content-area');
+    if (!pageTitleElement || !mainContentArea) {
+        console.error("displayTransferEmployeeSection: Core DOM elements not found.");
+        if(mainContentArea) mainContentArea.innerHTML = `<p class="text-red-500 p-4">Error initializing transfer employee section.</p>`;
+        return;
+    }
+
+    pageTitleElement.textContent = 'Transfer Employee';
+    mainContentArea.innerHTML = `
+        <div class="bg-white p-6 rounded-lg shadow-md border border-[#F7E6CA] space-y-6">
+            <h3 class="text-lg font-semibold text-[#4E3B2A] mb-3 font-header">Employee Department Transfer</h3>
+            <form id="transfer-employee-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="transfer-employee-select" class="block text-sm font-medium text-gray-700 mb-1">Select Employee:</label>
+                        <select id="transfer-employee-select" name="employee_id" required class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#4E3B2A] focus:border-[#4E3B2A]">
+                            <option value="">Loading employees...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="transfer-new-department-select" class="block text-sm font-medium text-gray-700 mb-1">New Department:</label>
+                        <select id="transfer-new-department-select" name="new_department_id" required class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#4E3B2A] focus:border-[#4E3B2A]">
+                            <option value="">Loading departments...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="transfer-effective-date" class="block text-sm font-medium text-gray-700 mb-1">Effective Date of Transfer:</label>
+                        <input type="date" id="transfer-effective-date" name="effective_date" required class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#4E3B2A] focus:border-[#4E3B2A]">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="transfer-reason" class="block text-sm font-medium text-gray-700 mb-1">Reason for Transfer (Optional):</label>
+                        <textarea id="transfer-reason" name="reason" rows="3" placeholder="Reason for transfer..." class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#4E3B2A] focus:border-[#4E3B2A]"></textarea>
+                    </div>
+                </div>
+                <p class="text-sm text-red-500 mt-2"><strong>Note:</strong> Transferring an employee will update their department in this system. The process to update/transfer their account details to another USM database needs to be handled by a separate backend process initiated by this action.</p>
+                <div class="pt-2">
+                    <button type="submit" class="px-4 py-2 bg-[#594423] text-white rounded-md hover:bg-[#4E3B2A] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#594423] transition duration-150 ease-in-out">
+                        Initiate Transfer
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    requestAnimationFrame(async () => {
+        await populateEmployeeDropdown('transfer-employee-select');
+        // Assuming populateDepartmentDropdownAdmin is imported from user_management.js or moved to utils.js
+        if (typeof populateDepartmentDropdownAdmin === 'function') {
+            await populateDepartmentDropdownAdmin('transfer-new-department-select');
+        } else {
+            console.warn("populateDepartmentDropdownAdmin function not available for Transfer Employee section.");
+            const deptSelect = document.getElementById('transfer-new-department-select');
+            if(deptSelect) deptSelect.innerHTML = '<option value="">Error loading departments</option>';
+        }
+
+        const transferForm = document.getElementById('transfer-employee-form');
+        if (transferForm && !transferForm.hasAttribute('data-listener-attached')) {
+            transferForm.addEventListener('submit', handleTransferEmployeeSubmit);
+            transferForm.setAttribute('data-listener-attached', 'true');
+        }
+    });
+}
+
+/**
+ * Handles the submission of the employee transfer form.
+ * (Stub for now, as backend is complex)
+ */
+async function handleTransferEmployeeSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    const employeeId = form.elements['employee_id'].value;
+    const newDepartmentId = form.elements['new_department_id'].value;
+    const effectiveDate = form.elements['effective_date'].value;
+    const reason = form.elements['reason'].value.trim();
+
+    if (!employeeId || !newDepartmentId || !effectiveDate) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Missing Information',
+            text: 'Please select an employee, new department, and effective date.',
+            confirmButtonColor: '#4E3B2A'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Confirm Transfer',
+        html: `Are you sure you want to transfer Employee ID <strong>${employeeId}</strong> to Department ID <strong>${newDepartmentId}</strong>, effective <strong>${effectiveDate}</strong>?<br><small>This will update the local record and initiate the process for other systems.</small>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, proceed with transfer!'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Processing Transfer...',
+                text: 'Please wait.',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            if(submitButton) submitButton.disabled = true;
+
+            const formData = {
+                employee_id: employeeId,
+                new_department_id: newDepartmentId,
+                effective_date: effectiveDate,
+                reason: reason
+            };
+
+            console.log("Employee Transfer Data to be sent to backend:", formData);
+            // TODO: Implement API call to a backend endpoint (e.g., transfer_employee.php)
+            // This backend endpoint would handle:
+            // 1. Updating the Employee's DepartmentID in the current HR34 database.
+            // 2. Logging the transfer.
+            // 3. Initiating communication/data transfer to the "other USM database"
+            //    This could involve another API call, a message queue, a shared DB procedure, etc.
+            //    The details (DepartmentID, User_ID, Name, Password, Role, Status, Email)
+            //    would need to be securely transmitted.
+            //
+            // For now, simulate success/failure:
+            setTimeout(() => {
+                const isSuccess = Math.random() > 0.2; // Simulate 80% success rate
+                if (isSuccess) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Transfer Initiated',
+                        text: `Employee transfer process for ID ${employeeId} has been initiated successfully. Department updated locally. Other system transfers are being processed.`,
+                        confirmButtonColor: '#4E3B2A'
+                    });
+                    form.reset();
+                    // Optionally, refresh relevant parts of the UI, e.g., employee list if it shows department
+                    if (typeof displayEmployeeSection === 'function' && document.getElementById('employee-list-container')) {
+                        // displayEmployeeSection(); // Or a more targeted refresh
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Transfer Failed',
+                        text: 'Could not initiate the employee transfer. Please check logs or try again later.',
+                        confirmButtonColor: '#4E3B2A'
+                    });
+                }
+                if(submitButton) submitButton.disabled = false;
+                if (Swal.isLoading()) { Swal.close(); } // Close loading Swal
+            }, 1500);
+        }
+    });
+}
+// --- End Transfer Employee ---

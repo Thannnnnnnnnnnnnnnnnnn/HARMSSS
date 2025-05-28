@@ -183,8 +183,9 @@
                             <ul class="space-y-1">
                                 <li><a href="#" id="employees-link" class="block px-3 py-1 text-sm text-gray-800 hover:bg-white rounded hover:text-[#4E3B2A]">Employees</a></li>
                                 <li><a href="#" id="documents-link" class="block px-3 py-1 text-sm text-gray-800 hover:bg-white rounded hover:text-[#4E3B2A]">Documents</a></li>
-                                <li><a href="#" id="org-structure-link" class="block px-3 py-1 text-sm text-gray-800 hover:bg-white rounded hover:text-[#4E3B2A]">Org Structure</a></li>
-                                <li><a href="#" id="user-management-link" class="block px-3 py-1 text-sm text-gray-800 hover:bg-white rounded hover:text-[#4E3B2A]">User Management</a></li> 
+                                <li><a href="#" id="org-structure-link" class="block px-3 py-1 text-sm text-gray-800 hover:bg-white rounded hover:text-[#4E3B2A]">Departments</a></li>
+                                <li><a href="#" id="user-management-link" class="block px-3 py-1 text-sm text-gray-800 hover:bg-white rounded hover:text-[#4E3B2A]">Employee Accounts</a></li> 
+                                <li><a href="#" id="transfer-employee-link" class="block px-3 py-1 text-sm text-gray-800 hover:bg-white rounded hover:text-[#4E3B2A]">Transfer Employee</a></li>
                             </ul>
                         </div>
                     </li>
