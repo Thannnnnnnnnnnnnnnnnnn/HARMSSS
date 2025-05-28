@@ -33,23 +33,11 @@
         <div class="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div>
                 <label class="block text-[#4E3B2A] text-md">Contact Number</label>
-                <input type="tel" name="contact_number" value="<?= htmlspecialchars($_POST['contact_number'] ?? '') ?>" placeholder="09123456789"
+                <input type="tel" name="contact_number" id="contactNumber" value="<?= htmlspecialchars($_POST['contact_number'] ?? '') ?>" placeholder="09123456789"
                     class="w-full max-w-md px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#594423] focus:outline-none" required>
                 <?php if ($errors['contact_number'] ?? '') : ?>
                     <p class="w-full max-w-md text-red-500">
                         <?= $errors['contact_number'] ?>
-                    </p>
-                <?php endif ?>
-            </div>
-
-            <div>
-                <label class="block text-[#4E3B2A] text-md">Age</label>
-                <input type="number" name="age" value="<?= htmlspecialchars($_POST['age'] ?? '') ?>" placeholder="25"
-                    class="w-full max-w-md px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#594423] focus:outline-none" id="age" required>
-                <p class="w-full max-w-md text-red-500 text-xs hidden" id="ageError">age must be 18 and above</p>
-                <?php if ($errors['age'] ?? '') : ?>
-                    <p class="w-full max-w-md text-red-500 text-xs">
-                        <?= $errors['age'] ?>
                     </p>
                 <?php endif ?>
             </div>
@@ -65,10 +53,10 @@
                 <?php endif ?>
             </div>
 
-            <div>
+            <div class="col-span-2">
                 <label class="block text-[#4E3B2A] text-md">Email</label>
                 <input type="email" name="email" value="<?= htmlspecialchars($_SESSION['email'] ?? '') ?>"
-                    class="w-full max-w-md px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#594423] focus:outline-none" readonly>
+                    class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#594423] focus:outline-none" readonly>
                 <?php if ($errors['email'] ?? '') : ?>
                     <p class="w-full max-w-md text-red-500">
                         <?= $errors['email'] ?>
@@ -123,19 +111,17 @@
             }
         });
 
-        const ageValue = parseInt($('#age').val());
-
-        if (isNaN(ageValue) || ageValue < 18 || ageValue > 60) {
-            console.log("Invalid age detected: " + ageValue);
+        const contact = $('#contactNumber');
+        if (contact.val() !== '' && !/^\d{11}$/.test(contact.val())) {
             isValid = false;
-            $('#age').addClass('border-red-500');
+            contact.addClass('border-red-500');
             Swal.fire({
-                icon: 'error',
-                title: 'Invalid Age',
-                text: 'Age must be between 18 and 60.',
+                icon: "error",
+                title: "Invalid Contact Number",
+                text: "Please enter a valid 11-digit contact number.",
             });
         } else {
-            $('#age').removeClass('border-red-500');
+            contact.removeClass('border-red-500');
         }
 
         if (isValid) {
@@ -147,13 +133,13 @@
                 icon: 'success',
                 confirmButton: 'false',
             })
-            $('form').submit();
+            // $('form').submit();
         } else {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Please fill in all required fields.",
-            });
+            // Swal.fire({
+            //     icon: "error",
+            //     title: "Oops...",
+            //     text: "Please fill in all required fields.",
+            // });
         }
     });
 </script>

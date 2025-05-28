@@ -1,18 +1,20 @@
 <?php
 
 session_start();
-
 require 'function.php';
 $config = require '../config.php';
 require '../Database.php';
+// dd($_SESSION);
 
 $heading = 'JOB-APPLICATION';
 $db = new Database($config['database']);
 
 if (!isset($_SESSION['user_id'])) {
-    header('location: register.php');
     $_SESSION['error'] = 'true';
+    header('location: register.php');
+    exit();
 }
+
 $postingId = $_GET['id'] ?? null;
 if (!$postingId) {
     die('Job posting ID is required.');
@@ -29,19 +31,37 @@ $applications = $db->query(
      INNER JOIN applicationstatus ON applicants.applicant_id = applicationstatus.applicant_id"
 )->fetchAll();
 
+$my_application = $db->query(
+    "SELECT email FROM applicants WHERE email = :email",
+    [':email' => $_SESSION['email']]
+)->fetch();
+
+// dd($my_application);
+
+if ($my_application) {
+    // dd($applications);
+    $_SESSION['pending'] = 'You have an Unfinished application.';
+    header('location: application.php');
+    exit();
+}
+function calcuAge($dob)
+{
+    $dob = new DateTime($dob);
+    $today = new DateTime();
+    $age = $today->diff($dob)->y;
+    return $age;
+}
+
 $success = false;
 $errors = [];
 $filePaths = [];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $requiredFields = ['first_name', 'last_name', 'contact_number', 'address', 'email', 'age', 'date_of_birth'];
+    // dd($_POST);
+
+    $requiredFields = ['first_name', 'last_name', 'contact_number', 'address', 'email', 'date_of_birth'];
     foreach ($requiredFields as $field) {
         validate($field, $errors);
-    }
-
-    $age = (int)($_POST['age'] ?? 0);
-    if ($age <= 17 || $age > 60) {
-        $errors['age'] = "Age not qualified.";
     }
 
     $field = 'resume';
@@ -71,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
         $errors[$field] = "Resume is required.";
     }
-
+    // dd($errors);
     if (empty($errors)) {
         $db->query(
             "INSERT INTO applicants 
@@ -82,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 ':first_name' => $_POST['first_name'],
                 ':last_name' => $_POST['last_name'],
                 ':contact_number' => $_POST['contact_number'],
-                ':age' => $age,
+                ':age' => calcuAge($_POST['date_of_birth']),
                 ':date_of_birth' => $_POST['date_of_birth'],
                 ':address' => $_POST['address'],
                 ':email' => $_POST['email'],
@@ -100,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 ':status' => 'applied',
             ]
         );
-
+        // dd($_POST);
         $job_posting = $db->query(
             "SELECT job_title, location, employment_type, salary, company FROM jobpostings WHERE posting_id = :posting_id",
             [':posting_id' => $postingId]
