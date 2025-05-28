@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'interview_type' => $_POST['interview_type'],
             'interview_status' => 'pending',
             'applicant_id' => $_POST['applicant_id'],
-            'interviewer_id' => $_SESSION['User_ID']
+            'interviewer_id' => $_SESSION['user_id']
         ]);
         if ($_POST['interview_type'] === 'initial') {
             sendMail(

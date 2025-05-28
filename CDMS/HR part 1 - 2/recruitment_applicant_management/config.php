@@ -10,7 +10,7 @@ return [
     'nhoes' => [
         'host' => 'localhost',
         'port' => 3306,
-        'dbname' => 'hr_1&2_new_hire_onboarding_and_employee_self-service',
+        'dbname' => 'hr_1_2_new_hire_onboarding_and_employee_self-service',
         'charset' => 'utf8mb4',
     ],
     'socreg' => [
