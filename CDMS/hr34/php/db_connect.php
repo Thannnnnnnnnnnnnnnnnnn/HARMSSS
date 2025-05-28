@@ -16,8 +16,8 @@ ini_set('log_errors', 1);
 // Update these to your HR 1-2 Database Credentials
 $db_host = getenv('DB_HOST_HR12') ?: '127.0.0.1';
 $db_name = getenv('DB_NAME_HR12') ?: 'hr_1_2_new_hire_onboarding_and_employee_self-service'; // HR 1-2 DB Name
-$db_user = getenv('DB_USER_HR12') ?: '3206_CENTRALIZED_DATABASE';      // HR 1-2 DB User
-$db_pass = getenv('DB_PASS_HR12') ?: '4562526';          // HR 1-2 DB Password
+$db_user = getenv('DB_USER_HR12') ?: 'root';      // HR 1-2 DB User
+$db_pass = getenv('DB_PASS_HR12') ?: '';          // HR 1-2 DB Password
 $charset = 'utf8mb4';
 
 // --- Validate that essential variables were loaded ---
