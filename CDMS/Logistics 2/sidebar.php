@@ -152,7 +152,7 @@ $role = $_SESSION['Role'];
 $permissions = include 'role_permissions.php';
 $allowed_modules = $permissions[$role] ?? [];
 
-if (in_array('fleet_management', $allowed_modules)):
+if (in_array('Document_tracking', $allowed_modules)):
 ?>
 
  <div class="flex min-h-screen w-full">
@@ -173,7 +173,7 @@ if (in_array('fleet_management', $allowed_modules)):
             <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('DTS-dropdown', this)">
                 <div class="flex items-center space-x-2">
                     <i class="bx bx-calculator text-lg pr-4"></i>
-                    <span class="text-sm font-medium">Asset management</span>
+                    <span class="text-sm font-medium">Document tracking</span>
                 </div>
                 <div class="arrow">
                     <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
@@ -183,21 +183,11 @@ if (in_array('fleet_management', $allowed_modules)):
             <div id="DTS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
                 <ul class="space-y-1">
                     <li>
-                        <a href="../Asset management/add_asset.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                            <i class="bx bx-check-shield text-lg"></i> <span>Assets</span>
+                        <a href="Document tracking/permits_approvals.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                            <i class="bx bx-check-shield text-lg"></i> <span>Permits approvals</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="../Asset management/Transfer_assets.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                            <i class="bx bx-folder text-lg"></i> <span>Transfer assets</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../Asset management/Assets_logs.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
-                            <i class="bx bx-file text-lg"></i> <span>Assets logs</span>
-                        </a>
-                    </li>
-
+                    
                                         <!-- Logout Button -->
                  <!-- Logout Button -->
                         <li>

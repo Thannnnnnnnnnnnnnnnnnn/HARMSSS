@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $approvalStmt = $fin_conn->prepare("
             INSERT INTO approvals 
             (Amount, Status, DateOfApproval, title, purpose, funding_id, User_ID, AllocationID, RequestID, ApproverID, project_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $approvalStmt->bind_param(
             "dsssssssisi",

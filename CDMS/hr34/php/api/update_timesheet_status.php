@@ -70,12 +70,20 @@ if (!empty($errors)) {
 // IMPORTANT: Implement real authentication/authorization here!
 // You need to check if the currently logged-in user has permission
 // to approve/reject timesheets (e.g., are they a manager or HR admin?).
-$current_user_id = 1; // ** TEMPORARY Placeholder - Replace with actual logged-in user ID **
-$can_approve_reject = true; // ** TEMPORARY Placeholder - Replace with actual permission check **
+session_start(); // Start session to get current user's employee_id
+$current_user_employee_id = isset($_SESSION['employee_id']) ? $_SESSION['employee_id'] : null;
 
-if (!$can_approve_reject) {
+if (empty($current_user_employee_id)) {
+    http_response_code(401); // Unauthorized
+    echo json_encode(['error' => 'Authentication required. Approver ID missing.']);
+    exit;
+}
+
+// Example: Allow System Admin (1), HR Admin (2), or Manager (4) to approve/reject
+$allowed_roles = [1, 2, 4];
+if (!isset($_SESSION['role_id']) || !in_array($_SESSION['role_id'], $allowed_roles)) {
      http_response_code(403); // Forbidden
-     echo json_encode(['error' => 'You do not have permission to perform this action.']);
+     echo json_encode(['error' => 'Permission denied. You do not have rights to perform this action.']);
      exit;
 }
 // --- End Authorization Check ---
@@ -99,13 +107,13 @@ try {
         exit;
     }
 
-    // Optional: Only allow update if status is currently 'Pending'
-    // if ($current_timesheet['Status'] !== 'Pending') {
-    //     $pdo->rollBack();
-    //     http_response_code(409); // Conflict
-    //     echo json_encode(['error' => 'Timesheet is not in Pending status and cannot be updated.']);
-    //     exit;
-    // }
+    // Only allow update if status is currently 'Pending'
+    if ($current_timesheet['Status'] !== 'Pending') {
+        $pdo->rollBack();
+        http_response_code(409); // Conflict
+        echo json_encode(['error' => 'Timesheet is not in Pending status and cannot be updated.']);
+        exit;
+    }
 
 
     // Prepare the update statement
@@ -118,7 +126,7 @@ try {
     $stmt = $pdo->prepare($sql);
 
     $stmt->bindParam(':new_status', $new_status, PDO::PARAM_STR);
-    $stmt->bindParam(':approver_id', $current_user_id, PDO::PARAM_INT); // Use the actual logged-in user ID
+    $stmt->bindParam(':approver_id', $current_user_employee_id, PDO::PARAM_INT); // Use the actual logged-in user's employee ID
     $stmt->bindParam(':timesheet_id', $timesheet_id, PDO::PARAM_INT);
 
     $success = $stmt->execute();

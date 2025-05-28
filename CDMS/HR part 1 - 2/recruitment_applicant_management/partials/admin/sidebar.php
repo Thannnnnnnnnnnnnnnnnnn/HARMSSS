@@ -5,7 +5,7 @@
         <!-- <h1 class="text-xl font-bold text-black bg-[#D9D9D9] p-2 rounded-xl"></h1> -->
         <div class="py-2">
             <a href="">
-                <img src="/img/Logo-Name.png" alt="Avalon-logo">
+                <img src="../../img/Logo-Name.png" alt="Avalon-logo">
             </a>
         </div>
         <!--Close Button-->
@@ -142,7 +142,7 @@
                     <ul class="space-y-1">
                         <li>
                             <a
-                                href="lmtm/employees"
+                                href="lmtm/employees.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Employees</a>
                         </li>
                         <li>

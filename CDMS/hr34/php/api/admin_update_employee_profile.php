@@ -248,9 +248,9 @@ try {
 } catch (\PDOException $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     error_log("PHP PDOException in admin_update_employee_profile.php: " . $e->getMessage());
-    if ($e->getCode() == '23000') {
-        http_response_code(409); // Conflict
-        echo json_encode(['error' => 'Data conflict. This email or username might already be in use, or a foreign key (Department, Manager) is invalid.']);
+    if ($e->getCode() == '23000') { // Integrity constraint violation
+         http_response_code(409); // Conflict
+         echo json_encode(['error' => 'Data conflict. This email or username might already be in use, or a foreign key (Department, Manager) is invalid.']);
     } else {
         http_response_code(500);
         echo json_encode(['error' => 'Database error updating employee profile.']);
