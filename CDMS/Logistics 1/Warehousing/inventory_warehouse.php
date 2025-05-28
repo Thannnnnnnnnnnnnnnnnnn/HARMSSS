@@ -123,13 +123,29 @@ if (!$result) {
   <!-- Dashboard Container -->
   <div class="flex flex-wrap justify-center gap-6 p-4 dashboard-cards">
 
+
+   <a href="sub-modules/reserved.php" class="dashboard-card hover:shadow-lg transition duration-300 cursor-pointer block w-72">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center gap-2">
+            <i class='bx bxs-check-circle text-xl text-purple-600'></i>
+            <h2 class="dashboard-title">No. of warehouse</h2>
+          </div>
+          <p class="dashboard-number text-black-600 font-semibold">
+            <?php echo isset($CA_count) ? $CA_count : '0'; ?>
+          </p>
+        </div>
+      </div>
+    </a>
+    
     <!-- Total Reservation -->
     <a href="purchase_request.php" class="dashboard-card hover:shadow-lg transition duration-300 cursor-pointer block w-72">
       <div class="flex flex-col gap-1">
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
             <i class='bx bxs-file-doc text-xl text-blue-600'></i>
-            <h2 class="dashboard-title">No. of warehouse</h2>
+            <h2 class="dashboard-title">Cold Storage Warehouse</h2>
+            
           </div>
           <p class="dashboard-number text-black-600 font-semibold">
             <?php echo isset($total_request_count) ? $total_request_count : '0'; ?>
@@ -144,7 +160,7 @@ if (!$result) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
             <i class='bx bxs-file-doc text-xl text-blue-600'></i>
-            <h2 class="dashboard-title">Operational</h2>
+            <h2 class="dashboard-title">Raw material warehouse</h2>
           </div>
           <p class="dashboard-number text-black-600 font-semibold">
             <?php echo isset($FRA_count) ? $FRA_count : '0'; ?>
@@ -159,7 +175,7 @@ if (!$result) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
             <i class='bx bxs-check-circle text-xl text-purple-600'></i>
-            <h2 class="dashboard-title">Non - operational</h2>
+            <h2 class="dashboard-title">Hazardous Material Warehouse</h2>
           </div>
           <p class="dashboard-number text-black-600 font-semibold">
             <?php echo isset($CA_count) ? $CA_count : '0'; ?>
@@ -168,6 +184,36 @@ if (!$result) {
       </div>
     </a>
     
+    <!-- Reserved -->
+    <a href="sub-modules/reserved.php" class="dashboard-card hover:shadow-lg transition duration-300 cursor-pointer block w-72">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center gap-2">
+            <i class='bx bxs-check-circle text-xl text-purple-600'></i>
+            <h2 class="dashboard-title">Document/Archive Warehouse</h2>
+          </div>
+          <p class="dashboard-number text-black-600 font-semibold">
+            <?php echo isset($CA_count) ? $CA_count : '0'; ?>
+          </p>
+        </div>
+      </div>
+    </a>
+    <!-- Reserved -->
+    <a href="sub-modules/reserved.php" class="dashboard-card hover:shadow-lg transition duration-300 cursor-pointer block w-72">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center gap-2">
+            <i class='bx bxs-check-circle text-xl text-purple-600'></i>
+            <h2 class="dashboard-title">Construction materials</h2>
+          </div>
+          <p class="dashboard-number text-black-600 font-semibold">
+            <?php echo isset($CA_count) ? $CA_count : '0'; ?>
+          </p>
+        </div>
+      </div>
+    </a>
+    <!-- Reserved -->
+   
 
     
 
@@ -180,8 +226,14 @@ if (!$result) {
 <!-- Trigger Button -->
 <button onclick="toggleModal(true)" 
   class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-  <i class='bx bx-plus'></i> Construct new warehouse
+  <i class='bx bx-plus'></i> Add items
 </button>
+
+<button onclick="toggleModal(true)" 
+  class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+  <i class='bx bx-plus'></i> Transfer items
+</button>
+
 
 
   <br><br>
