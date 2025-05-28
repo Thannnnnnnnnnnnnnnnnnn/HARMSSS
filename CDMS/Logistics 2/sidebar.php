@@ -198,6 +198,16 @@ if (in_array('Document_tracking', $allowed_modules)):
                                 </button>
                             </form>
                         </li>
+
+                        <li>
+                                    <form action="../../USM/logout.php" method="POST">
+                                        <button type="submit" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg w-full text-left">
+                                            <i class="bx bx-log-out text-lg"></i>
+                                            <span>Logout</span>
+                                        </button>
+                                    </form>
+                                </li>
+
                 </ul>         
                     </div>
                 </div>
@@ -253,6 +263,16 @@ if (in_array('vehicle_reservation', $allowed_modules)):
                                 </a>
                             </li>
 
+                            <li>
+                                    <form action="../../USM/logout.php" method="POST">
+                                        <button type="submit" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg w-full text-left">
+                                            <i class="bx bx-log-out text-lg"></i>
+                                            <span>Logout</span>
+                                        </button>
+                                    </form>
+                                </li>
+
+
                         </ul>
                     </div>
                 </div>
@@ -307,6 +327,16 @@ if (in_array('vehicle_reservation', $allowed_modules)):
                                 </a>
                             </li>
 
+                            <li>
+                                    <form action="../../USM/logout.php" method="POST">
+                                        <button type="submit" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg w-full text-left">
+                                            <i class="bx bx-log-out text-lg"></i>
+                                            <span>Logout</span>
+                                        </button>
+                                    </form>
+                                </li>
+
+
                         </ul>
                     </div>
                 </div>
@@ -321,6 +351,69 @@ if (in_array('vehicle_reservation', $allowed_modules)):
 <?php endif; ?>
 
 
+<?php
+$role = $_SESSION['Role'];
+$permissions = include 'role_permissions.php';
+$allowed_modules = $permissions[$role] ?? [];
+
+if (in_array('Document_tracking', $allowed_modules)):
+
+?>
+ <div class="flex min-h-screen w-full">
+        <!-- Overlay -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Sidebar -->
+        <div class="sidebar sidebar-expanded fixed z-50 overflow-y-auto overflow-x-hidden h-screen bg-white border-r border-[#F7E6CA] flex flex-col">
+            <div class="h-16 border-b border-[#F7E6CA] flex items-center px-2 space-x-2">
+                <h1 class="text-xl font-bold text-black bg-[#D9D9D9] p-2 rounded-xl">LOGO</h1>
+                <h1 class="text-xl font-bold text-[#4E3B2A]">Logistic 2</h1>
+                <!--Close Button-->
+            </div>
+            <div class="side-menu px-4 py-6">
+                     <!--- Procurement --->
+
+                     <div class="menu-option">
+                        <div class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer" onclick="toggleDropdown('VRS-dropdown', this)">
+                            <div class="flex items-center space-x-2">
+                                <i class="bx bx-calendar text-lg pr-4"></i>
+                                <span class="text-sm font-medium">Document tracking</span>
+                            </div>
+                            <div class="arrow">
+                                <i class="bx bx-chevron-right text-[18px] font-semibold arrow-icon"></i>
+                            </div>
+                        </div>
+                    <div id="VRS-dropdown" class="menu-drop hidden flex-col w-full bg-[#EBD8B6] rounded-lg p-3 space-y-1 mt-1">
+                        <ul class="space-y-1">
+                           
+                            <li>
+                                <a href="permits_approvals.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
+                                    <i class="bx bx-calendar-event text-lg"></i> <span>Permits approval</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                    <form action="../../USM/logout.php" method="POST">
+                                        <button type="submit" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg w-full text-left">
+                                            <i class="bx bx-log-out text-lg"></i>
+                                            <span>Logout</span>
+                                        </button>
+                                    </form>
+                                </li>
+
+
+                        </ul>
+                    </div>
+                </div>
+
+
+            
+
+                    
+                </ul>
+            </div>
+        </div>
+<?php endif; ?>
 
 
 <script src="JS/sidebar.js"></script>
