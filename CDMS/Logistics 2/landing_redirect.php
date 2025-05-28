@@ -17,6 +17,7 @@ $allowed_modules = $permissions[$role] ?? [];
 $module_to_landing = [
     'vendor_portal' => '../Logistics 2/vendor portal/vendors.php',
     'audit_management' => '../Logistics 2/Audit management/Audit.php',
+    'Document_tracking' => '../Logistics 2/Document tracking/permits_approvals.php',
     'vehicle_reservation' => '../Logistics 2/Vehicle reservation/reservation.php',
     'fleet_management' => '../Logistics 2/Fleet management/fleet.php',
     // Add more mappings as needed
