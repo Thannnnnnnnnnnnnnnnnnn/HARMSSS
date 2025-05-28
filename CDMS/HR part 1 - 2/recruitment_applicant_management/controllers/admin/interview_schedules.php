@@ -6,7 +6,6 @@ $config = require '../../config.php';
 require '../../functions.php';
 require '../../Database.php';
 $db = new Database($config['database']);
-// $usm = new Database($config['usm']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = [];
@@ -16,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $job = $db->query("SELECT * FROM jobpostings WHERE posting_id = :posting_id", [
         ':posting_id' => $applicant['posting_id'],
     ])->fetch();
-    // dd($job);
     if (empty($errors)) {
 
         if ($_POST['pass'] ?? '' === true) {
@@ -25,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ':schedule_id' => $_POST['schedule_id'],
             ]);
             if ($_POST['interview_type'] === 'initial') {
-                // dd($_POST);
                 $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
                     ':status' => 'initial interview passed',
                     ':applicant_id' => $_POST['applicant_id'],

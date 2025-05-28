@@ -133,13 +133,6 @@
                 icon: 'success',
                 confirmButton: 'false',
             })
-            // $('form').submit();
-        } else {
-            // Swal.fire({
-            //     icon: "error",
-            //     title: "Oops...",
-            //     text: "Please fill in all required fields.",
-            // });
         }
     });
 </script>

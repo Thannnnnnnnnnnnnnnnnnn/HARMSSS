@@ -5,19 +5,16 @@ $config = require '../../config.php';
 require '../../Database.php';
 require '../../functions.php';
 $db = new Database($config['database']);
-// dd($_SESSION);xcv
+
 $applicants = $db->query(" SELECT applicant_id, first_name, last_name FROM applicants ")->fetchAll();
-// dd($applicants);
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $db->query("SELECT first_name, email, posting_id FROM applicants WHERE applicant_id = :applicant_id", [
         'applicant_id' => $_POST['applicant_id']
     ])->fetch();
-    // dd($email);
     $job = $db->query("SELECT job_title , company FROM jobpostings WHERE posting_id = :posting_id", [
         'posting_id' => $email['posting_id']
     ])->fetch();
-    // dd($job);
     validate('date', $errors);
     validate('time', $errors);
     validate('location', $errors);

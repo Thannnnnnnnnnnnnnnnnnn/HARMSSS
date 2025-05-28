@@ -4,7 +4,6 @@ session_start();
 require 'function.php';
 $config = require '../config.php';
 require '../Database.php';
-// dd($_SESSION);
 
 $heading = 'JOB-APPLICATION';
 $db = new Database($config['database']);
@@ -36,10 +35,8 @@ $my_application = $db->query(
     [':email' => $_SESSION['email']]
 )->fetch();
 
-// dd($my_application);
 
 if ($my_application) {
-    // dd($applications);
     $_SESSION['pending'] = 'You have an Unfinished application.';
     header('location: application.php');
     exit();
@@ -57,7 +54,6 @@ $errors = [];
 $filePaths = [];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // dd($_POST);
 
     $requiredFields = ['first_name', 'last_name', 'contact_number', 'address', 'email', 'date_of_birth'];
     foreach ($requiredFields as $field) {
@@ -91,7 +87,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
         $errors[$field] = "Resume is required.";
     }
-    // dd($errors);
     if (empty($errors)) {
         $db->query(
             "INSERT INTO applicants 
@@ -120,7 +115,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 ':status' => 'applied',
             ]
         );
-        // dd($_POST);
         $job_posting = $db->query(
             "SELECT job_title, location, employment_type, salary, company FROM jobpostings WHERE posting_id = :posting_id",
             [':posting_id' => $postingId]
