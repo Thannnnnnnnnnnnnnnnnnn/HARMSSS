@@ -52,7 +52,7 @@ if (in_array('audit_management', $allowed_modules)):
             <li>
                 <a href="../PM/pm_inventory.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
                     <i class="bx bx-package text-lg"></i> <span>Project inventory</span>
-                </a>
+                </a>    
             <li>
                 <a href="../PM/pm_logs.php" class="text-sm text-gray-800 hover:bg-[#F7E6CA] flex items-center space-x-2 p-2 rounded-lg">
                     <i class="bx bx-user-check text-lg"></i> <span>Project logs</span>
