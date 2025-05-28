@@ -94,7 +94,7 @@ if ($approval) {
         $stmt->execute();
         $employeeResult = $stmt->get_result();
         $employeeData = $employeeResult->fetch_assoc();
-        $employeeType = $employeeData['Types'] ?? 'Employee';
+        $employeeType = $employeeData['Types'] ?? 'Unknown';
         $stmt->close();
         
         // Insert data  to  fin_account_payable database

@@ -94,8 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$stmt_funding->execute()) {
                 throw new Exception("Error updating logs_procurement: " . $stmt_funding->error);
             }
-            $stmt_funding->close();
-                // Update funding status in project management ..
+            $stmt_project->close();
+                // Update funding status in project management
             $stmt_project = $conn_projectManage->prepare("
                 UPDATE project 
                 SET project_status = 'Funds ETITS Allocated' 
