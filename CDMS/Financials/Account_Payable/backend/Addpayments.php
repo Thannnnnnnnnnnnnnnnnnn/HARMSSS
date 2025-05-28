@@ -1,195 +1,121 @@
 <?php
+include('../includes/config.php');
+
 function dd($data) {
-    echo '<pre>';
-    print_r($data);
-    echo '</pre>';
-    exit;
+    echo "<pre>";
+    var_dump($data);
+    echo "</pre>";
+    die();
 }
+
+// Connect to the databases
+$conn = new mysqli($host, $username, $password, "fin_accounts_payable");
+$conn_general_ledger = new mysqli($host, $username, $password, "fin_general_ledger");
+$conn_procurement = new mysqli($host, $username, $password, "logs1_procurement");
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+if ($conn_general_ledger->connect_error) {
+    die("Connection failed: " . $conn_general_ledger->connect_error);
+}
+if ($conn_procurement->connect_error) {
+    die("Connection failed: " . $conn_procurement->connect_error);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // dd('test 123');
-    require_once('../includes/config.php');
-    // Sanitize and validate inputs
-    $amount_paid = filter_input(INPUT_POST, 'amount_paid', FILTER_VALIDATE_FLOAT);
-    $payment_method = filter_input(INPUT_POST, 'payment_method', FILTER_SANITIZE_STRING);
-    $invoice_id = filter_input(INPUT_POST, 'invoice_id', FILTER_VALIDATE_INT);
-
-    // Check for valid inputs
-    if ($amount_paid === false || $amount_paid <= 0 || empty($payment_method) || $invoice_id === false || $invoice_id <= 0) {
-    // dd('test 123');
-        
-        error_log("Validation failed: amount_paid=$amount_paid, payment_method=$payment_method, invoice_id=$invoice_id");
-        header('Location: ../PayableInvoices.php?error=invalid_input');
-        exit();
-    }
-
-    // Initialize database connections
-    $conn = new mysqli($host, $username, $password, "fin_accounts_payable");
-    $conn_gl = new mysqli($host, $username, $password, "fin_general_ledger");
-
-    // Check connection errors
-    if ($conn->connect_error) {
-    // dd('test 123');
-
-        error_log("Accounts Payable DB Connection Error: " . $conn->connect_error);
-        die("Connection failed. Please try again later.");
-    }
-    if ($conn_gl->connect_error) {
-    // dd('test 123');
-
-        error_log("General Ledger DB Connection Error: " . $conn_gl->connect_error);
-        die("Connection failed. Please try again later.");
+    $invoice_id = isset($_POST['invoice_id']) ? (int) $_POST['invoice_id'] : 0;
+    $amount_paid = isset($_POST['amount_paid']) ? (float) $_POST['amount_paid'] : 0.00;
+    $payment_method = $_POST['payment_method'] ?? '';
+    
+    if (empty($invoice_id) || empty($amount_paid) || empty($payment_method)) {
+        die("Error: Missing required fields.");
     }
 
     // Start transaction
     $conn->begin_transaction();
-    $conn_gl->begin_transaction(); // Ensure GL database is also part of the transaction
-
+   
     try {
-        // Insert payment record
-    // dd('test 123');
-
+        // Insert into vendorpayments
         $stmt = $conn->prepare("
-            INSERT INTO vendorpayments 
-            (PayableInvoiceID, PaymentStatus, AmountPaid, PaymentMethod) 
-            VALUES (?, 'Completed', ?, ?)
+            INSERT INTO vendorpayments (PayableInvoiceID, PaymentStatus, AmountPaid, PaymentMethod) 
+            VALUES (?, ?, ?, ?)
         ");
-        if (!$stmt) {
-            dd('test1');
-            throw new Exception("Prepare failed: " . $conn->error);
-        }
-        $stmt->bind_param("ids", $invoice_id, $amount_paid, $payment_method);
+        
+        $payment_status = "Completed";  
+        $stmt->bind_param("isds", $invoice_id, $payment_status, $amount_paid, $payment_method);
+
         if (!$stmt->execute()) {
-            dd('test2');
-            throw new Exception("Insert vendor payment failed: " . $stmt->error);
+            throw new Exception("Error inserting into vendorpayments: " . $stmt->error);
         }
+
         $payment_id = $stmt->insert_id;
         $stmt->close();
-    // dd('test 123');
 
         // Fetch invoice details
-        $stmt_amount = $conn->prepare("
-            SELECT Amount, Types, BudgetName, Department 
+        $stmt_amount = $conn->prepare("   
+            SELECT Amount, Types, BudgetName, Department, funding_id 
             FROM payableinvoices 
             WHERE PayableInvoiceID = ?
         ");
-        if (!$stmt_amount) {
-            dd('test3');
-            throw new Exception("Prepare failed: " . $conn->error);
-        }
         $stmt_amount->bind_param("i", $invoice_id);
-        if (!$stmt_amount->execute()) {
-            dd('test4');
-            throw new Exception("Fetch invoice details failed: " . $stmt_amount->error);
+        $stmt_amount->execute();
+        $stmt_amount->bind_result($invoice_amount, $types, $budget_name, $department, $funding_id);
+        
+        if (!$stmt_amount->fetch()) {
+            throw new Exception("Error: Invoice not found.");
         }
-        $result = $stmt_amount->get_result();
-        if ($result->num_rows === 0) {
-    // dd('test 123');
-
-            throw new Exception("Invoice not found for ID: $invoice_id");
-        }
-        $invoice = $result->fetch_assoc();
         $stmt_amount->close();
 
-        $invoice_amount = $invoice['Amount'];
-        $types = $invoice['Types'];
-        $budget_name = $invoice['BudgetName'];
-        $department = $invoice['Department'];
+        // If payment is completed, insert into general ledger transactions
+        if ($payment_status === "Completed") {
+            $stmt_ledger = $conn_general_ledger->prepare("
+                INSERT INTO transactions 
+                (PayablePaymentID, TransactionFrom, BudgetName, Allocated_Department, BudgetAllocated, PaymentMethod) 
+                VALUES (?, ?, ?, ?, ?, ?)
+            ");
+    
+            $stmt_ledger->bind_param("isssds", $payment_id, $types, $budget_name, $department, $amount_paid, $payment_method);
 
-        // Check total payments
-        $total_paid_stmt = $conn->prepare("
-            SELECT COALESCE(SUM(AmountPaid), 0) as TotalPaid 
-            FROM vendorpayments 
-            WHERE PayableInvoiceID = ?
-        ");
-        if (!$total_paid_stmt) {
-            dd('test5');
-            throw new Exception("Prepare failed: " . $conn->error);
+            if (!$stmt_ledger->execute()) {
+                throw new Exception("Error inserting into transactions: " . $stmt_ledger->error);
+            }
+            $stmt_ledger->close();
+           
+            // Update funding status in logs_procurement
+            $stmt_funding = $conn_procurement->prepare("
+                UPDATE for_funding 
+                SET status = 'Funds tite Allocated' 
+                WHERE funding_id = ?
+            ");
+            $stmt_funding->bind_param("s", $funding_id);
+
+            if (!$stmt_funding->execute()) {
+                throw new Exception("Error updating logs_procurement: " . $stmt_funding->error);
+            }
+            $stmt_funding->close();
         }
-        $total_paid_stmt->bind_param("i", $invoice_id);
-        if (!$total_paid_stmt->execute()) {
-            dd('test6');
-            throw new Exception("Fetch total paid failed: " . $total_paid_stmt->error);
-        }
-        $total_paid = $total_paid_stmt->get_result()->fetch_assoc()['TotalPaid'];
-        $total_paid_stmt->close();
 
-        $status = ($total_paid >= $invoice_amount) ? 'Paid' : 'Partially Paid';
-    // dd('test 123');
-
-        // Insert into general ledger
-        $stmt_gl = $conn_gl->prepare("
-            INSERT INTO transactions 
-            (PayablePaymentID, TransactionFrom, BudgetName, Allocated_Department, BudgetAllocated, PaymentMethod) 
-            VALUES (?, ?, ?, ?, ?, ?)
-        ");
-    // dd('test 123');
-
-        if (!$stmt_gl) {
-            dd('test7');
-            throw new Exception("Prepare failed: " . $conn_gl->error);
-        }
-        $stmt_gl->bind_param("isssds", $payment_id, $types, $budget_name, $department, $amount_paid, $payment_method);
-    // dd('test 123');
-    // dd('test 456');
-        
-        // if ($stmt_gl->execute()) {
-        //     dd('$stmt_gl');
-        //     throw new Exception("Insert general ledger transaction failed: " . $stmt_gl->error);
-        // }
-    // dd('test 456');
-
-        $stmt_gl->close();
-        // dd('this is d end');
-        // Update invoice status
-        $update = $conn->prepare("
-            UPDATE payableinvoices 
-            SET Status = ? 
-            WHERE PayableInvoiceID = ?
-        ");
-    // dd('test 456');
-
-        if (!$update) {
-            dd('test9');
-            throw new Exception("Prepare failed: " . $conn->error);
-        }
-        $update->bind_param("si", $status, $invoice_id);
-        if (!$update->execute()) {
-            dd('test10');
-            throw new Exception("Update invoice status failed: " . $update->error);
-        }
-        $update->close();
-
-        // Commit transactions
+        // Commit transaction
         $conn->commit();
-        $conn_gl->commit();
 
-        // Close connections
-        $conn->close();
-        $conn_gl->close();
-
-        // Redirect with success
-        header('Location: ../PayableInvoices.php?success=payment_processed');
+        // Redirect with success message
+        header('Location: ../PayableInvoices.php');
         exit();
-
     } catch (Exception $e) {
-        // Rollback transactions
+        // Rollback transaction
         $conn->rollback();
-        $conn_gl->rollback();
 
-        // Log detailed error
-        error_log("Payment Insertion Error: " . $e->getMessage() . " | InvoiceID: $invoice_id | Amount: $amount_paid | Method: $payment_method");
+        // Log error
+        error_log("Payment Insertion Error: " . $e->getMessage());
 
-        // Close connections
-        $conn->close();
-        $conn_gl->close();
-
-        // Redirect with detailed error
-        header('Location: ../PayableInvoices.php?error=payment_failed&message=' . urlencode($e->getMessage()));
+        // Redirect with error message (optional, adjust as needed)
+        header('Location: ../PayableInvoices.php?error=' . urlencode($e->getMessage()));
         exit();
     }
-} else {
-    // Invalid request method
-    header('Location: ../PayableInvoices.php?error=invalid_request');
-    exit();
 }
+
+// Close database connections
+$conn->close();
+$conn_general_ledger->close();
 ?>
