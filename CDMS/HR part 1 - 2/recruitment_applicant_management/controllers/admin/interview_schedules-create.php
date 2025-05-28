@@ -5,7 +5,7 @@ $config = require '../../config.php';
 require '../../Database.php';
 require '../../functions.php';
 $db = new Database($config['database']);
-dd($_SESSION);
+// dd($_SESSION);
 $applicants = $db->query(" SELECT applicant_id, first_name, last_name FROM applicants ")->fetchAll();
 // dd($applicants);
 $errors = [];
