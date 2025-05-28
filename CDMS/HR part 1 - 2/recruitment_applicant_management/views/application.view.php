@@ -1,5 +1,5 @@
-<?php require 'partials/head.php' ?>
-<?php require 'partials/navbar.php' ?>
+<?php require '../partials/head.php' ?>
+<?php require '../partials/navbar.php' ?>
 <?php if ($updated == true) : ?>
     <div class="flex justify-center">
         <div id="alert-3" class="flex items-center p-4 mt-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
@@ -27,7 +27,7 @@
     <?php endif ?>
     <div class="flex flex-col justify-center items-center ">
         <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-            <table class="table table-xs text-center">
+            <table class="table text-center">
                 <thead class="bg-[#594423] text-white">
                     <tr>
                         <th class="px-2 py-2">Applicant ID</th>
@@ -41,7 +41,7 @@
                         <th class="px-2 py-2">Status</th>
                         <th class="px-4 py-2">Resume</th>
                         <th class="px-4 py-2">Job applying for</th>
-                        <th class="px-2 py-2">Action</th>
+                        <!-- <th class="px-2 py-2">Action</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -70,12 +70,12 @@
                                     <?php endif ?>
                                 </td>
                                 <td class="px-4 py-2"><?= htmlspecialchars($application['job_title']) ?></td>
-                                <td class="px-2 py-2">
+                                <!-- <td class="px-2 py-2">
                                     <button type="button" id="updateBtnShow" class="block font-medium border border-[#594423] text-sm  text-center hover:bg-[#594423] hover:text-white transition py-2 px-4 text-black cursor-pointer rounded-xl">
                                         Update
                                     </button>
                                     </form>
-                                </td>
+                                </td> -->
                             </tr>
                         <?php endif ?>
                     <?php endforeach ?>
@@ -133,93 +133,10 @@
                 </table>
             </div>
         </div>
-        <div class="<?= $rejectApplication == true ? '' : 'hidden' ?> text-red-500 text-center pt-10 text-lg">
-            <p>You have an unfinished application!</p>
-            <p>application forbidden if there's an unfinished application</p>
-        </div>
-        <div class="<?= $hiredApplication == true ? '' : 'hidden' ?> text-green-500 text-center pt-10 text-lg">
-            <p>You're already Hired !</p>
-        </div>
         <div class="<?= count($applications) < 1 ? '' : 'hidden' ?> text-red-500 text-center pt-10 text-lg">
             <p>No Applications data found.</p>
         </div>
-        <div class="<?= count($applications) < 1 ? 'hidden' : '' ?>">
-            <div class="w-7xl">
-                <h2 class="text-[#594423] text-xl font-semibold p-4 mt-5">Documents</h2>
-                <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-                    <table class="table text-center">
-                        <thead class="bg-[#594423] text-white">
-                            <tr>
-                                <th class="px-4 py-2">Philhealth</th>
-                                <th class="px-4 py-2">SSS</th>
-                                <th class="px-4 py-2">Pag-ibig</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="text-center hover:bg-gray-100">
-                                <td class="px-4 py-2">
-                                    <?php if (!empty($documents['philhealth'])) : ?>
-                                        <a href="../<?= htmlspecialchars($documents['philhealth']) ?>" class="text-blue-500 hover:underline" target="_blank">View file</a>
-                                    <?php else : ?>
-                                        <p class="text-red-500">No Philhealth</p>
-                                    <?php endif ?>
-                                </td>
-                                <?php if (!empty($documents['sss'])) : ?>
-                                    <td class="px-4 py-2">
-                                        <?php if (!empty($documents['sss'])) : ?>
-                                            <a href="../<?= htmlspecialchars($documents['sss']) ?>" class="text-blue-500 hover:underline" target="_blank">View file</a>
-                                        <?php else : ?>
-                                            <p class="text-red-500">No SSS</p>
-                                        <?php endif ?>
-                                    </td>
-                                <?php endif ?>
-                                <td class="px-4 py-2">
-                                    <?php if (!empty($documents['pagibig'])) : ?>
-                                        <a href="../<?= htmlspecialchars($documents['pagibig']) ?>" class="text-blue-500 hover:underline" target="_blank">View file</a>
-                                    <?php else : ?>
-                                        <p class="text-red-500">No Pag-ibig</p>
-                                    <?php endif ?>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pb-5">
-                    <?php if ($interview >= 1) : ?>
-                        <h2 class="text-[#594423] text-xl font-semibold p-4 mt-5">Interview Schedule</h2>
-                        <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-                            <table class="table text-center">
-                                <thead class="bg-[#594423] text-white">
-                                    <tr>
-                                        <th class="px-4 py-2">Applicant ID</th>
-                                        <th class="px-4 py-2">Job applying for</th>
-                                        <th class="px-4 py-2">interview date</th>
-                                        <th class="px-4 py-2">interview type</th>
-                                        <th class="px-4 py-2">Location</th>
-                                        <th class="px-4 py-2">Interviewer</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($applications as $application) : ?>
-                                        <?php if ($application['status'] == 'initial-interview'): ?>
-                                            <tr class="border-b border-gray-300 text-center hover:bg-gray-100">
-                                                <td class="px-4 py-2"><?= htmlspecialchars($interview['applicant_id']) ?? '' ?></td>
-                                                <td class="px-4 py-2"><?= htmlspecialchars($interview['job_title']) ?? '' ?></td>
-                                                <td class="px-4 py-2"><?= htmlspecialchars($interview['date']) ?? '' ?></td>
-                                                <td class="px-4 py-2"><?= htmlspecialchars($interview['mode']) ?? '' ?></td>
-                                                <td class="px-4 py-2"><?= htmlspecialchars($interview['location']) ?? '' ?></td>
-                                                <td class="px-4 py-2"><?= htmlspecialchars($interview['username']) ?? '' ?></td>
-                                            </tr>
-                                        <?php endif ?>
-                                    <?php endforeach ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php endif ?>
-                </div>
-            </div>
-        </div>
-        <div id="updateForm" class="bg-white rounded-lg shadow-xl hidden">
+        <!-- <div id="updateForm" class="bg-white rounded-lg shadow-xl hidden">
             <h1 class="py-3 px-2.5 bg-[#594423] mx-3 my-3 text-white font-semibold rounded-lg shadow-md">Update Information</h1>
             <form class="p-4 md:p-5" method="POST" enctype="multipart/form-data" id="updateFormSubmit">
                 <input type="hidden" name="update" value="1">
@@ -258,45 +175,6 @@
                             </p>
                         <?php endif; ?>
                     </div>
-                    <div class="col-span-1">
-                        <label for="philhealth" class="block mb-2 text-md font-medium text-[#594423]">Philhealth</label>
-                        <input type="file" name="philhealth" id="philhealth" class="bg-gray-50 border border-gray-300 text-[#594423] text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 ">
-                        <input type="hidden" name="old_philhealth" value="<?= htmlspecialchars($documents['philhealth']) ?>">
-                        <?php if (!empty($documents['philhealth'])): ?>
-                            <p class="mt-2 text-sm dark:text-[#594423]">
-                                Current File:
-                                <a href="<?= htmlspecialchars($documents['philhealth']) ?>" target="_blank" class="text-blue-500 underline">
-                                    View philhealth
-                                </a>
-                            </p>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-span-1">
-                        <label for="sss" class="block mb-2 text-md font-medium text-[#594423]">SSS</label>
-                        <input type="file" name="sss" id="sss" class="bg-gray-50 border border-gray-300 text-[#594423] text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 ">
-                        <input type="hidden" name="old_sss" value="<?= htmlspecialchars($documents['sss']) ?>">
-                        <?php if (!empty($documents['sss'])): ?>
-                            <p class="mt-2 text-sm  dark:text-[#594423]">
-                                Current File:
-                                <a href="<?= htmlspecialchars($documents['sss']) ?>" target="_blank" class="text-blue-500 underline">
-                                    View SSS
-                                </a>
-                            </p>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-span-1">
-                        <label for="pagibig" class="block mb-2 text-md font-medium text-[#594423]">Pag-ibig</label>
-                        <input type="file" name="pagibig" id="pagibig" class="bg-gray-50 border border-gray-300 text-[#594423] text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 ">
-                        <input type="hidden" name="old_pagibig" value="<?= htmlspecialchars($documents['pagibig']) ?>">
-                        <?php if (!empty($documents['pagibig'])): ?>
-                            <p class="mt-2 text-sm dark:text-[#594423]">
-                                Current File:
-                                <a href="<?= htmlspecialchars($documents['pagibig']) ?>" target="_blank" class="text-blue-500 underline">
-                                    View Pagibig
-                                </a>
-                            </p>
-                        <?php endif; ?>
-                    </div>
                 </div>
                 <div class="text-center">
                     <button type="button" id="updateBtn" class="border border-[#594423] inline-flex items-centerfocus:ring-4 font-medium text-sm hover:bg-[#594423] hover:text-white transition py-2 px-4 text-black cursor-pointer rounded-xl shadow-xl">
@@ -304,7 +182,7 @@
                     </button>
                 </div>
             </form>
-        </div>
+        </div> -->
     </div>
 </main>
 
@@ -364,4 +242,4 @@
     });
 </script>
 
-<?php require 'partials/footer.php' ?>
+<?php require '../partials/footer.php' ?>

@@ -1,11 +1,9 @@
 <?php
 session_start();
 $heading = 'Dashboard';
-$config = require 'config.php';
+require '../../Database.php';
+$config = require '../../config.php';
 $db = new Database($config['database']);
-
-$uri = $GLOBALS['uri'];
-$parts = explode('/', $uri);
 
 $totalApplicants = $db->query("SELECT COUNT(*) AS total FROM applicants")->fetch()['total'];
 
@@ -47,4 +45,4 @@ $totalNewHireInterviews = $db->query("
     WHERE s.status = 'hired'
 ")->fetchAll();
 // dd($_SESSION);
-require 'views/admin/index.view.php';
+require '../../views/admin/index.view.php';

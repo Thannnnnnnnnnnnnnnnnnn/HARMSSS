@@ -5,9 +5,12 @@ include("../connection.php");
 $usm_connection = $connections["user_management"];
 $fin_usm_connection = $connections["fin_usm"];
 $logs2_usm = $connections["logs2_usm"];
+$logs1_usm = $connections["logs1_usm"];
 $cr1_usm = $connections["cr1_usm"];
 $hr1_2_usm = $connections["hr_1&2_usm"];
 $hr34_usm = $connections["hr34_usm"];
+$cr3_re_usm = $connections["cr3_re_usm"];
+
 
 
 $User_ID = trim($_POST["User_ID"] ?? '');
@@ -184,6 +187,52 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $User_ID && $password) {
          }
      }
 
+      // logs1
+     $stmt = mysqli_prepare($logs1_usm, "SELECT  Email, Name, Password, Department_ID, User_ID, Role FROM department_accounts WHERE User_ID = ?");
+     mysqli_stmt_bind_param($stmt, "s", $User_ID);
+     mysqli_stmt_execute($stmt);
+     $result = mysqli_stmt_get_result($stmt);
+ 
+     if ($result && mysqli_num_rows($result) > 0) {
+         $row = mysqli_fetch_assoc($result);
+         $Department_ID = $row["Department_ID"];
+        $Role = $row["Role"];
+        $Name = $row["Name"];
+
+
+ 
+         if ($password === $row["Password"]) {
+             $otp = rand(100000, 999999);
+             $_SESSION["otp"] = $otp;
+             error_log("Session OTP: " . ($_SESSION["otp"] ?? 'not set'));
+             
+             $_SESSION["User_ID"] = $User_ID;
+             $_SESSION["Role"] = $Role;
+             $_SESSION["Department_ID"] = $row["Department_ID"];
+             $_SESSION["email"] = $row["Email"];
+             $_SESSION["otp_attempts"] = 0;
+             $_SESSION["auth_method"] = "2FA";
+ 
+             if (sendOTP($row["Email"], $otp)) {
+                logAttempt($logs1_usm, $User_ID, $Name, $Role, 'Authenticating', 'Login', 0, 'Authenticating', '');
+                logDepartmentAttempt($logs1_usm, $User_ID, $Department_ID, $User_ID, $Name, $Role, 'Authenticating', 'Login', 0, 'Authenticating', '');
+                header("Location: 2fa_verify.php");
+                 exit();
+             } else {
+                logAttempt($logs1_usm, $User_ID, $Name, $Role, 'Failed', 'Login', 0, 'Failed to send OTP email', '');
+                 $_SESSION["loginError"] = "Failed to send OTP email.";
+                 header("Location: login.php");
+                 exit();
+             }
+         } else {
+             incrementLoginAttempts($User_ID);
+             logAttempt($logs1_usm, $User_ID, $Name, $Role, 'Failed', 'Login', 0, 'Incorrect password', '');
+             $_SESSION["loginError"] = "Incorrect password.";
+             header("Location: login.php");
+             exit();
+         }
+     }
+
       // Core 2
       $stmt = mysqli_prepare($cr1_usm, "SELECT  Email, Name, Password, Department_ID, User_ID, Role FROM department_accounts WHERE User_ID = ?");
       mysqli_stmt_bind_param($stmt, "s", $User_ID);
@@ -312,6 +361,50 @@ $stmt = mysqli_prepare($hr34_usm, "SELECT  Email, Name, Password, Department_ID,
         } else {
             incrementLoginAttempts($User_ID);
             logAttempt($fin_usm_connection, $User_ID, $Name, $Role, 'Failed', 'Login', 0, 'Incorrect password', '');
+            $_SESSION["loginError"] = "Incorrect password.";
+            header("Location: login.php");
+            exit();
+        }
+    }
+
+      // Check in Core 3 USM
+    $stmt = mysqli_prepare($cr3_re_usm, "SELECT Email, Name, Password, Department_ID, User_ID, Role FROM department_accounts WHERE User_ID = ?");
+    mysqli_stmt_bind_param($stmt, "s", $User_ID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $Department_ID = $row["Department_ID"];
+        $Role = $row["Role"];
+        $Name = $row["Name"];
+
+
+
+        if ($password === $row["Password"]) {
+            $otp = rand(100000, 999999);
+            $_SESSION["otp"] = $otp;
+            $_SESSION["User_ID"] = $User_ID;
+            $_SESSION["Role"] = $Role;
+            $_SESSION["Department_ID"] = $row["Department_ID"];
+            $_SESSION["email"] = $row["Email"];
+            $_SESSION["otp_attempts"] = 0;
+            $_SESSION["auth_method"] = "2FA";
+
+            if (sendOTP($row["Email"], $otp)) {
+                logAttempt($cr3_re_usm, $User_ID, $Name, $Role, 'Authenticating', 'Login', 0, 'Authenticating', '');
+                logDepartmentAttempt($cr3_re_usm, $User_ID, $Department_ID, $User_ID, $Name, $Role, 'Success', 'Login', 0, 'Login Successful', '');
+                header("Location: 2fa_verify.php");
+                exit();
+            } else {
+                logAttempt($cr3_re_usm, $User_ID, $Name, $Role, 'Failed', 'Login', 0, 'Failed to send OTP email', '');
+                $_SESSION["loginError"] = "Failed to send OTP email.";
+                header("Location: login.php");
+                exit();
+            }
+        } else {
+            incrementLoginAttempts($User_ID);
+            logAttempt($cr3_re_usm, $User_ID, $Name, $Role, 'Failed', 'Login', 0, 'Incorrect password', '');
             $_SESSION["loginError"] = "Incorrect password.";
             header("Location: login.php");
             exit();

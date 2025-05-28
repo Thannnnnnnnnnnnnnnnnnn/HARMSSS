@@ -1,233 +1,146 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 0); // Set to 0 for production, 1 for development
-ini_set('log_errors', 1);
-// Ensure this path is writable by the web server:
-// ini_set('error_log', __DIR__ . '/../../php-error.log'); 
+/**
+ * API Endpoint: Get Dashboard Summary
+ * Retrieves summary data for the main dashboard.
+ *
+ * This script now uses the 'departments' table instead of 'OrganizationalStructure'.
+ */
 
-session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // Keep 0 for production
+ini_set('log_errors', 1);
+// ini_set('error_log', __DIR__ . '/../../php-error.log'); // Ensure this path is writable
 
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *'); // Adjust for production
 
-require_once '../db_connect.php'; // Adjust path as needed
-
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role_name'])) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(['error' => 'Authentication required. User not logged in.']);
+$pdo = null;
+try {
+    require_once '../db_connect.php'; // Connects to the unified HR 1-2 database
+    if (!isset($pdo) || !$pdo instanceof PDO) {
+        throw new Exception('Database connection object ($pdo) not properly created by db_connect.php.');
+    }
+} catch (Throwable $e) {
+    error_log("PHP Error in get_dashboard_summary.php (db_connect include): " . $e->getMessage());
+    if (!headers_sent()) { http_response_code(500); }
+    echo json_encode(['error' => 'Server configuration error: Could not connect to the database.']);
     exit;
 }
 
-$role = isset($_GET['role']) ? $_GET['role'] : $_SESSION['role_name'];
-$loggedInUserId = $_SESSION['user_id']; 
-$loggedInEmployeeId = $_SESSION['employee_id'] ?? null; 
-
-$summaryData = [
-    'charts' => [] 
+$summary_data = [
+    'total_employees' => 0,
+    'active_employees' => 0,
+    'pending_leave_requests' => 0,
+    'upcoming_payroll_runs' => 0,
+    'employees_by_department' => [],
+    'recent_hires' => [],
+    'upcoming_birthdays' => [],
+    'pending_claims' => 0,
 ];
 
 try {
-    if ($role === 'System Admin' || $role === 'HR Admin') {
-        // Total Employees
-        $stmt = $pdo->query("SELECT COUNT(*) as count FROM Employees");
-        $summaryData['total_employees'] = $stmt->fetchColumn();
+    // Total Employees
+    $stmt = $pdo->query("SELECT COUNT(*) FROM employees");
+    $summary_data['total_employees'] = (int)$stmt->fetchColumn();
 
-        // Active Employees
-        $stmt = $pdo->query("SELECT COUNT(*) as count FROM Employees WHERE IsActive = 1");
-        $summaryData['active_employees'] = $stmt->fetchColumn();
-        $inactive_employees = $summaryData['total_employees'] - $summaryData['active_employees'];
-        $summaryData['charts']['employee_status_distribution'] = [
-            'labels' => ['Active', 'Inactive'],
-            'data' => [(int)$summaryData['active_employees'], (int)$inactive_employees]
-        ];
+    // Active Employees
+    $stmt = $pdo->query("SELECT COUNT(*) FROM employees WHERE IsActive = 1");
+    $summary_data['active_employees'] = (int)$stmt->fetchColumn();
 
-        // Pending Leave Requests (System-wide)
-        $stmt = $pdo->query("SELECT COUNT(*) as count FROM LeaveRequests WHERE Status = 'Pending'");
-        $summaryData['pending_leave_requests'] = $stmt->fetchColumn();
+    // Pending Leave Requests
+    $stmt = $pdo->query("SELECT COUNT(*) FROM LeaveRequests WHERE Status = 'Pending'");
+    $summary_data['pending_leave_requests'] = (int)$stmt->fetchColumn();
+    
+    // Upcoming Payroll Runs (e.g., status 'Pending' or 'Scheduled' and payment date in future)
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM PayrollRuns WHERE Status IN ('Pending', 'Scheduled') AND PaymentDate >= CURDATE()");
+    $stmt->execute();
+    $summary_data['upcoming_payroll_runs'] = (int)$stmt->fetchColumn();
 
-        // Total Departments
-        $stmt = $pdo->query("SELECT COUNT(*) as count FROM organizationalstructure"); 
-        $summaryData['total_departments'] = $stmt->fetchColumn();
-        
-        // Recent Hires (Last 30 days)
-        $stmt_recent_hires = $pdo->query("SELECT COUNT(*) as count FROM Employees WHERE HireDate >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)");
-        $summaryData['recent_hires_last_30_days'] = $stmt_recent_hires->fetchColumn();
-
-        // Leave Requests by Type (Last 30 Days, System-wide)
-        $stmt_leave_types = $pdo->query("
-            SELECT lt.TypeName, COUNT(lr.RequestID) as count
-            FROM LeaveRequests lr
-            JOIN LeaveTypes lt ON lr.LeaveTypeID = lt.LeaveTypeID
-            WHERE lr.RequestDate >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-            GROUP BY lt.TypeName
-            ORDER BY count DESC
-            LIMIT 5
-        ");
-        $leave_type_labels = [];
-        $leave_type_data = [];
-        while ($row = $stmt_leave_types->fetch(PDO::FETCH_ASSOC)) {
-            $leave_type_labels[] = $row['TypeName'];
-            $leave_type_data[] = (int)$row['count'];
+    // Employees by Department
+    // Uses the 'departments' table from HR 1-2 schema
+    $sql_dept = "SELECT d.department_name AS DepartmentName, COUNT(e.EmployeeID) AS EmployeeCount
+                 FROM employees e
+                 JOIN departments d ON e.DepartmentID = d.dept_id
+                 WHERE e.IsActive = 1
+                 GROUP BY d.dept_id, d.department_name
+                 ORDER BY EmployeeCount DESC
+                 LIMIT 5"; // Show top 5 departments or adjust as needed
+    $stmt = $pdo->query($sql_dept);
+    $summary_data['employees_by_department'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Recent Hires (e.g., hired in the last 30 days)
+    $sql_recent_hires = "SELECT EmployeeID, FirstName, LastName, HireDate, JobTitle
+                         FROM employees
+                         WHERE HireDate >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND IsActive = 1
+                         ORDER BY HireDate DESC
+                         LIMIT 5";
+    $stmt = $pdo->query($sql_recent_hires);
+    $summary_data['recent_hires'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($summary_data['recent_hires'] as &$hire) {
+        if (!empty($hire['HireDate'])) {
+            $hire['HireDateFormatted'] = date('M d, Y', strtotime($hire['HireDate']));
         }
-        $summaryData['charts']['leave_requests_by_type'] = [
-            'labels' => $leave_type_labels,
-            'data' => $leave_type_data
-        ];
-
-        // Employee Distribution by Department
-        $stmt_dept_dist = $pdo->query("
-            SELECT os.DepartmentName, COUNT(e.EmployeeID) as count
-            FROM Employees e
-            JOIN organizationalstructure os ON e.DepartmentID = os.DepartmentID
-            WHERE e.IsActive = 1
-            GROUP BY os.DepartmentName
-            ORDER BY count DESC
-        ");
-        $dept_dist_labels = [];
-        $dept_dist_data = [];
-        while ($row = $stmt_dept_dist->fetch(PDO::FETCH_ASSOC)) {
-            $dept_dist_labels[] = $row['DepartmentName'];
-            $dept_dist_data[] = (int)$row['count'];
-        }
-        $summaryData['charts']['employee_distribution_by_department'] = [
-            'labels' => $dept_dist_labels,
-            'data' => $dept_dist_data
-        ];
-
-
-    } elseif ($role === 'Manager') {
-        if (!$loggedInEmployeeId) {
-            throw new Exception("Employee ID not found for manager.");
-        }
-        // Team Members
-        $stmt_team_members = $pdo->prepare("SELECT COUNT(*) as count FROM Employees WHERE ManagerID = :manager_id");
-        $stmt_team_members->bindParam(':manager_id', $loggedInEmployeeId, PDO::PARAM_INT);
-        $stmt_team_members->execute();
-        $summaryData['team_members'] = $stmt_team_members->fetchColumn();
-
-        // Pending Team Leave
-        $stmt_pending_leave = $pdo->prepare("
-            SELECT COUNT(*) as count 
-            FROM LeaveRequests lr
-            JOIN Employees e ON lr.EmployeeID = e.EmployeeID
-            WHERE e.ManagerID = :manager_id AND lr.Status = 'Pending'
-        ");
-        $stmt_pending_leave->bindParam(':manager_id', $loggedInEmployeeId, PDO::PARAM_INT);
-        $stmt_pending_leave->execute();
-        $pending_team_leave_count = $stmt_pending_leave->fetchColumn();
-        $summaryData['pending_team_leave'] = $pending_team_leave_count;
-
-        // Pending Timesheets for Team
-        $stmt_pending_timesheets = $pdo->prepare("
-            SELECT COUNT(t.TimesheetID) as count
-            FROM Timesheets t
-            JOIN Employees e ON t.EmployeeID = e.EmployeeID
-            WHERE e.ManagerID = :manager_id AND t.Status = 'Pending' 
-        ");
-        $stmt_pending_timesheets->bindParam(':manager_id', $loggedInEmployeeId, PDO::PARAM_INT);
-        $stmt_pending_timesheets->execute();
-        $pending_timesheets_count = $stmt_pending_timesheets->fetchColumn();
-        $summaryData['pending_timesheets'] = $pending_timesheets_count;
-        
-        // Pending Claims for Team
-        $stmt_pending_claims_team = $pdo->prepare("
-            SELECT COUNT(c.ClaimID) as count
-            FROM Claims c
-            JOIN Employees e ON c.EmployeeID = e.EmployeeID
-            WHERE e.ManagerID = :manager_id AND c.Status = 'Submitted' 
-        ");
-        $stmt_pending_claims_team->bindParam(':manager_id', $loggedInEmployeeId, PDO::PARAM_INT);
-        $stmt_pending_claims_team->execute();
-        $pending_claims_team_count = $stmt_pending_claims_team->fetchColumn();
-
-        // Open Tasks (sum of pending approvals for the manager's team)
-        $summaryData['open_tasks'] = (int)$pending_team_leave_count + (int)$pending_timesheets_count + (int)$pending_claims_team_count;
-
-    } elseif ($role === 'Employee') {
-        if (!$loggedInEmployeeId) {
-            throw new Exception("Employee ID not found for employee.");
-        }
-        $currentYear = date('Y');
-        // Available Leave Days
-        $stmt_leave_balance = $pdo->prepare("
-            SELECT SUM(lb.AvailableDays) as total_available 
-            FROM LeaveBalances lb 
-            WHERE lb.EmployeeID = :employee_id AND lb.BalanceYear = :year
-        ");
-        $stmt_leave_balance->bindParam(':employee_id', $loggedInEmployeeId, PDO::PARAM_INT);
-        $stmt_leave_balance->bindParam(':year', $currentYear, PDO::PARAM_INT);
-        $stmt_leave_balance->execute();
-        $available_leave = $stmt_leave_balance->fetchColumn();
-        $summaryData['available_leave_days'] = $available_leave !== null ? floatval($available_leave) : 0;
-
-        // My Pending Claims
-        $stmt_pending_claims = $pdo->prepare("SELECT COUNT(*) as count FROM Claims WHERE EmployeeID = :employee_id AND Status = 'Submitted'");
-        $stmt_pending_claims->bindParam(':employee_id', $loggedInEmployeeId, PDO::PARAM_INT);
-        $stmt_pending_claims->execute();
-        $summaryData['pending_claims'] = $stmt_pending_claims->fetchColumn();
-
-        // Upcoming Payslip Date
-        $stmt_payslip_date = $pdo->prepare("
-            SELECT MIN(PaymentDate) as next_payment_date 
-            FROM PayrollRuns 
-            WHERE PaymentDate >= CURDATE() AND Status NOT IN ('Completed', 'Failed')
-        ");
-        $stmt_payslip_date->execute();
-        $next_payslip_date_row = $stmt_payslip_date->fetch(PDO::FETCH_ASSOC);
-        if ($next_payslip_date_row && $next_payslip_date_row['next_payment_date']) {
-            $summaryData['upcoming_payslip_date'] = date("M d, Y", strtotime($next_payslip_date_row['next_payment_date']));
-        } else {
-            $summaryData['upcoming_payslip_date'] = 'N/A';
-        }
-
-        // My Documents Count
-        $stmt_docs_count = $pdo->prepare("SELECT COUNT(*) as count FROM employeedocuments WHERE EmployeeID = :employee_id");
-        $stmt_docs_count->bindParam(':employee_id', $loggedInEmployeeId, PDO::PARAM_INT);
-        $stmt_docs_count->execute();
-        $summaryData['my_documents_count'] = $stmt_docs_count->fetchColumn();
-
-        // Chart: My Leave Summary (Available, Used, Pending for current year)
-        $stmt_used_leave = $pdo->prepare("
-            SELECT SUM(lr.NumberOfDays) as total_used
-            FROM LeaveRequests lr
-            WHERE lr.EmployeeID = :employee_id AND lr.Status = 'Approved' AND YEAR(lr.StartDate) = :year
-        ");
-        $stmt_used_leave->bindParam(':employee_id', $loggedInEmployeeId, PDO::PARAM_INT);
-        $stmt_used_leave->bindParam(':year', $currentYear, PDO::PARAM_INT);
-        $stmt_used_leave->execute();
-        $used_days = $stmt_used_leave->fetchColumn() ?: 0;
-
-        $stmt_pending_leave_emp = $pdo->prepare("
-            SELECT SUM(lr.NumberOfDays) as total_pending
-            FROM LeaveRequests lr
-            WHERE lr.EmployeeID = :employee_id AND lr.Status = 'Pending' AND YEAR(lr.StartDate) = :year
-        ");
-        $stmt_pending_leave_emp->bindParam(':employee_id', $loggedInEmployeeId, PDO::PARAM_INT);
-        $stmt_pending_leave_emp->bindParam(':year', $currentYear, PDO::PARAM_INT);
-        $stmt_pending_leave_emp->execute();
-        $pending_days = $stmt_pending_leave_emp->fetchColumn() ?: 0;
-        
-        $summaryData['charts']['my_leave_summary'] = [
-            'labels' => ['Available', 'Used This Year', 'Pending This Year'],
-            'data' => [
-                floatval($summaryData['available_leave_days']), 
-                floatval($used_days), 
-                floatval($pending_days)
-            ]
-        ];
-
-    } else {
-        $summaryData['message'] = "No specific dashboard summary for role: " . htmlspecialchars($role);
     }
+    unset($hire);
 
-    echo json_encode($summaryData);
+    // Upcoming Birthdays (e.g., in the next 7 days, ignoring year)
+    $sql_birthdays = "SELECT EmployeeID, FirstName, LastName, DateOfBirth
+                      FROM employees
+                      WHERE IsActive = 1 AND DateOfBirth IS NOT NULL
+                      AND MONTH(DateOfBirth) = MONTH(CURDATE()) AND DAY(DateOfBirth) >= DAY(CURDATE())
+                      OR MONTH(DateOfBirth) = MONTH(DATE_ADD(CURDATE(), INTERVAL 7 DAY)) AND DAY(DateOfBirth) <= DAY(DATE_ADD(CURDATE(), INTERVAL 7 DAY))
+                      AND CONCAT(MONTH(DateOfBirth), '-', DAY(DateOfBirth)) != CONCAT(MONTH(CURDATE()), '-', DAY(CURDATE())) -- Exclude today if already passed
+                      ORDER BY MONTH(DateOfBirth), DAY(DateOfBirth)
+                      LIMIT 5";
+    // This birthday query is a bit complex to handle year-wrapping correctly.
+    // A more robust way for upcoming birthdays (next X days):
+    $sql_birthdays_robust = "SELECT EmployeeID, FirstName, LastName, DateOfBirth
+                        FROM employees
+                        WHERE IsActive = 1 AND DateOfBirth IS NOT NULL
+                        AND (
+                            (MONTH(DateOfBirth) = MONTH(CURDATE()) AND DAY(DateOfBirth) >= DAY(CURDATE())) OR
+                            (MONTH(DateOfBirth) > MONTH(CURDATE()))
+                        )
+                        AND STR_TO_DATE(CONCAT(YEAR(CURDATE()), '-', MONTH(DateOfBirth), '-', DAY(DateOfBirth)), '%Y-%m-%d') <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+                        ORDER BY MONTH(DateOfBirth), DAY(DateOfBirth)
+                        LIMIT 5";
+    // Simpler version for birthdays in the next 7 days (might miss some at year end/start)
+    $sql_birthdays_simple = "SELECT EmployeeID, FirstName, LastName, DateOfBirth
+                        FROM employees
+                        WHERE IsActive = 1 AND DateOfBirth IS NOT NULL
+                        AND (
+                            (DATE_FORMAT(DateOfBirth, '%m-%d') >= DATE_FORMAT(CURDATE(), '%m-%d')) AND
+                            (DATE_FORMAT(DateOfBirth, '%m-%d') <= DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 7 DAY), '%m-%d'))
+                        )
+                        ORDER BY DATE_FORMAT(DateOfBirth, '%m-%d') ASC
+                        LIMIT 5";
+
+    $stmt = $pdo->query($sql_birthdays_simple); // Using the simpler version for now
+    $summary_data['upcoming_birthdays'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+     foreach ($summary_data['upcoming_birthdays'] as &$bday) {
+        if (!empty($bday['DateOfBirth'])) {
+            $bday['DateOfBirthFormatted'] = date('M d', strtotime($bday['DateOfBirth']));
+        }
+    }
+    unset($bday);
+
+    // Pending Claims
+    $stmt = $pdo->query("SELECT COUNT(*) FROM Claims WHERE Status = 'Submitted' OR Status = 'Pending Approval'");
+    $summary_data['pending_claims'] = (int)$stmt->fetchColumn();
+
+
+    if (headers_sent()) { exit; }
+    http_response_code(200);
+    echo json_encode($summary_data);
 
 } catch (PDOException $e) {
-    http_response_code(500);
-    error_log("Database Error in get_dashboard_summary.php: " . $e->getMessage());
+    error_log("API Error (get_dashboard_summary): " . $e->getMessage());
+    if (!headers_sent()) { http_response_code(500); }
     echo json_encode(['error' => 'Database error. ' . $e->getMessage()]);
-} catch (Exception $e) {
-    http_response_code(500);
-    error_log("General Error in get_dashboard_summary.php: " . $e->getMessage());
-    echo json_encode(['error' => 'An error occurred: ' . $e->getMessage()]);
+} catch (Throwable $e) {
+    error_log("PHP Throwable in get_dashboard_summary.php: " . $e->getMessage());
+    if (!headers_sent()) { http_response_code(500); }
+    echo json_encode(['error' => 'Unexpected server error.']);
 }
+exit;
 ?>

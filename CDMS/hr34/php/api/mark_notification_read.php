@@ -1,7 +1,8 @@
 <?php
 /**
  * API Endpoint: Mark Notification(s) as Read
- * Updates the IsRead status of specified notifications for the logged-in user.
+ * Updates the IsRead status of specified notifications for the default admin user.
+ * Version: Simplified for default admin access
  */
 
 // --- Error Reporting & Headers ---
@@ -10,13 +11,13 @@ ini_set('display_errors', 0); // Production: 0, Development: 1
 ini_set('log_errors', 1);
 // ini_set('error_log', '/path/to/your/php-error.log');
 
-session_start(); // Needed for authentication
+// session_start(); // No longer strictly needed
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // IMPORTANT: For production, restrict this.
 header('Access-Control-Allow-Methods: POST, OPTIONS'); // Use POST for state changes
 header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Credentials: true');
+// header('Access-Control-Allow-Credentials: true'); // Not needed if not relying on session cookies
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -38,14 +39,10 @@ try {
     exit;
 }
 
-// --- Authentication Check ---
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(['error' => 'Authentication required. Please log in.']);
-    exit;
-}
-$loggedInUserId = $_SESSION['user_id'];
-// --- End Authentication Check ---
+// --- Simplified Authentication: Assume Default Admin ---
+$defaultAdminUserId = 5; 
+$loggedInUserId = $defaultAdminUserId; 
+// --- End Simplified Authentication ---
 
 // Check if it's a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

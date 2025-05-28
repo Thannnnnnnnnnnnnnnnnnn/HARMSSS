@@ -1,11 +1,11 @@
-<?php require '../partials/admin/head.php' ?>
+<?php require '../../partials/admin/head.php' ?>
 
 <div class="flex min-h-screen w-full">
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
-    <?php require '../partials/admin/sidebar.php' ?>
+    <?php require '../../partials/admin/sidebar.php' ?>
 
     <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">
-        <?php require '../partials/admin/navbar.php' ?>
+        <?php require '../../partials/admin/navbar.php' ?>
         <main class="px-1 py-8">
             <div class="text-end pe-10 mb-5">
                 <a href="/admin/job-offers" class="my-4 link link-hover text-blue-500"><i class="fa-solid fa-arrow-left"></i>Back to job-offers</a>
@@ -250,4 +250,4 @@
     });
 </script>
 
-<?php require '../partials/admin/footer.php' ?>
+<?php require '../../partials/admin/footer.php' ?>

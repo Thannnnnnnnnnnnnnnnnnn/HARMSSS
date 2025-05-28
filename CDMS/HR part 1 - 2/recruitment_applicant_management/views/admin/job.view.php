@@ -1,11 +1,11 @@
-<?php require 'partials/admin/head.php' ?>
+<?php require '../../partials/admin/head.php' ?>
 
 <div class="flex min-h-screen w-full text-black">
     <div class="sidebar-overlay fixed top-0 left-0 w-full h-full bg-black opacity-50 z-40 hidden" id="sidebar-overlay"></div>
-    <?php require 'partials/admin/sidebar.php' ?>
+    <?php require '../../partials/admin/sidebar.php' ?>
 
     <div class="main w-full bg-[#FFF6E8] md:ml-[320px] transition-all duration-300">
-        <?php require 'partials/admin/navbar.php' ?>
+        <?php require '../../partials/admin/navbar.php' ?>
         <main class="px-4 py-10 flex flex-col items-center">
             <?php if ($success ?? '' == true) : ?>
                 <div role="alert" class="alert alert-success mb-4 w-full">
@@ -32,7 +32,6 @@
                 </div>
             <?php endif ?>
             <div class="w-full max-w-3xl p-6 rounded-lg shadow-lg bg-white border border-[#594423]">
-                <p class="text-sm mb-2">Posted by <?= htmlspecialchars($job['username']) ?></p>
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
                     <div>
                         <h1 class="text-2xl md:text-3xl font-bold text-black mb-2">
@@ -159,7 +158,7 @@
                 </div>
 
                 <div class="mt-6">
-                    <a href="/admin/jobs" class="text-black font-medium hover:text-blue-600 hover:underline flex items-center">
+                    <a href="jobs.php" class="text-black font-medium hover:text-blue-600 hover:underline flex items-center">
                         <i class="fas fa-arrow-left mr-2"></i> Back to Job Listings
                     </a>
                 </div>
@@ -228,4 +227,4 @@
     });
 </script>
 
-<?php require 'partials/admin/footer.php' ?>
+<?php require '../../partials/admin/footer.php' ?>

@@ -1,14 +1,14 @@
-<?php require '../partials/admin/head.php' ?>
+<?php require '../../partials/admin/head.php' ?>
 
 <div class="flex min-h-screen w-full text-[#594423]">
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
-    <?php require '../partials/admin/sidebar.php' ?>
+    <?php require '../../partials/admin/sidebar.php' ?>
 
     <div class="main w-full bg-[#FFF6E8] md:ml-[320px]">
-        <?php require '../partials/admin/navbar.php' ?>
+        <?php require '../../partials/admin/navbar.php' ?>
         <main class="px-2 py-5">
             <div class="text-end pe-3">
-                <a href="/admin/applicants" class="hover:underline text-blue-500"><i class="fa-solid fa-arrow-left"></i> Back to applicants page</a>
+                <a href="applicants.php" class="hover:underline text-blue-500"><i class="fa-solid fa-arrow-left"></i> Back to applicants page</a>
             </div>
             <div class="container mx-auto mt-5 mb-5 p-5 bg-white shadow-lg rounded-lg">
                 <div class="bg-[#594423] text-white py-3 rounded-lg shadow-lg ps-3 mb-4">
@@ -113,4 +113,4 @@
         });
     });
 </script>
-<?php require '../partials/admin/footer.php' ?>
+<?php require '../../partials/admin/footer.php' ?>

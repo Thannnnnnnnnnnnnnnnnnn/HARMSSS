@@ -1,5 +1,5 @@
-<?php require 'partials/head.php' ?>
-<?php require 'partials/navbar.php' ?>
+<?php require '../partials/head.php' ?>
+<?php require '../partials/navbar.php' ?>
 
 <main class="max-w-4xl mx-auto mt-10 p-8 flex-grow">
     <div class="p-10 rounded-lg shadow-lg border border-[#594423]">
@@ -20,7 +20,7 @@
                 </span>
             </div>
             <div class="mt-4 md:mt-0">
-                <a href="/job-application?id=<?= htmlspecialchars($job['posting_id']) ?>"
+                <a href="job-application.php?id=<?= htmlspecialchars($job['posting_id']) ?>"
                     class="text-center bg-white border border-[#594423] hover:bg-[#594423] hover:text-white transition py-2 px-4 text-black cursor-pointer rounded-xl shadow-md">
                     Apply Now
                 </a>
@@ -42,7 +42,7 @@
             <div>
                 <h2 class="text-xl font-semibold text-[#594423]">Department</h2>
                 <p class="mt-2 leading-relaxed">
-                    <?= nl2br(htmlspecialchars($dept['dept_name'])) ?>
+                    <?= nl2br(htmlspecialchars($dept['department_name'])) ?>
                 </p>
             </div>
             <div>
@@ -59,11 +59,11 @@
             </div>
         </div>
         <div class="mt-10">
-            <a href="/home" class="text-[#594423] font-medium hover:text-[#594423] flex items-center">
+            <a href="home.php" class="text-[#594423] font-medium hover:text-[#594423] flex items-center">
                 <i class="fas fa-arrow-left mr-2"></i> Back to Job Listings
             </a>
         </div>
     </div>
 </main>
 
-<?php require 'partials/footer.php' ?>
+<?php require '../partials/footer.php' ?>

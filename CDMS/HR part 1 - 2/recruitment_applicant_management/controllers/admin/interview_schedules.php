@@ -2,65 +2,123 @@
 
 session_start();
 $heading = 'Interview Schedules';
-$config = require 'config.php';
+$config = require '../../config.php';
+require '../../functions.php';
+require '../../Database.php';
 $db = new Database($config['database']);
-$usm = new Database($config['usm']);
+// $usm = new Database($config['usm']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = [];
-    validate('date', $errors);
-    validate('time', $errors);
-    validate('location', $errors);
-    validate('mode', $errors);
-    validate('interview_type', $errors);
-    validate('interview_status', $errors);
+    $applicant = $db->query("SELECT * FROM applicants WHERE applicant_id = :applicant_id", [
+        ':applicant_id' => $_POST['applicant_id'],
+    ])->fetch();
+    $job = $db->query("SELECT * FROM jobpostings WHERE posting_id = :posting_id", [
+        ':posting_id' => $applicant['posting_id'],
+    ])->fetch();
+    // dd($job);
     if (empty($errors)) {
-        if ($_POST['update'] ?? '' == true) {
-            $db->query("UPDATE interviewschedules SET date = :date, time = :time, location = :location, mode = :mode, interview_type = :interview_type, interview_status = :interview_status WHERE schedule_id = :schedule_id", [
-                ':date' => $_POST['date'],
-                ':time' => $_POST['time'],
-                ':location' => $_POST['location'],
-                ':mode' => $_POST['mode'],
-                ':interview_type' => $_POST['interview_type'],
-                ':interview_status' => $_POST['interview_status'],
+
+        if ($_POST['pass'] ?? '' === true) {
+            $db->query("UPDATE interviewschedules SET interview_status = :interview_status WHERE schedule_id = :schedule_id", [
+                ':interview_status' => 'passed',
                 ':schedule_id' => $_POST['schedule_id'],
             ]);
+            if ($_POST['interview_type'] === 'initial') {
+                // dd($_POST);
+                $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+                    ':status' => 'initial interview passed',
+                    ':applicant_id' => $_POST['applicant_id'],
+                ]);
+                sendMail(
+                    $applicant['email'],
+                    "Congratulations! Next Steps for {$job['job_title']} at {$job['company']}",
+                    "Dear {$applicant['first_name']} {$applicant['last_name']},
 
-            $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-                ':department_id' => 1,
-                ':user_id' => $_SESSION['user_id'],
-                ':action' => 'update',
-                ':description' => "Updated interview schedule with the schedule ID: {$_POST['schedule_id']} for applicant: {$_POST['first_name']}",
-                ':department_affected' => 'HR part 1&2',
-                ':module_affected' => 'recruitment and applicant management',
-            ]);
-            $updated = true;
+Following your recent initial interview for the {$job['job_title']} position at {$job['company']}, we are pleased to inform you that you have successfully moved forward to the next stage of our hiring process!
+
+In the meantime, please let us know if you have any questions.
+
+We look forward to continuing the conversation!
+
+Sincerely,
+
+The HR Team
+{$job['company']}"
+                );
+            } else {
+                $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+                    ':status' => 'final interview passed',
+                    ':applicant_id' => $_POST['applicant_id'],
+                ]);
+                sendMail(
+                    $applicant['email'],
+                    "Congratulations! Offer for {$job['job_title']} at {$job['company']}",
+                    "Dear {$applicant['first_name']} {$applicant['last_name']},
+
+Following your final interview for the {$job['job_title']} position at {$job['company']}, we are thrilled to inform you that you have successfully completed our hiring process!
+
+We were very impressed with your qualifications and believe you would be an excellent addition to our team.
+
+We will be in touch very soon with an official offer letter and details regarding the next steps. In the meantime, please let us know if you have any questions.
+
+We are excited about the possibility of you joining us!
+
+Sincerely,
+
+The HR Team
+{$job['company']}"
+                );
+                header('location: applicants.php');
+                exit();
+            }
         }
     }
-    if ($_POST['delete'] ?? '' == true) {
-        $db->query("DELETE FROM interviewschedules WHERE schedule_id = :schedule_id", [
-            ':schedule_id' => $_POST['id'],
+    if ($_POST['fail'] ?? '' === true) {
+        $db->query("UPDATE interviewschedules SET interview_status = :interview_status WHERE schedule_id = :schedule_id", [
+            ':interview_status' => 'failed',
+            ':schedule_id' => $_POST['schedule_id'],
         ]);
-
-        $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-            ':department_id' => 1,
-            ':user_id' => $_SESSION['user_id'],
-            ':action' => 'delete',
-            ':description' => "admin: {$_SESSION['username']} Deleted an applicant with the applicant ID: {$_POST['applicant_id']}",
-            ':department_affected' => 'HR part 1&2',
-            ':module_affected' => 'recruitment and applicant management',
-        ]);
-        $deleted = true;
+        if ($_POST['interview_type'] === 'initial') {
+            $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+                ':status' => 'initial interview failed',
+                ':applicant_id' => $_POST['applicant_id'],
+            ]);
+        } else {
+            $db->query("UPDATE applicationstatus SET status = :status WHERE applicant_id = :applicant_id", [
+                ':status' => 'final interview failed',
+                ':applicant_id' => $_POST['applicant_id'],
+            ]);
+        }
     }
 }
 
-$schedules = $db->query("SELECT
-s.*,
-a.first_name,
-i.username
-FROM interviewschedules s INNER JOIN applicants a on s.applicant_id = a.applicant_id
-INNER JOIN user_accounts i on i.user_id = s.interviewer_id
+$initial_schedules = $db->query("SELECT
+i.*,
+a.first_name
+FROM interviewschedules i INNER JOIN applicants a on i.applicant_id = a.applicant_id
+WHERE i.interview_status = 'pending'
+AND i.interview_type = 'initial'
+ORDER BY i.created_at DESC
+")->fetchAll();
+
+$final_schedules = $db->query("SELECT
+i.*,
+a.first_name
+FROM interviewschedules i INNER JOIN applicants a on i.applicant_id = a.applicant_id
+INNER JOIN applicationstatus s on i.applicant_id = s.applicant_id
+WHERE i.interview_status = 'pending'
+AND i.interview_type = 'final'
 ORDER BY created_at DESC
 ")->fetchAll();
 
-require 'views/admin/interview_schedules.view.php';
+$done_schedules = $db->query("SELECT
+i.*,
+a.first_name
+FROM interviewschedules i INNER JOIN applicants a on i.applicant_id = a.applicant_id
+INNER JOIN applicationstatus s on i.applicant_id = s.applicant_id
+WHERE i.interview_status != 'pending'
+ORDER BY created_at DESC
+")->fetchAll();
+
+require '../../views/admin/interview_schedules.view.php';

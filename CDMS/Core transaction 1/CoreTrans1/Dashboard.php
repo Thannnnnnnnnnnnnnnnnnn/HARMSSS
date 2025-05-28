@@ -294,7 +294,7 @@ $connKitchen->close();
             <main class="px-4 sm:px-6 lg:px-8 py-6">
                 <!-- Info Cards Container -->
                 <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border-2 border-[#F7E6CA] mb-6">
-                    <h2 class="text-xl sm:text-2xl text-[#4E3B2A] font-header mb-4 sm:mb-6 text-center">Dashboard Overview</h2>
+                    <h2 class="text-xl sm:text-2xl text-[#4E3B2A] font-header mb-4 sm:mb-6 text-center">tite Dashboard Overview</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <!-- Sales Report Card -->
                         <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md text-center border-2 border-[#F7E6CA]">

@@ -1,9 +1,12 @@
 <?php
 session_start();
 $heading = 'Job Posting';
-$config = require 'config.php';
+require '../../functions.php';
+$config = require '../../config.php';
+require '../../Database.php';
 $db = new Database($config['database']);
-$usm = new Database($config['usm']);
+$nhoes = new Database($config['nhoes']);
+// $usm = new Database($config['usm']);
 
 $errors = [];
 // $delete = true;
@@ -18,23 +21,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ':posting_id' => $_POST['id']
         ]);
 
-        $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-            ':department_id' => 1,
-            ':user_id' => $_SESSION['user_id'],
-            ':action' => 'delete',
-            ':description' => "admin: {$_SESSION['username']} just deleted a job posting with the ID of: {$_POST['id']}",
-            ':department_affected' => 'HR part 1&2',
-            ':module_affected' => 'recruitement and applicant management',
-        ]);
+        // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
+        //     ':department_id' => 1,
+        //     ':user_id' => $_SESSION['user_id'],
+        //     ':action' => 'delete',
+        //     ':description' => "admin: {$_SESSION['username']} just deleted a job posting with the ID of: {$_POST['id']}",
+        //     ':department_affected' => 'HR part 1&2',
+        //     ':module_affected' => 'recruitement and applicant management',
+        // ]);
 
-        $usm->query("INSERT INTO department_transaction (department_id, user_id, transaction_type, description, department_affected, module_affected) VALUES (:department_id, :user_id, :transaction_type, :description, :department_affected, :module_affected)", [
-            ':department_id' => 1,
-            ':user_id' => $_SESSION['user_id'],
-            ':transaction_type' => 'job posting deletion',
-            ':description' => "admin: {$_SESSION['username']} deleted a job posting. Position: {$_POST['job_title']}, Location: {$_POST['location']}, Employment type: {$_POST['employment_type']}",
-            ':department_affected' => 'HR part 1&2',
-            ':module_affected' => 'recruitement and applicant management',
-        ]);
+        // $usm->query("INSERT INTO department_transaction (department_id, user_id, transaction_type, description, department_affected, module_affected) VALUES (:department_id, :user_id, :transaction_type, :description, :department_affected, :module_affected)", [
+        //     ':department_id' => 1,
+        //     ':user_id' => $_SESSION['user_id'],
+        //     ':transaction_type' => 'job posting deletion',
+        //     ':description' => "admin: {$_SESSION['username']} deleted a job posting. Position: {$_POST['job_title']}, Location: {$_POST['location']}, Employment type: {$_POST['employment_type']}",
+        //     ':department_affected' => 'HR part 1&2',
+        //     ':module_affected' => 'recruitement and applicant management',
+        // ]);
         header('location: /admin/jobs');
         exit();
     }
@@ -67,23 +70,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ':posting_id' => $_GET['id']
             ]);
 
-            $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
-                ':department_id' => 1,
-                ':user_id' => $_SESSION['user_id'],
-                ':action' => 'update',
-                ':description' => "admin: {$_SESSION['username']} updated a job posting",
-                ':department_affected' => 'HR part 1&2',
-                ':module_affected' => 'recruitement and applicant management',
-            ]);
+            // $usm->query("INSERT INTO department_audit_trail (department_id, user_id, action, description, department_affected, module_affected) VALUES (:department_id, :user_id, :action, :description, :department_affected, :module_affected)", [
+            //     ':department_id' => 1,
+            //     ':user_id' => $_SESSION['user_id'],
+            //     ':action' => 'update',
+            //     ':description' => "admin: {$_SESSION['username']} updated a job posting",
+            //     ':department_affected' => 'HR part 1&2',
+            //     ':module_affected' => 'recruitement and applicant management',
+            // ]);
 
-            $usm->query("INSERT INTO department_transaction (department_id, user_id, transaction_type, description, department_affected, module_affected) VALUES (:department_id, :user_id, :transaction_type, :description, :department_affected, :module_affected)", [
-                ':department_id' => 1,
-                ':user_id' => $_SESSION['user_id'],
-                ':transaction_type' => 'job posting update',
-                ':description' => "admin: {$_SESSION['username']} updated a job posting. Position: {$_POST['job_title']}, Location: {$_POST['location']}",
-                ':department_affected' => 'HR part 1&2',
-                ':module_affected' => 'recruitement and applicant management',
-            ]);
+            // $usm->query("INSERT INTO department_transaction (department_id, user_id, transaction_type, description, department_affected, module_affected) VALUES (:department_id, :user_id, :transaction_type, :description, :department_affected, :module_affected)", [
+            //     ':department_id' => 1,
+            //     ':user_id' => $_SESSION['user_id'],
+            //     ':transaction_type' => 'job posting update',
+            //     ':description' => "admin: {$_SESSION['username']} updated a job posting. Position: {$_POST['job_title']}, Location: {$_POST['location']}",
+            //     ':department_affected' => 'HR part 1&2',
+            //     ':module_affected' => 'recruitement and applicant management',
+            // ]);
 
             $success = true;
         }
@@ -94,12 +97,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $job = $db->query('SELECT 
 j.*,
-u.username,
-u.user_id,
 p.*
-FROM jobpostings j INNER JOIN user_accounts u on u.user_id = j.posted_by 
-INNER JOIN prerequisites p on p.posting_id = j.posting_id
+FROM jobpostings j INNER JOIN prerequisites p on p.posting_id = j.posting_id
 WHERE j.posting_id = :posting_id', [
     ':posting_id' => $_GET['id'],
 ])->fetch();
-require 'views/admin/job.view.php';
+$departments = $nhoes->query('SELECT * FROM departments')->fetchAll();
+// dd($departments);
+// dd($job);
+require '../../views/admin/job.view.php';

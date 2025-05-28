@@ -1,4 +1,4 @@
 <?php
-session_start();
+// session_start();
 $heading = 'Employees';
-require 'lmtm/employees.php';
+require '../lmtm/employees.php';

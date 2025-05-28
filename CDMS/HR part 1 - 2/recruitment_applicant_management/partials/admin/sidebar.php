@@ -4,8 +4,8 @@
         class="h-16 border-b border-[#F7E6CA] flex items-center px-2 space-x-2">
         <!-- <h1 class="text-xl font-bold text-black bg-[#D9D9D9] p-2 rounded-xl"></h1> -->
         <div class="py-2">
-            <a href="/admin/">
-                <img src="/img/Logo-Name.png" alt="Avalon-logo">
+            <a href="">
+                <img src="../../img/Logo-Name.png" alt="Avalon-logo">
             </a>
         </div>
         <!--Close Button-->
@@ -16,16 +16,16 @@
     <div class="side-menu px-4 py-6">
         <ul class="space-y-4">
             <!-- Dashboard -->
-            <div class="menu-option">
+            <!-- <div class="menu-option">
                 <a
-                    href="/admin/"
+                    href=""
                     class="menu-name flex justify-between items-center space-x-3 hover:bg-[#F7E6CA] px-4 py-3 rounded-lg transition duration-300 ease-in-out cursor-pointer text-[#594423]">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-house text-lg pr-4"></i>
                         <span class="text-sm font-medium">Dashboard</span>
                     </div>
                 </a>
-            </div>
+            </div> -->
             <!-- recruitment and applicant -->
             <div class="menu-option">
                 <div
@@ -46,30 +46,30 @@
                     <ul class="space-y-1">
                         <li>
                             <a
-                                href="/admin/applicants"
+                                href="applicants.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">
                                 applicants</a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a
-                                href="/admin/users"
+                                href="users.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">User Accounts</a>
-                        </li>
-                        <li>
+                        </li> -->
+                        <!-- <li>
                             <a
-                                href="/admin/job-offers"
+                                href="job-offers.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">
                                 Job offers</a>
-                        </li>
+                        </li> -->
                         <li>
                             <a
-                                href="/admin/interview_schedules"
+                                href="interview_schedules.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">
                                 interviewschedules</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/jobs"
+                                href="jobs.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">jobpostings</a>
                         </li>
                     </ul>
@@ -142,32 +142,32 @@
                     <ul class="space-y-1">
                         <li>
                             <a
-                                href="/admin/lmtm/employees"
+                                href="lmtm/employees.php"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Employees</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/lmtm/trainers"
+                                href="lmtm/trainers"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Trainers</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/lmtm/enrollments"
+                                href="lmtm/enrollments"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Enrollments</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/lmtm/programs"
+                                href="lmtm/programs"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">TrainingPrograms</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/lmtm/materials"
+                                href="lmtm/materials"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Training Materials</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/lmtm/assessments"
+                                href="lmtm/assessments"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Assessments</a>
                         </li>
                     </ul>
@@ -193,27 +193,27 @@
                     <ul class="space-y-1">
                         <li>
                             <a
-                                href="/admin/pm/performance"
+                                href="pm/performance"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">PerformanceReviews</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/pm/kpi"
+                                href="pm/kpi"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">KPIs</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/pm/goals"
+                                href="pm/goals"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Goals</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/pm/feedback"
+                                href="pm/feedback"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Feedback</a>
                         </li>
                         <li>
                             <a
-                                href="/admin/pm/appraisals"
+                                href="pm/appraisals"
                                 class="text-sm text-gray-800 hover:text-blue-600 hover:ms-2 duration-300 ease-out pr-5 py-2">Appraisals</a>
                         </li>
                     </ul>
@@ -235,9 +235,9 @@
                 </div>
                 <div id="general-ledger-dropdown" class="menu-drop hidden flex-col w-full bg-[#F7E6CA] rounded-lg p-4 space-y-2 mt-2">
                     <ul class="space-y-2">
-                        <li><a href="/admin/socreg/awards?page=awards" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Awards</a></li>
-                        <li><a href="/admin/socreg/recognitions?page=recognitions" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Employee Recognition</a></li>
-                        <li><a href="/admin/socreg/categories?page=categories" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Categories</a></li>
+                        <li><a href="socreg/awards?page=awards" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Awards</a></li>
+                        <li><a href="socreg/recognitions?page=recognitions" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Employee Recognition</a></li>
+                        <li><a href="socreg/categories?page=categories" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Categories</a></li>
                     </ul>
                 </div>
             </div>
@@ -321,10 +321,10 @@
                 </div>
                 <div id="user-management-dropdown" class="hidden flex-col w-full rounded-lg p-4 bg-[#f7e6ca] space-y-2 mt-2">
                     <ul class="space-y-2">
-                        <li><a href="/admin/um/dept_accounts" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Department Accounts</a></li>
-                        <li><a href="/admin/um/dept_log_history" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Department Log History</a></li>
-                        <li><a href="/admin/um/dept_audit_trail" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Department Audit Trail</a></li>
-                        <li><a href="/admin/um/dept_transaction" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Department Transaction</a></li>
+                        <li><a href="um/dept_accounts" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Department Accounts</a></li>
+                        <li><a href="um/dept_log_history" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Department Log History</a></li>
+                        <li><a href="um/dept_audit_trail" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Department Audit Trail</a></li>
+                        <li><a href="um/dept_transaction" class="text-sm text-[#4E3B2A] hover:text-[#594423] block pl-11">Department Transaction</a></li>
                     </ul>
                 </div>
             </div>
