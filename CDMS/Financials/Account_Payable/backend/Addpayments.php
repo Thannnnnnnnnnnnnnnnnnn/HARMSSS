@@ -12,6 +12,7 @@ function dd($data) {
 $conn = new mysqli($host, $username, $password, "fin_accounts_payable");
 $conn_general_ledger = new mysqli($host, $username, $password, "fin_general_ledger");
 $conn_procurement = new mysqli($host, $username, $password, "logs1_procurement");
+$conn_projectManage = new mysqli($host, $username, $password, "logs1_project_management");
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -54,13 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Fetch invoice details
         $stmt_amount = $conn->prepare("   
-            SELECT Amount, Types, BudgetName, Department, funding_id 
+            SELECT Amount, Types, BudgetName, Department, funding_id , project_id
             FROM payableinvoices 
             WHERE PayableInvoiceID = ?
         ");
         $stmt_amount->bind_param("i", $invoice_id);
         $stmt_amount->execute();
-        $stmt_amount->bind_result($invoice_amount, $types, $budget_name, $department, $funding_id);
+        $stmt_amount->bind_result($invoice_amount, $types, $budget_name, $department, $funding_id,$project_id);
         
         if (!$stmt_amount->fetch()) {
             throw new Exception("Error: Invoice not found.");
@@ -85,15 +86,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update funding status in logs_procurement
             $stmt_funding = $conn_procurement->prepare("
                 UPDATE for_funding 
-                SET status = 'Funds tite Allocated' 
+                SET status = 'Funds Successfully Allocated' 
                 WHERE funding_id = ?
-            ");
+            "); $project_id
             $stmt_funding->bind_param("s", $funding_id);
 
             if (!$stmt_funding->execute()) {
                 throw new Exception("Error updating logs_procurement: " . $stmt_funding->error);
             }
-            $stmt_funding->close();
+            $stmt_project->close();
+                // Update funding status in project management
+            $stmt_project = $conn_projectManage->prepare("
+                UPDATE project 
+                SET project_status = 'Funds ETITS Allocated' 
+                WHERE project_id = ?
+            "); 
+            $stmt_project->bind_param("s", $project_id);
+
+            if (!$stmt_project->execute()) {
+                throw new Exception("Error updating logs_procurement: " . $stmt_project->error);
+            }
+            $stmt_project->close();
         }
 
         // Commit transaction
@@ -103,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: ../PayableInvoices.php');
         exit();
     } catch (Exception $e) {
-        // Rollback transaction
+        // Rollback transaction 
         $conn->rollback();
 
         // Log error

@@ -26,7 +26,7 @@ $stmt->execute();
 $stmt->close();
 
 // Retrieve RequestID and Amount from approvals
-$stmt = $conn->prepare("SELECT RequestID, Amount ,funding_id FROM approvals WHERE ApprovalID = ?");
+$stmt = $conn->prepare("SELECT RequestID, Amount ,funding_id ,project_id FROM approvals WHERE ApprovalID = ?");
 $stmt->bind_param("i", $approvalId);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -37,6 +37,7 @@ if ($approval) {
     $requestId = $approval['RequestID'];
     $amount = $approval['Amount'];
     $fundsID = $approval['funding_id'];
+    $projectID = $approval['project_id'];
     
     // Update disbursement request status
     $stmt = $conn->prepare("UPDATE disbursementrequests SET Status = ? WHERE RequestID = ?");
@@ -100,9 +101,9 @@ if ($approval) {
         $payableConn = $db->connect('fin_accounts_payable');
         
         $stmt = $payableConn->prepare("INSERT INTO payableinvoices 
-                                      (BudgetName, Department, Amount, Types, Status, AllocationID ,funding_id) 
-                                      VALUES (?, ?, ?, ?, 'Pending', ?,?)");
-        $stmt->bind_param("ssdsis", $budgetName, $department, $amount, $employeeType, $allocationID,$fundsID);
+                                      (BudgetName, Department, Amount, Types, Status, AllocationID ,funding_id,project_id) 
+                                      VALUES (?, ?, ?, ?, 'Pending', ?,?,?)");
+        $stmt->bind_param("ssdsis", $budgetName, $department, $amount, $employeeType, $allocationID,$fundsID,$projectID);
         
         if (!$stmt->execute()) {
             $budgetConn->rollback();
