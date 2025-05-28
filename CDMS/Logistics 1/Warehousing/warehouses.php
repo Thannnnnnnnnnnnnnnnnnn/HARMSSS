@@ -228,35 +228,54 @@ if (!$result) {
 
 
 
+
+
+            </tr>
+
+    <?php endwhile; ?>
+<?php else: ?>
+    <tr>
+        <td colspan="7" class="text-center p-4">No request records found.</td>
+    </tr>
+<?php endif; ?>
+</tbody>
+
+     
 <!-- ✅ Modal -->
 <div id="warehouseModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center hidden">
   <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
     <h2 class="text-xl font-semibold mb-4">Construct New Warehouse</h2>
-    
+
     <form action="construct_warehouse.php" method="POST" class="space-y-4">
       <!-- Warehouse Name -->
       <div>
         <label for="warehouse_name" class="block text-sm font-medium text-gray-700">Warehouse Name</label>
         <input type="text" name="warehouse_name" id="warehouse_name" required
-               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+               class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" />
       </div>
 
       <!-- Warehouse Location -->
       <div>
         <label for="warehouse_location" class="block text-sm font-medium text-gray-700">Location</label>
         <input type="text" name="warehouse_location" id="warehouse_location" required
-               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+               class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" />
       </div>
 
       <!-- Warehouse For -->
       <div>
         <label for="warehouse_for" class="block text-sm font-medium text-gray-700">Warehouse For</label>
-        <input type="text" name="warehouse_for" id="warehouse_for" required
-               class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+        <select id="warehouse_for" name="warehouse_for" required
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="" disabled selected>Select department</option>
+          <option value="Logistics department">Logistics department</option>
+          <option value="Human resource department">Human resource department</option>
+          <option value="Core department">Core department</option>
+          <option value="Financial department">Financial department</option>
+        </select>
       </div>
 
       <!-- Buttons -->
-      <div class="flex justify-end space-x-3 mt-6">
+      <div class="flex justify-end space-x-3 pt-4">
         <button type="button" onclick="toggleModal(false)" 
                 class="px-4 py-2 border border-gray-400 text-gray-700 rounded hover:bg-gray-100">
           Cancel
@@ -274,18 +293,6 @@ if (!$result) {
     </button>
   </div>
 </div>
-
-            </tr>
-
-    <?php endwhile; ?>
-<?php else: ?>
-    <tr>
-        <td colspan="7" class="text-center p-4">No request records found.</td>
-    </tr>
-<?php endif; ?>
-</tbody>
-
-            
             
         </table>
     </div>
@@ -369,6 +376,7 @@ if (!$result) {
           <option value="Financial department">Financial department</option>
         </select>
       </div>
+
 
       <!-- Buttons -->
       <div class="flex justify-end space-x-3 pt-4">

@@ -108,7 +108,7 @@ if ($otpInput === (string)$storedOtp) {
     logDepartmentAttempt($connections["logs2_usm"], $User_ID, $Department_ID, $User_ID, $Name, $Role, 'Success', '2FA', 0, '2FA Successful', '');
 
     $redirectMap = [
-        'L220305' => '../Logistics 2/Document tracking/permits_approvals.php',
+        'L220305' => '../Logistics 2/landing_redirect.php',
         'L120304' => '../Logistics 1/landing_redirect.php',
         'F20309' => '../Financials/User_Management/Department_Acc.php',
         'HR120302' => '../HR part 1 - 2/recruitment_applicant_management/controllers/admin/index.php',
