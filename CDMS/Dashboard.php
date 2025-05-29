@@ -3,7 +3,7 @@
 // require 'connection.php';
 
 session_start();
-require 'Database.php';
+// require 'Database.php';
 // Check your directoryyyyyyyyyyyyyyyyyyyyyyy
 include("connection.php");
 
